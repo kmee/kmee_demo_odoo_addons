@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view"
+            id="kmee_account_payment_extension_view_payments_filter">
+            <field name="name">kmee_account_payment_extension_search</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_payment_extension.view_payments_filter" />
+            <field name="arch" type="xml">
+                <field name="payment_type" position="before">
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <field name="due_date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="due_date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+                </field>
+            </field>
+        </record>
+        <record model="ir.ui.view"
+            id="kmee_account_move_line_view_payments_filter">
+            <field name="name">kmee_account_move_line_search</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter" />
+            <field name="arch" type="xml">
+                <field name="date" position="before">
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <field name="due_date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="due_date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view"
+            id="kmee_account_move_filter">
+            <field name="name">kmee_account_move_search</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_move_filter"/>
+            <field name="arch" type="xml">
+                <field name="date" position="before">
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <field name="due_date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="due_date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+                </field>
+            </field>
+        </record>
+        <record model="ir.ui.view"
+            id="kmee_view_payments_filter">
+            <field name="name">kmee_view_payments_search</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_due_list.view_payments_filter"/>
+            <field name="arch" type="xml">
+                <field name="date_maturity" position="before">
+                    <field name="date_from" filter_domain="[('date','&gt;=',self)]"/>
+                    <field name="date_to" filter_domain="[('date','&lt;=',self)]"/>
+                    <field name="due_date_from" filter_domain="[('date_maturity','&gt;=',self)]"/>
+                    <field name="due_date_to" filter_domain="[('date_maturity','&lt;=',self)]"/>
+                </field>
+            </field>
+        </record>
+
+
+
+
+
+
+        </data>
+</openerp>
+
