@@ -42,7 +42,7 @@ class ProductStockMultiCompany(orm.TransientModel):
         result = []
         location_obj = self.pool.get('stock.location')
         
-        location_ids = location_obj.search(cr, SUPERUSER_ID, [])
+        location_ids = location_obj.search(cr, SUPERUSER_ID, [('chained_picking_type','=', False),('usage','=','internal')])
         
         for location in location_obj.browse(cr, SUPERUSER_ID, location_ids, context):
             stock = location_obj._product_get_multi_location(cr, SUPERUSER_ID, [location.id], [product_id])

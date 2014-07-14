@@ -13,8 +13,8 @@
 	        					<tree>
 							        <field name="company_id" />
 									<field name="stock_location" />							        
-							        <field name="qty_available"/>
-									<field name="virtual_available"/>							                                     
+							        <field name="qty_available" sum="Total geral"/>
+									<field name="virtual_available" sum="Total virtual"/>							                                     
 							    </tree>
 					</field>
 				</xpath>		
