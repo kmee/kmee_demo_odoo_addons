@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+                <record id="group_sale_mobile" model="res.groups">
+                        <field name="name">Mobile</field>
+                </record>
+
+                <record id="group_sale_mobile_admin" model="res.groups">
+                        <field name="name">Mobile Admin</field>
+                </record>
+
+</data></openerp>
