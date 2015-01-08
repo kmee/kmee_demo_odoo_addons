@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+
+        <menuitem id="menu_sale_mobile" name="Sale Mobile" parent="base.menu_config" sequence="6"/>
+
+        <record model="ir.ui.view" id="view_sale_mobile_process_form">
+            <field name="name">sale_mobile.process.form</field>
+            <field name="model">sale_mobile.process</field>
+
+            <field name="arch" type="xml">
+                <form create="0" edit="0" string="Atualizar Tabelas">
+                    <button name="partner_update" colspan="2" string="Parceiros" type="object" icon="gtk-execute"/>
+                    <button name="product_update"  colspan="2" string="Produtos" type="object" icon="gtk-execute"/>
+                    <button name="price_update" colspan="2" string="Preços" type="object" icon="gtk-execute"/>
+                    <button name="payment_terms_update" colspan="2" string="Condições de Pagamento" type="object" icon="gtk-execute"/>
+                    <button name="payment_type_update" colspan="2" string="Tipos de Pagamento" type="object" icon="gtk-execute"/>
+                    <button name="payment_lines_update" colspan="2" string="Contas a Receber" type="object" icon="gtk-execute"/>
+                    <button name="salesman_update" colspan="2" string="Vendedores" type="object" icon="gtk-execute"/>
+                    <button name="import_moviments" colspan="2" string="Importar dados" type="object" icon="gtk-execute"/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sale_mobile_process">
+
+            <field name="name">Atualizar Tabelas</field>
+            <field name="res_model">sale_mobile.process</field>
+            <field name="view_id" ref="view_sale_mobile_process_form" />
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_sale_mobile_process_view" action="action_sale_mobile_process" parent="menu_sale_mobile"/>
+
+
+        <record model="ir.ui.view" id="view_sale_mobile_object_tree">
+            <field name="name">sale_mobile.object.tree</field>
+            <field name="model">sale_mobile.object</field>
+
+            <field name="arch" type="xml">
+                <tree create="0" edit="0" string="Object">
+                    <field name="state"/>
+                    <field name="table_name"/>
+                    <field name="description"/>
+                    <field name="file_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sale_mobile_config">
+            <field name="name">Logs</field>
+            <field name="res_model">sale_mobile.object</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_sale_mobile_object_tree" />
+        </record>
+
+        <menuitem id="menu_sale_mobile_object_view" action="action_sale_mobile_config" parent="menu_sale_mobile"/>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="sale_mobile_save_dir" model="ir.config_parameter">
+			<field name="key">sale_mobile.dir.save</field>
+			<field name="value">/opt/data_openerp/{0}/sale_mobile/save/</field>
+		</record>
+
+		<record id="sale_mobile_read_dir" model="ir.config_parameter">
+			<field name="key">sale_mobile.dir.read</field>
+			<field name="value">/opt/data_openerp/{0}/sale_mobile/read/</field>
+		</record>
+
+		<record id="sale_mobile_condig_1234" model="ir.config_parameter">
+			<field name="key">sale_mobile.config.read</field>
+			<field name="value">2</field>
+		</record>
+	</data>
+</openerp>
