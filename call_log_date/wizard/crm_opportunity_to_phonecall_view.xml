@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="crm_opportunity2phonecall_custom" model="ir.ui.view">
+            <field name="name">crm.opportunity2phonecall.form</field>
+            <field name="model">crm.opportunity2phonecall</field>
+            <field name="inherit_id" ref="crm.opportunity2phonecall_view"/>
+            <field name="priority">37</field>
+            <field name="arch" type="xml">
+                <field name="date" position="replace">
+                    <field name="date"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
