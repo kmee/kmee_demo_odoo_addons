@@ -8,7 +8,7 @@
             <field name="priority">37</field>
             <field name="arch" type="xml">
                 <field name="date" position="replace">
-                    <field name="date"/>
+                    <field name="date" string="Data"/>
                 </field>
             </field>
         </record>
