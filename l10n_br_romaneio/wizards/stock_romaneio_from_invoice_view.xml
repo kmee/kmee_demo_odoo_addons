@@ -5,13 +5,13 @@
             <field name="name">stock.romaneio.from.invoice.lines.form</field>
             <field name="model">stock.romaneio.from.invoice.lines</field>
             <field name="arch" type="xml">
-                <form string="Import Entries">
-                    <separator string="Payable and Receivables"/>
+                <form string="Importar entradas">
+                    <separator string="Invoices"/>
                     <field height="300" witdh="700"
                         name="line_ids"
                         context="{'currency':True}" />
                     <footer>
-                        <button string="Ok" name="populate_statement" type="object" class="oe_highlight"/>
+                        <button string="Ok" name="populate_romaneio" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>

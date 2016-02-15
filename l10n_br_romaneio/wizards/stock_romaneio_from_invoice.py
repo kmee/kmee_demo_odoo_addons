@@ -19,8 +19,7 @@
 #
 ###############################################################################
 
-import time
-
+from lxml import etree
 from openerp import api, models, fields
 
 
@@ -36,27 +35,57 @@ class StockRomaneioFromInvoicesLines(models.Model):
         'Invoices'
     )
 
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form',
+                        toolbar=False, submenu=False):
+        line_obj = self.env['account.invoice']
+        romaneio = self.env['stock.romaneio'].browse(
+            self.env.context['active_id']
+        )
+
+        line_ids = line_obj.search([
+            ('stock_romaneio_id', '=', False),
+            ('state', '=', 'sefaz_export'),
+            ('picking_ids.state', '=', 'done'),
+            ('picking_ids.carrier_id.id', '=', romaneio.carrier_id.id)
+        ])
+        res = super(StockRomaneioFromInvoicesLines, self).fields_view_get(
+            view_id, view_type, toolbar=toolbar, submenu=False)
+        invoices_ids = []
+        for line in line_ids:
+            invoices_ids.append(line.id)
+        domain = '[("id", "in", ' + str(invoices_ids) + ')]'
+        doc = etree.XML(res['arch'])
+        nodes = doc.xpath("//field[@name='line_ids']")
+        for node in nodes:
+            node.set('domain', domain)
+        res['arch'] = etree.tostring(doc)
+        return res
+
     @api.multi
-    def populate_statement(self):
+    def populate_romaneio(self):
 
         stock_romaneio_line_obj = self.env['stock.romaneio.line']
 
+        romaneio_id = self.env.context['active_id']
+
         for line in self.line_ids:
             invoice_number = line.number
-            if line.partner_id.l10n_br_city_id:
-                city = line.partner_id.l10n_br_city_id.name
-            else:
-                city = line.partner_id.city
+            city = line.partner_id.zip
             volume_quantity = len(line.picking_ids.stock_picking_line)
             invoice_total = line.amount_total
 
             vals = {
+                'stock_romaneio_id': romaneio_id,
                 'invoice_number': invoice_number,
                 'cidade_destino': city,
                 'valor_declarado': invoice_total,
                 'qtd_volumes': volume_quantity,
+                'invoice_id': line,
             }
-
+            line.stock_romaneio_id = romaneio_id
             stock_romaneio_line_obj.create(vals)
+            # invoice = self.env['account.invoice'].search([('number', '=', invoice_number)])
+            # # invoice.write({'stock_romaneio_id': romaneio_id})
 
         return {'type': 'ir.actions.act_window_close'}

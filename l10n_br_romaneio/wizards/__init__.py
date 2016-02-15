@@ -19,4 +19,4 @@
 #
 ###############################################################################
 
-from . import romaneio_from_invoice
+from . import stock_romaneio_from_invoice

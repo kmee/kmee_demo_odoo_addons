@@ -17,7 +17,7 @@
                         <field name="data_criacao"/>
                     </group>
                     <notebook>
-                        <page string="Transactions">
+                        <page string="Notas fiscas separadas">
                             <field name="stock_romaneio_lines">
                                 <tree editable="bottom" string="Linhas do romaneio">
                                     <field name="invoice_number"/>
@@ -28,6 +28,19 @@
                             </field>
                         </page>
                     </notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="invoices_total">
+                        <div class="oe_subtotal_footer_separator oe_inline">
+                            <label for="total_value" />
+                        </div>
+                        <field name="total_value" nolabel="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="volumes_total">
+                        <div class="oe_subtotal_footer_separator oe_inline">
+                            <label for="total_volumes" />
+                        </div>
+                        <field name="total_volumes" nolabel="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <div class="oe_clear"/>
                 </form>
             </field>
         </record>
@@ -37,9 +50,12 @@
             <field	name="model">stock.romaneio</field>
             <field	name="arch"	type="xml">
                 <tree>
+                    <field name="name" string="Romaneio"/>
                     <field name="create_uid" string="Criado Por"/>
                     <field name="carrier_id" string="Transportadora"/>
                     <field name="data_criacao" string="Criado em"/>
+                    <field name="total_value" string="Valor Total"/>
+                    <field name="total_volumes" string="Total de volumes"/>
                 </tree>
             </field>
         </record>

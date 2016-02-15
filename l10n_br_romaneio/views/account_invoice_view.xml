@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_l10n_br_romaneio_invoice_form">
+			<field name="name">l10n_br_romaneio.invoice.form</field>
+			<field name="model">account.invoice</field>
+			<field name="priority">32</field>
+			<field name="inherit_id" ref="account.invoice_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//page[@string='Transporte']/group[@name='shipping_info']/field[@name='expedition_location']" position="after">
+					<field name="stock_romaneio_id"/>
+				</xpath>
+			</field>
+		</record>
+
+    </data>
+</openerp>

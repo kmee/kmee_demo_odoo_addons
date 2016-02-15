@@ -33,8 +33,9 @@
         'stock_picking_invoice_link',
     ],
     'data': [
-        'views/romaneio_views.xml',
-        'wizards/romaneio_from_invoice_view.xml',
+        'wizards/stock_romaneio_from_invoice_view.xml',
+        'views/account_invoice_view.xml',
+        'views/stock_romaneio_views.xml',
     ],
     'demo': [],
     'test': [],
