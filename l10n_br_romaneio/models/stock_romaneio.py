@@ -46,7 +46,11 @@ class StockRomaneio(models.Model):
         self.total_volumes = total
 
     name = fields.Char(compute='_mount_romaneio_name')
-    carrier_id = fields.Many2one('delivery.carrier', 'Transportadoras')
+    carrier_id = fields.Many2one(
+        'delivery.carrier',
+        'Transportadoras',
+        required=True
+    )
     stock_romaneio_lines = fields.One2many(
         'stock.romaneio.line',
         'stock_romaneio_id',

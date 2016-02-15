@@ -45,7 +45,7 @@ class StockRomaneioFromInvoicesLines(models.Model):
 
         line_ids = line_obj.search([
             ('stock_romaneio_id', '=', False),
-            ('state', '=', 'sefaz_export'),
+            ('state', '=', 'open'),
             ('picking_ids.state', '=', 'done'),
             ('picking_ids.carrier_id.id', '=', romaneio.carrier_id.id)
         ])
