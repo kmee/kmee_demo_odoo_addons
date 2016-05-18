@@ -21,8 +21,9 @@
 #
 ##############################################################################
 
-from osv import fields, orm
+from openerp.osv import fields, orm
 from openerp import SUPERUSER_ID
+
 
 class ProductStockMultiCompany(orm.TransientModel):
     """ Sale Order Stock"""
@@ -42,16 +43,18 @@ class ProductStockMultiCompany(orm.TransientModel):
         result = []
         location_obj = self.pool.get('stock.location')
         
-        location_ids = location_obj.search(cr, SUPERUSER_ID, [('chained_picking_type','=', False),('usage','in',['internal','supplier'])])
         
+        location_ids = location_obj.search(cr, SUPERUSER_ID, [('usage','in',['internal','supplier'])])
         for location in location_obj.browse(cr, SUPERUSER_ID, location_ids, context):
-            stock = location_obj._product_get_multi_location(cr, SUPERUSER_ID, [location.id], [product_id])
             
+            qty = self.pool.get('product.product')._product_available(cr, uid, [product_id], context=dict(context or {}, location=location.id))
+            # stock = location_obj._product_get_multi_location(cr, SUPERUSER_ID, [location.id], [product_id])
+            #
             result.append(self.create(cr, uid, {'product_id': product_id,
                                                 'company_id': location.company_id.id,
                                                 'stock_location': location.id,
-                                                'qty_available': stock[product_id],
-                                                'virtual_available': stock[product_id],
+                                                'qty_available': qty[product_id]['qty_available'],
+                                                'virtual_available': qty[product_id]['virtual_available'],
                                                 }, ))
         return result
 
