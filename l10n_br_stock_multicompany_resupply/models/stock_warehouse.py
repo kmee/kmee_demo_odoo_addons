@@ -49,7 +49,8 @@ class StockWarehouse(models.Model):
             cr, uid, warehouse, values, context)
 
         for item in result:
-            self._prepare_stock_to_inter_company(item, warehouse, context)
+            self._prepare_stock_to_inter_company(
+                item=item, warehouse=warehouse, context=context)
         return result
 
     def _get_supply_pull_rules(self, cr, uid, supply_warehouse, values,
@@ -63,14 +64,24 @@ class StockWarehouse(models.Model):
             cr, uid, supply_warehouse, values, new_route_id, context)
 
         for item in result:
-            warehouse = self.browse(cr, uid, item['warehouse_id'])
+            warehouse = self.browse(cr, uid, item.get('warehouse_id'))
+            if not warehouse:
+                return result
             external_transit_location = self._get_external_transit_location(
                 cr, uid, warehouse, context=context)
             if item['location_id'] == external_transit_location.id:
-                self._prepare_stock_to_inter_company(item, warehouse, context)
+                self._prepare_stock_to_inter_company(
+                    item=item,
+                    warehouse=warehouse,
+                    context=context,
+                )
             elif item['location_src_id'] == external_transit_location.id:
                 partner_address_id = self.browse(
                     cr, uid, item['propagate_warehouse_id']).partner_id.id
-                self._prepare_inter_company_to_stock(item, warehouse,
-                     partner_address_id, context)
+                self._prepare_inter_company_to_stock(
+                    item=item,
+                    warehouse=warehouse,
+                    partner_address_id=partner_address_id,
+                    context=context,
+                )
         return result
