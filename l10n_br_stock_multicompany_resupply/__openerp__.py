@@ -15,7 +15,7 @@
     ],
     'data': [
         'views/res_company.xml',
-        'security/stock_move.xml',
+        # 'security/stock_move.xml',
     ],
     'demo': [
     ],

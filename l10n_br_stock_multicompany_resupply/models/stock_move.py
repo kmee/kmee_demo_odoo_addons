@@ -17,7 +17,7 @@ class StockMove(models.Model):
         e do stock.move ( ação que causa problemas na quantidade de estoques
         das filiais)
         """
-        if (self.location_dest_id.usage == 'transit' or
+        if len(self) == 1 and (self.location_dest_id.usage == 'transit' or
                 self.location_id.usage == 'transit'):
             return super(StockMove, self.sudo()).action_done()
         return super(StockMove, self).action_done()
