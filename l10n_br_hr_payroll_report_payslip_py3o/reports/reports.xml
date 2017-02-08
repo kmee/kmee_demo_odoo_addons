@@ -15,7 +15,7 @@
         <report 
             id="report_payslip_py3o_report"
             string="Payslip py3o Report"
-            model="crm.lead"
+            model="hr.payslip"
             report_type="py3o"
             name="l10n_br_hr_payroll_report_payslip_py3o.report_payslipreport"
         />
@@ -23,7 +23,7 @@
         <record id="py3o_template_example" model="py3o.template">
             <field name="name">payslip-report</field>
             <field name="filetype">odt</field>
-            <field name="py3o_template_data" type="base64" file="l10n_br_hr_payroll_report_payslip_py3o/data/lead_demo.odt"></field>
+            <field name="py3o_template_data" type="base64" file="l10n_br_hr_payroll_report_payslip_py3o/data/holerite.odt"></field>
         </record>
 
         <record id="report_payslip_py3o_report" model="ir.actions.report.xml">
