@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
-# Categories can be used to filter modules in modules listing
-# github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
+#############################################################################
+#   Copyright 2017 Haevas Informatica (http://www.haevas.com)
+#   info Haevas <info@haevas.com>
+#############################################################################
+#   Developed by: Albert De La Fuente <albert@haevas.com>
+#############################################################################
+#   License AGPL-3 or later (http://www.gnu.org/licenses/agpl)
+#############################################################################
 {
     'name': "Payslip py3o demo report",
 
@@ -12,14 +18,14 @@
         bla
     """,
 
-    'author': "KMEE",
-    'website': "http://www.kmee.com.br",
+    'author': "Haevas, Odoo Community Association (OCA)",
+    'website': "http://www.haevas.com",
 
     'category': 'Tools',
     'version': '0.1',
     'depends': [
         'base',
-        'crm',
+        'hr',
         'report_py3o',
     ],
     'data': [
