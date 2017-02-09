@@ -32,4 +32,10 @@ def payslip_report(pool, cr, uid, local_context, context):
 #    import pdb; pdb.set_trace() # BREAKPOINT
     #local_context.update({})
     #local_context.update(dc)
-    local_context.update({'outrocampo': 'asdfval'})
+    values = {
+        'base_inss': 0.0,
+        'base_fgts': 0.0,
+        'fgts': 0.0,
+        'base_irrf': 0.0,
+    }
+    local_context.update(values)
