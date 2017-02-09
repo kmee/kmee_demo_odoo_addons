@@ -1,18 +1,13 @@
+<!--
+    Copyright 2017 Haevas Informatica (http://www.haevas.com)
+    info Haevas <info@haevas.com>
+        Developed by: Albert De La Fuente <albert@haevas.com>
+    License AGPL-3 or later (http://www.gnu.org/licenses/agpl)
+-->
+
 <openerp>
     <data>
-        <!--&lt;!&ndash;&lt;!&ndash; create the ir.actions.report.xml &ndash;&gt;&ndash;&gt;-->
-        <!--<record id="lead_report" model="ir.actions.report.xml">-->
-            <!--<field name="report_name">lead_report</field>-->
-            <!--<field name="name">lead_report</field>-->
-            <!--<field name="model">crm.lead</field>-->
-            <!--<field name="string">Lead Report</field>-->
-            <!--<field name="module">l10n_br_hr_payroll_report_payslip_py3o</field>-->
-            <!--<field name="py3o_fusion_filetype" ref="report_py3o.py3o_fusion_filetype_pdf"/>-->
-            <!--<field name="py3o_template_fallback">data/lead_demo.odt</field>-->
-            <!--<field name="report_type">py3o</field>-->
-        <!--</record>-->
-
-        <report 
+        <report
             id="report_payslip_py3o_report"
             string="Payslip py3o Report"
             model="hr.payslip"
@@ -31,7 +26,7 @@
             <field name="py3o_fusion_filetype" ref="report_py3o.py3o_fusion_filetype_odt"/>
             <!--<field name="py3o_template_fallback">data/lead_demo.odt</field>-->
             <field name="py3o_template_fallback">data/lead_demo.odt</field>
-            <field name="py3o_template_id" ref="l10n_br_hr_payroll_report_payslip_py3o.py3o_template_example"/>
+            <field name="py3o_template_id" ref="py3o_template_example"/>
         </record>
     </data>
 </openerp>
