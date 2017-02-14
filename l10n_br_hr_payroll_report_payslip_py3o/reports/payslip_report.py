@@ -32,4 +32,8 @@ def payslip_report(pool, cr, uid, local_context, context):
     #}
     #local_context.update(values)
     #import pdb; pdb.set_trace() # BREAKPOINT
-    local_context.update({'logo': local_context['logo']})
+    #meu_legal_name = formatar(payslip.partner.legal_name)
+    companylogo = pool['hr.payslip'].browse(cr, uid, context['active_id']).company_id.logo
+    d = {'companylogo': companylogo}
+    local_context.update(d)
+
