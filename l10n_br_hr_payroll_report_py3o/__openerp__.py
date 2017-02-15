@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-#############################################################################
-#   Copyright 2017 Haevas Informatica (http://www.haevas.com)
-#   info Haevas <info@haevas.com>
-#############################################################################
-#   Developed by: Albert De La Fuente <albert@haevas.com>
-#############################################################################
-#   License AGPL-3 or later (http://www.gnu.org/licenses/agpl)
-#############################################################################
+# Copyright (C) 2017 - TODAY Albert De La Fuente - KMEE
+# License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 {
     'name': "Payslip py3o demo report",
 
@@ -18,8 +12,8 @@
         bla
     """,
 
-    'author': "Haevas, Odoo Community Association (OCA)",
-    'website': "http://www.haevas.com",
+    'author': "KMEE, Odoo Community Association (OCA)",
+    'website': "http://www.kmee.com.br",
 
     'category': 'Tools',
     'version': '0.1',
