@@ -12,21 +12,25 @@
             string="Payslip py3o Report"
             model="hr.payslip"
             report_type="py3o"
-            name="l10n_br_hr_payroll_report_payslip_py3o.report_payslipreport"
+            name="l10n_br_hr_payroll_report_py3o.report_payslipreport"
         />
 
         <record id="py3o_template_example" model="py3o.template">
             <field name="name">payslip-report</field>
             <field name="filetype">odt</field>
-            <field name="py3o_template_data" type="base64" file="l10n_br_hr_payroll_report_payslip_py3o/data/holerite.odt"></field>
+            <field name="py3o_template_data" type="base64" file="l10n_br_hr_payroll_report_py3o/data/holerite.odt"></field>
         </record>
 
         <record id="report_payslip_py3o_report" model="ir.actions.report.xml">
-            <field name="module">l10n_br_hr_payroll_report_payslip_py3o</field>
+            <field name="module">l10n_br_hr_payroll_report_py3o</field>
             <field name="py3o_fusion_filetype" ref="report_py3o.py3o_fusion_filetype_odt"/>
             <!--<field name="py3o_template_fallback">data/lead_demo.odt</field>-->
             <field name="py3o_template_fallback">data/lead_demo.odt</field>
             <field name="py3o_template_id" ref="py3o_template_example"/>
         </record>
+        <delete
+            model="ir.actions.report.xml"
+            search="[('id', 'in', [ref('hr_payroll.action_report_payslip'), ref('hr_payroll.payslip_details_report')])]"
+        />
     </data>
 </openerp>
