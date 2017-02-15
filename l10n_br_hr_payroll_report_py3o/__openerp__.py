@@ -23,6 +23,7 @@
         'report_py3o',
     ],
     'data': [
+        'wizards/wizard_l10n_br_hr_payroll_analytic_report.xml',
         'reports/reports.xml',
     ],
 }
