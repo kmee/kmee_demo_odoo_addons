@@ -63,6 +63,7 @@ class StockWarehouse(models.Model):
         result = super(StockWarehouse, self)._get_supply_pull_rules(
             cr, uid, supply_warehouse, values, new_route_id, context)
 
+        source_item = dest_item = None
         for item in result:
             warehouse = self.browse(cr, uid, item.get('warehouse_id'))
             if not warehouse:
@@ -70,18 +71,33 @@ class StockWarehouse(models.Model):
             external_transit_location = self._get_external_transit_location(
                 cr, uid, warehouse, context=context)
             if item['location_id'] == external_transit_location.id:
-                self._prepare_stock_to_inter_company(
-                    item=item,
-                    warehouse=warehouse,
-                    context=context,
-                )
+                source_item = item
+                source_warehouse = warehouse
             elif item['location_src_id'] == external_transit_location.id:
-                partner_address_id = self.browse(
-                    cr, uid, item['propagate_warehouse_id']).partner_id.id
-                self._prepare_inter_company_to_stock(
-                    item=item,
-                    warehouse=warehouse,
-                    partner_address_id=partner_address_id,
-                    context=context,
-                )
+                dest_item = item
+                dest_warehouse = warehouse
+
+        if source_item is not None:
+            partner_address_id = (
+                self.browse(cr, uid, dest_item['warehouse_id']).partner_id.id
+                if dest_item is not None
+                else None
+            )
+
+            self._prepare_stock_to_inter_company(
+                item=source_item,
+                warehouse=source_warehouse,
+                partner_address_id=partner_address_id,
+                context=context,
+            )
+
+        if dest_item is not None:
+            partner_address_id = self.browse(
+                cr, uid, dest_item['propagate_warehouse_id']).partner_id.id
+            self._prepare_inter_company_to_stock(
+                item=dest_item,
+                warehouse=dest_warehouse,
+                partner_address_id=partner_address_id,
+                context=context,
+            )
         return result
