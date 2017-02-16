@@ -12,3 +12,14 @@ def payslip_report(pool, cr, uid, local_context, context):
         .browse(cr, uid, context['active_id']).company_id.logo
     d = {'companylogo': companylogo}
     local_context.update(d)
+
+
+@py3o_report_extender(
+    "l10n_br_hr_payroll_report_py3o.report_analyticreport")
+def analytic_report(pool, cr, uid, local_context, context):
+    import pdb; pdb.set_trace() # BREAKPOINT
+    companylogo = \
+        pool['hr.payslip'] \
+        .browse(cr, uid, context['active_id']).company_id.logo
+    d = {'companylogo': companylogo}
+    local_context.update(d)
