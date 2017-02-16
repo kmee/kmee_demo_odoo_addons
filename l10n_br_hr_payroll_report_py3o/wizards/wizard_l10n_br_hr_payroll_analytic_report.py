@@ -30,14 +30,12 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
         default=fields.Date.from_string(fields.Date.today()).year
     )
 
-    # TODO: Perguntar pro Ari se pode ser Many2many
     company_id = fields.Many2one(
         comodel_name='res.company',
         string=u'Empresa',
     )
 
-
     @api.multi
     def doit(self):
-        return self.env['report'].get_action(self,
-            "l10n_br_hr_payroll_report_py3o.report_payslipreport")
+        return self.env['report'].get_action(
+            self, "l10n_br_hr_payroll_report_py3o.report_analyticreport")
