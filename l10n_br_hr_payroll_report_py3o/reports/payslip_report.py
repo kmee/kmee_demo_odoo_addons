@@ -3,7 +3,6 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 from openerp import api
-from openerp import fields
 
 
 @py3o_report_extender(
@@ -22,7 +21,6 @@ def payslip_report(pool, cr, uid, local_context, context):
 def analytic_report(pool, cr, uid, local_context, context):
     active_model = context['active_model']
     if active_model == 'wizard.l10n_br_hr_payroll.analytic_report':
-        print('Venho dos reports')
         proxy = pool['wizard.l10n_br_hr_payroll.analytic_report']
         wizard = proxy.browse(cr, uid, context['active_id'])
         payslip_ids = \
@@ -39,20 +37,14 @@ def analytic_report(pool, cr, uid, local_context, context):
                 pool['hr.payslip']\
                 .browse(cr, uid, payslip_id)
     else:
-        print('Venho do imprimir')
         payslips = \
             pool['hr.payslip.run']\
             .browse(cr, uid, context['active_id']).slip_ids
 
     legal_name = payslips[0].company_id.legal_name
-    legal_name = 'Empresa bla bla'
     cnpj_cpf = payslips[0].company_id.cnpj_cpf
-    cnpj_cpf = '125.252.15'
     mes_do_ano = payslips[0].mes_do_ano
-    mes_do_ano = '3'
     ano = payslips[0].ano
-    ano = '2017'
-    #fields.convert_to_write(payslip_obj)
 
     data = {
         'legal_name': legal_name,
