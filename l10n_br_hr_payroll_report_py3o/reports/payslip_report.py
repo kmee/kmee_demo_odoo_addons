@@ -23,8 +23,21 @@ def analytic_report(pool, cr, uid, local_context, context):
     active_model = context['active_model']
     if active_model == 'wizard.l10n_br_hr_payroll.analytic_report':
         print('Venho dos reports')
-        import pdb; pdb.set_trace() # BREAKPOINT
-        data = {}
+        proxy = pool['wizard.l10n_br_hr_payroll.analytic_report']
+        wizard = proxy.browse(cr, uid, context['active_id'])
+        payslip_ids = \
+            pool['hr.payslip'].search(cr, uid, [
+                ('company_id', '=', wizard.company_id.id),
+                ('tipo_de_folha', '=', wizard.tipo_de_folha),
+                ('mes_do_ano', '=', wizard.mes_do_ano),
+                ('ano', '=', wizard.ano)]
+            )
+
+        payslips = []
+        for payslip_id in payslip_ids:
+            payslips += \
+                pool['hr.payslip']\
+                .browse(cr, uid, payslip_id)
     else:
         print('Venho do imprimir')
         payslips = \
