@@ -8,11 +8,12 @@ from openerp import api
 @py3o_report_extender(
     "l10n_br_hr_payroll_report_py3o.report_payslip_py3o_report")
 def payslip_report(pool, cr, uid, local_context, context):
-    companylogo = \
-        pool['hr.payslip'] \
-        .browse(cr, uid, context['active_id']).company_id.logo
-    d = {'companylogo': companylogo}
-    local_context.update(d)
+    payslip_pool = pool['hr.payslip']
+
+    company_logo = \
+        payslip_pool.browse(cr, uid, context['active_id']).company_id.logo
+
+    local_context['company_logo'] = company_logo
 
 
 @api.model
