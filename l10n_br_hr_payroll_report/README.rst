@@ -2,11 +2,11 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-=======================================
-Aviso de Férias para l10n_br_hr_payroll
-=======================================
+===============================
+Reports para l10n_br_hr_payroll
+===============================
 
-Este modulo provê o aviso de férias para o modulo do l10n_br_hr_payroll
+Este modulo provê relatórios para o modulo da folha de pagamento brasileira
 
 Installation
 ============
