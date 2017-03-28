@@ -17,6 +17,7 @@
     'data': [
         'reports/payslip_report_aviso_ferias.xml',
         'reports/payslip_report_rescisao.xml',
+        'views/res_company.xml'
     ],
     'installable': True,
 }
