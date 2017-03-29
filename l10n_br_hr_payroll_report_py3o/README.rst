@@ -2,9 +2,9 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-==============
-{module_title}
-==============
+==============================
+l10n_br_hr_payroll_report_py3o
+==============================
 
 This module extends the functionality of ... to support ...
 and to allow you to ...
@@ -44,7 +44,6 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* ...
 
 Bug Tracker
 ===========

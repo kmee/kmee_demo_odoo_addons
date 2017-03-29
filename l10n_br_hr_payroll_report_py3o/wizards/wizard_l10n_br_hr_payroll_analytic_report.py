@@ -2,7 +2,7 @@
 # Copyright 2017 KMEE
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models, _
+from openerp import api, fields, models
 from openerp.addons.l10n_br_hr_payroll.models.hr_payslip import (
     TIPO_DE_FOLHA,
     MES_DO_ANO,

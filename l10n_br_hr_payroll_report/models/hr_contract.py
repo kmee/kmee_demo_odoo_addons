@@ -6,9 +6,10 @@ import logging
 _logger = logging.getLogger(__name__)
 
 try:
-    from pybrasil import valor, data
+    from pybrasil import data
 except ImportError:
     _logger.info('Cannot import pybrasil')
+
 
 class HrContract(models.Model):
     _inherit = 'hr.contract'
