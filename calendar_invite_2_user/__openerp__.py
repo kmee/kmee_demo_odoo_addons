@@ -20,20 +20,20 @@
 ##############################################################################
 
 {
-    'name' : 'Calendar Invite 2 User',
-    'description' : """
+    'name': 'Calendar Invite 2 User',
+    'description': """
 Calendar ics invite to user""",
-    'category' : 'Sale',
-    'author' : 'KMEE',
+    'category': 'Sale',
+    'author': 'KMEE',
     'maintainer': 'KMEE',
-    'website' : 'http://www.kmee.com.br',
-    'version' : '0.1',
-    'depends' : ['base_calendar',
-                 ],
+    'website': 'http://www.kmee.com.br',
+    'version': '0.1',
+    'depends': [
+        'base_calendar',
+    ],
     'init_xml': [],
-    'data': [
-             ],
-    'update_xml' : [
+    'data': [],
+    'update_xml': [
     ],
     'test': [],
     'installable': True,

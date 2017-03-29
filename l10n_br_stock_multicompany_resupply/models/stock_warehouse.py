@@ -2,7 +2,7 @@
 # Copyright 2016 KMEE - www.kmee.com.br
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models
+from openerp import models
 
 
 class StockWarehouse(models.Model):
@@ -23,7 +23,7 @@ class StockWarehouse(models.Model):
     _inherit = 'stock.warehouse'
 
     def _prepare_inter_company_to_stock(
-            self, item, warehouse, partner_address_id=False ,context=False):
+            self, item, warehouse, partner_address_id=False, context=False):
         item['fiscal_category_id'] = (
             warehouse.company_id.stock_in_resupply_fiscal_category_id and
             warehouse.company_id.stock_in_resupply_fiscal_category_id.id)
