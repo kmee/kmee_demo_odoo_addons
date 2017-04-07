@@ -16,10 +16,15 @@ class StockMove(models.Model):
         e do stock.move ( ação que causa problemas na quantidade de estoques
         das filiais)
         """
-        for move in self:
-            if move.company_id.id != move.location_dest_id.company_id.id:
-                return super(StockMove, move.sudo()).action_done()
-            return super(StockMove, move).action_done()
+        moves_inter_company = self.filtered(
+            lambda move:
+            move.company_id.id != move.location_dest_id.company_id.id
+        )
+        moves_in_company = self - moves_inter_company
+        for move_inter in moves_inter_company.sudo():
+            return super(StockMove, move_inter).action_done()
+        for move_in in moves_in_company:
+            return super(StockMove, move_in).action_done()
 
     @api.multi
     def action_assign(self):
@@ -28,13 +33,16 @@ class StockMove(models.Model):
         que já foi movimentado de estoque para intercompany seja acessada.
         :return:
         """
-        for move in self:
-            if move.company_id.id != move.location_dest_id.company_id.id:
-                return super(
-                    StockMove, move.sudo().with_context(
-                        force_company=move.sudo().warehouse_id.company_id.id
-                    )
-                ).action_assign()
+        moves_inter_company = self.filtered(
+            lambda move:
+            move.company_id.id != move.location_dest_id.company_id.id
+        )
+        moves_in_company = self - moves_inter_company
+        for move_inter in moves_inter_company.sudo():
             return super(
-                StockMove, move
+                StockMove, move_inter.with_context(
+                    force_company=move_inter.sudo().warehouse_id.company_id.id
+                )
             ).action_assign()
+        for move_in in moves_in_company:
+            return super(StockMove, move_in).action_assign()
