@@ -22,9 +22,10 @@ class StockMove(models.Model):
         )
         moves_in_company = self - moves_inter_company
         for move_inter in moves_inter_company.sudo():
-            return super(StockMove, move_inter).action_done()
+            super(StockMove, move_inter).action_done()
         for move_in in moves_in_company:
-            return super(StockMove, move_in).action_done()
+            super(StockMove, move_in).action_done()
+        return True
 
     @api.multi
     def action_assign(self):
@@ -39,10 +40,11 @@ class StockMove(models.Model):
         )
         moves_in_company = self - moves_inter_company
         for move_inter in moves_inter_company.sudo():
-            return super(
+            super(
                 StockMove, move_inter.with_context(
                     force_company=move_inter.sudo().warehouse_id.company_id.id
                 )
             ).action_assign()
         for move_in in moves_in_company:
-            return super(StockMove, move_in).action_assign()
+            super(StockMove, move_in).action_assign()
+        return True
