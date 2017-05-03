@@ -15,9 +15,12 @@
         'report_py3o',
     ],
     'data': [
+        'reports/payslip_report_analitico.xml',
         'reports/payslip_report_aviso_ferias.xml',
+        'reports/payslip_report_holerite.xml',
         'reports/payslip_report_rescisao.xml',
-        'views/res_company.xml'
+        # 'views/res_company.xml'
+        'wizards/wizard_l10n_br_hr_payroll_analytic_report.xml',
     ],
     'installable': True,
 }
