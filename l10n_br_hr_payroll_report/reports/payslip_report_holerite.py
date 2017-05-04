@@ -3,7 +3,6 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
-from openerp import api
 
 
 @py3o_report_extender(
