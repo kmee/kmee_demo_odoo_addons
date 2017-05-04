@@ -62,6 +62,7 @@ Images
 Contributors
 ------------
 
+* Hendrix Costa <hendrix.costa@kmee.com.br>
 * Albert De La Fuente <albert.fuente@kmee.com.br>
 
 Funders

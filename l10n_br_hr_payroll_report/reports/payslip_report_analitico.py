@@ -1,24 +1,14 @@
 # -*- encoding: utf-8 -*-
 # Copyright (C) 2017 - TODAY Albert De La Fuente - KMEE
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
-from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
+
 from openerp import api
-
-
-@py3o_report_extender(
-    "l10n_br_hr_payroll_report_py3o.report_payslip_py3o_report")
-def payslip_report(pool, cr, uid, local_context, context):
-    payslip_pool = pool['hr.payslip']
-
-    company_logo = \
-        payslip_pool.browse(cr, uid, context['active_id']).company_id.logo
-
-    local_context['company_logo'] = company_logo
+from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 
 
 @api.model
 @py3o_report_extender(
-    "l10n_br_hr_payroll_report_py3o.report_analytic_py3o_report")
+    "l10n_br_hr_payroll_report.report_analytic_py3o_report")
 def analytic_report(pool, cr, uid, local_context, context):
     active_model = context['active_model']
     if active_model == 'wizard.l10n_br_hr_payroll.analytic_report':

@@ -44,4 +44,5 @@ This module adds the payment mode field in account move line
     'demo': [
     ],
     'active': False,
+    'installable': True,
 }

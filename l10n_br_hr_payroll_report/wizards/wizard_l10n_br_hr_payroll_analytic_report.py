@@ -2,11 +2,12 @@
 # Copyright 2017 KMEE
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, fields, models
+from openerp import api, fields, models, _
 from openerp.addons.l10n_br_hr_payroll.models.hr_payslip import (
     TIPO_DE_FOLHA,
     MES_DO_ANO,
 )
+from openerp.exceptions import ValidationError
 
 
 class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
@@ -33,9 +34,23 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
     company_id = fields.Many2one(
         comodel_name='res.company',
         string=u'Empresa',
+        default=lambda self: self.env.user.company_id.id or '',
     )
 
     @api.multi
     def doit(self):
-        return self.env['report'].get_action(
-            self, "l10n_br_hr_payroll_report_py3o.report_analyticreport")
+        payslip_ids = self.env['hr.payslip'].search([
+            ('company_id', '=', self.company_id.id),
+            ('tipo_de_folha', '=', self.tipo_de_folha),
+            ('mes_do_ano', '=', self.mes_do_ano),
+            ('ano', '=', self.ano)
+        ])
+
+        if not payslip_ids:
+            raise ValidationError(
+                _('Não foi encontrado lote de holerite '
+                  'dentro do período selecionado.'))
+
+        else:
+            return self.env['report'].get_action(
+                self, "l10n_br_hr_payroll_report.report_analyticreport")
