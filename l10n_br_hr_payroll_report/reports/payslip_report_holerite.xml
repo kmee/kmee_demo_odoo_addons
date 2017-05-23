@@ -11,7 +11,7 @@
 
         <record id="py3o_template_payslip" model="py3o.template">
             <field name="name">Holerite</field>
-            <field name="filetype">odt</field>
+            <field name="filetype">pdf</field>
             <field name="py3o_template_data" type="base64"
                    file="l10n_br_hr_payroll_report/data/holerite-fixo.odt"></field>
         </record>
