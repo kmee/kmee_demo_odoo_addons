@@ -16,3 +16,11 @@ class StockMove(models.Model):
         estoques das filiais)
         """
         return super(StockMove, self.sudo()).action_done()
+
+    @api.model
+    def split(self, move, qty, restrict_lot_id=False,
+              restrict_partner_id=False):
+        return super(StockMove, self.sudo()).split(
+            move, qty, restrict_lot_id=restrict_lot_id,
+            restrict_partner_id=restrict_partner_id
+        )
