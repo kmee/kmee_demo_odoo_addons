@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_sale_item_count_sale_order" model="ir.ui.view">
+            <field name="name">sale_item_count.sale_order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority" eval="61"/>
+            <field name="arch" type="xml">
+                <field name="sequence" widget="handle" position="after">
+					<field name="line_number" attrs="{'readonly':True}" />
+				</field>
+                <field name="order_line" position="attributes">
+					<attribute name="context_sale_qty">{'ref_ids':order_line}</attribute>
+				</field>
+                <field name="payment_term" position="before">
+					<field name="total_items" attrs="{'readonly':True}" />
+				</field>
+            </field>
+        </record>
+    </data>
+</openerp>
+
+
+
