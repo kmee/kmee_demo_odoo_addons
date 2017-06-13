@@ -9,7 +9,7 @@
     "category": "Sales Management",
     'license': 'AGPL-3',
     'depends': [
-        'sale',
+        'sale_stock',
         'web_context_tunnel',
     ],
     'contributors': [
