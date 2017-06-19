@@ -6,6 +6,64 @@ from openerp import api
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 
 
+MES_ANO = {
+    1: ""
+}
+
+class inss_empresa_obj(object):
+    def __init__(self, valores_inss_empresa):
+        self.base = valores_inss_empresa['base']
+        self.inss_empresa = valores_inss_empresa['inss_empresa']
+        self.rat_fap = valores_inss_empresa['rat_fap']
+        self.terceiros = valores_inss_empresa['terceiros']
+        self.total = valores_inss_empresa['total']
+
+
+class rubrica_obj(object):
+    def __init__(self, rubrica):
+        self.code = rubrica['code']
+        self.name = rubrica['name']
+        self.quantity = rubrica['quantity']
+        self.sum = rubrica['sum']
+
+
+def format_money_mask(value):
+    """
+    Function to transform float values to pt_BR currency mask
+    :param value: float value
+    :return: value with brazilian money format
+    """
+    import locale
+    locale.setlocale(locale.LC_ALL, 'pt_BR')
+    value_formated = locale.currency(value, grouping=True)
+
+    return value_formated[3:]
+
+
+def process_data_format(data):
+    for line in data:
+        if type(data[line]) is float:
+            data[line] = format_money_mask(data[line])
+            continue
+        if type(data[line]) is inss_empresa_obj:
+            data[line].base = format_money_mask(data[line].base)
+            data[line].inss_empresa = format_money_mask(data[line].inss_empresa)
+            data[line].rat_fap = format_money_mask(data[line].rat_fap)
+            data[line].terceiros = format_money_mask(data[line].terceiros)
+            data[line].total = format_money_mask(data[line].total)
+            continue
+        if line == 'proventos':
+            for line_proventos in data[line]:
+                line_proventos.sum = format_money_mask(line_proventos.sum)
+            continue
+        if line == 'descontos':
+            for line_proventos in data[line]:
+                line_proventos.sum = format_money_mask(line_proventos.sum)
+            continue
+
+    return data
+
+
 @api.model
 @py3o_report_extender(
     "l10n_br_hr_payroll_report.report_analytic_py3o_report")
@@ -111,21 +169,6 @@ def analytic_report(pool, cr, uid, local_context, context):
         elif rubrica['code'] == 'INSS_OUTRAS_ENTIDADES':
             taxa_terceiros = rubrica['rate']/100
 
-    class inss_empresa_obj(object):
-        def __init__(self, valores_inss_empresa):
-            self.base = valores_inss_empresa['base']
-            self.inss_empresa = valores_inss_empresa['inss_empresa']
-            self.rat_fap = valores_inss_empresa['rat_fap']
-            self.terceiros = valores_inss_empresa['terceiros']
-            self.total = valores_inss_empresa['total']
-
-    class rubrica_obj(object):
-        def __init__(self, rubrica):
-            self.code = rubrica['code']
-            self.name = rubrica['name']
-            self.quantity = rubrica['quantity']
-            self.sum = rubrica['sum']
-
     inss_empresa_vals = \
         {
             'base': 0.0,
@@ -162,6 +205,13 @@ def analytic_report(pool, cr, uid, local_context, context):
             base_fgts = rubrica['sum']
 
     legal_name = payslips[0].company_id.legal_name
+    endereco = \
+        payslips[0].company_id.street + " " + payslips[0].company_id.street2
+    telefone = payslips[0].company_id.phone
+    bairro = payslips[0].company_id.district
+    cidade = payslips[0].company_id.city
+    estado = payslips[0].company_id.state_id.code
+    cep = payslips[0].company_id.zip
     cnpj_cpf = payslips[0].company_id.cnpj_cpf
     mes_do_ano = payslips[0].mes_do_ano
     ano = payslips[0].ano
@@ -201,11 +251,22 @@ def analytic_report(pool, cr, uid, local_context, context):
 
     aliquota_fgts = 8
     valor_total_fgts = base_fgts * aliquota_fgts/100.00
+    mes_vencimento = mes_do_ano+1 if mes_do_ano < 12 else 1
+    data_vencimento = \
+        '20/' + ('0' + str(mes_vencimento)) if mes_vencimento < 10 else str(
+            mes_vencimento) + "/" + str(ano)
     data = {
         'legal_name': legal_name,
+        'endereco': endereco,
+        'telefone': telefone if telefone else "",
+        'bairro': bairro,
+        'cidade': cidade,
+        'estado': estado,
+        'cep': cep,
         'cnpj_cpf': cnpj_cpf,
         'mes_do_ano': mes_do_ano,
         'ano': ano,
+        'data_vencimento': data_vencimento,
         'objects': payslips,
         'proventos': proventos,
         'descontos': descontos,
@@ -227,6 +288,9 @@ def analytic_report(pool, cr, uid, local_context, context):
         'inss_funcionario_retido': inss_funcionario_retido,
         'inss_pro_labore_retido': inss_pro_labore_retido,
         'inss_autonomo_retido': inss_autonomo_retido,
+        'valor_inss':
+            total_bruto_inss_empresa + total_bruto_inss_rat_fap +
+            total_inss_retido,
         'total_inss_retido': total_inss_retido,
         'salario_familia_deducao': salario_familia_deducao,
         'licenca_maternidade_deducao': licenca_maternidade_deducao,
@@ -236,5 +300,8 @@ def analytic_report(pool, cr, uid, local_context, context):
         'base_fgts': base_fgts,
         'aliquota': aliquota_fgts,
         'valor_total_fgts': valor_total_fgts,
+        'empresa_abc':
+            total_bruto_inss_empresa + total_bruto_inss_rat_fap +
+            inss_empresa_cooperativa.total
     }
-    local_context.update(data)
+    local_context.update(process_data_format(data))
