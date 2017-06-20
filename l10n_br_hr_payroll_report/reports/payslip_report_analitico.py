@@ -1,10 +1,11 @@
 # -*- encoding: utf-8 -*-
 # Copyright (C) 2017 - TODAY Albert De La Fuente - KMEE
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
+from datetime import datetime
 
 from openerp import api
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
-
+from openerp.modules.module import get_module_resource
 
 MES_ANO = {
     1: ""
@@ -255,7 +256,12 @@ def analytic_report(pool, cr, uid, local_context, context):
     data_vencimento = \
         '20/' + ('0' + str(mes_vencimento)) if mes_vencimento < 10 else str(
             mes_vencimento) + "/" + str(ano)
+    data_atual = datetime.now()
+    dia_atual = \
+        str(data_atual.day) + "/" + str(data_atual.month) + "/" +\
+        str(data_atual.year)
     data = {
+        'data_atual': dia_atual,
         'legal_name': legal_name,
         'endereco': endereco,
         'telefone': telefone if telefone else "",
