@@ -6,7 +6,7 @@
 <data>
 
     <record model="ir.ui.view" id="wizard_l10n_br_hr_payroll_analytic_report_form_view">
-        <field name="name">wizard.l10n_br_hr_payroll.analytic_report.form (in l10n_br_hr_payroll_report_py3o)</field>
+        <field name="name">wizard.l10n_br_hr_payroll.analytic_report.form (in l10n_br_hr_payroll_report)</field>
         <field name="model">wizard.l10n_br_hr_payroll.analytic_report</field>
         <field name="arch" type="xml">
             <form string="Wizard L10n_br_hr_payroll Analytic_report">
@@ -50,9 +50,9 @@
 
     <record model="ir.ui.menu" id="wizard_l10n_br_hr_payroll_analytic_report_menu">
         <field name="name">Relatorio analitico</field>
-        <field name="parent_id" ref="hr.menu_hr_reporting_timesheet"/>
+        <field name="parent_id" ref="hr_payroll.menu_hr_root_payroll"/>
         <field name="action" ref="wizard_l10n_br_hr_payroll_analytic_report_act_window"/>
-        <field name="sequence" eval="61"/>
+        <field name="sequence" eval="100"/>
     </record>
 
 </data>

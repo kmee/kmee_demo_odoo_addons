@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+
+         <template id="settlements_report_detailed_with_sale_order" inherit_id="sale_commission.settlements_report_detailed">
+             <xpath expr="//strong[.='INVOICE DATE']/.." position="before">
+                 <td>
+                     <strong>PEDIDO</strong>
+                 </td>
+             </xpath>
+             <xpath expr="//span[@t-field='line.date']/.." position="before">
+                 <td>
+                     <t t-foreach="line.invoice.sale_ids" t-as="pedido">
+                         <span class="oe_editable" t-field="pedido.name"/>
+                     </t>
+                 </td>
+             </xpath>
+        </template>
+
+
+         <template id="settlements_report_condensed_with_sale_order" inherit_id="sale_commission.settlements_report_condensed">
+             <xpath expr="//strong[.='INVOICE DATE']/.." position="before">
+                 <td>
+                     <strong>PEDIDO</strong>
+                 </td>
+             </xpath>
+             <xpath expr="//span[@t-field='line.invoice.date_invoice']/.." position="before">
+                 <td>
+                     <t t-foreach="line.invoice.sale_ids" t-as="pedido">
+                         <span class="oe_editable" t-field="pedido.name"/>
+                     </t>
+                 </td>
+             </xpath>
+        </template>
+
+	</data>
+</openerp>
