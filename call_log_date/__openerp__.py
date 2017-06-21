@@ -1,8 +1,8 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
-#    @author Luis Felipe Mileo <mileo@kmee.com.br>
+#    Author: Fernando Marcato Rodrigues
+#    Copyright 2015 KMEE - www.kmee.com.br
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,24 +20,24 @@
 ##############################################################################
 
 {
-    'name': 'Calendar Invite 2 User',
-    'description': """
-Calendar ics invite to user""",
-    'category': 'Sale',
-    'author': 'KMEE',
-    'maintainer': 'KMEE',
-    'website': 'http://www.kmee.com.br',
+    'name': 'call_log_date',
     'version': '0.1',
+    'category': 'Generic Modules',
+    'description': """
+        Changes "crm.opportunity2phonecall" wizard view so that the "date"
+        field appears for both Schedule and Log Call options.
+    """,
+    'author': 'KMEE',
+    'license': 'AGPL-3',
+    'website': '',
     'depends': [
-        'base_calendar',
+        'crm',
     ],
-    'init_xml': [],
-    'data': [],
-    'update_xml': [
+    'data': [
+        'wizard/crm_opportunity_to_phonecall_view.xml',
     ],
+    'demo': [],
     'test': [],
     'installable': True,
-    'images': [],
-    'auto_install': False,
-    'license': 'AGPL-3',
+    'active': False,
 }

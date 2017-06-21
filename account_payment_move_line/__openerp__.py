@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
+#    Account Payment Move Line module for OpenERP
 #    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
-#    @author Luis Felipe Mileo <mileo@kmee.com.br>
+#    @author Luis Felipe Miléo <mileo@kmee.com.br>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,25 +20,28 @@
 #
 ##############################################################################
 
+
 {
-    'name': 'Calendar Invite 2 User',
-    'description': """
-Calendar ics invite to user""",
-    'category': 'Sale',
-    'author': 'KMEE',
-    'maintainer': 'KMEE',
-    'website': 'http://www.kmee.com.br',
+    'name': 'Account Payment Move Line',
     'version': '0.1',
-    'depends': [
-        'base_calendar',
-    ],
-    'init_xml': [],
-    'data': [],
-    'update_xml': [
-    ],
-    'test': [],
-    'installable': True,
-    'images': [],
-    'auto_install': False,
+    'category': 'Banking addons',
     'license': 'AGPL-3',
+    'summary': 'Adds payment mode on move lines',
+    'description': """
+Account Move Line
+=======================
+
+This module adds the payment mode field in account move line
+
+* the *Payment Mode* from Invoices is copied when the move lines are created.
+""",
+    'author': 'KMEE',
+    'website': 'http://www.kmee.com.br',
+    'depends': ['account_payment_partner'],
+    'data': [
+        'view/account_move_line.xml',
+    ],
+    'demo': [
+    ],
+    'active': False,
 }

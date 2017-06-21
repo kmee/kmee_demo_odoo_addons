@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
+#    Account Payment Move Line module for OpenERP
 #    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
-#    @author Luis Felipe Mileo <mileo@kmee.com.br>
+#    @author Luis Felipe Miléo <mileo@kmee.com.br>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,25 +20,13 @@
 #
 ##############################################################################
 
-{
-    'name': 'Calendar Invite 2 User',
-    'description': """
-Calendar ics invite to user""",
-    'category': 'Sale',
-    'author': 'KMEE',
-    'maintainer': 'KMEE',
-    'website': 'http://www.kmee.com.br',
-    'version': '0.1',
-    'depends': [
-        'base_calendar',
-    ],
-    'init_xml': [],
-    'data': [],
-    'update_xml': [
-    ],
-    'test': [],
-    'installable': True,
-    'images': [],
-    'auto_install': False,
-    'license': 'AGPL-3',
-}
+from openerp.osv import orm, fields
+
+
+class AccountMoveLine(orm.Model):
+    _inherit = 'account.move.line'
+
+    _columns = {
+        'payment_mode_id': fields.many2one(
+            'payment.mode', 'Payment Mode'),
+        }

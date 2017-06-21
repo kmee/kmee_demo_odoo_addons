@@ -1,2 +1,2 @@
-kmee_openerp_addons
+kmee_odoo_addons
 ===================
