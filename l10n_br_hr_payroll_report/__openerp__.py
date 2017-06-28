@@ -21,6 +21,8 @@
         'reports/payslip_report_rescisao.xml',
         # 'views/res_company.xml'
         'wizards/wizard_l10n_br_hr_payroll_analytic_report.xml',
+        'views/hr_salary_rule.xml',
+        'views/hr_field_rescission.xml',
     ],
     'installable': True,
 }

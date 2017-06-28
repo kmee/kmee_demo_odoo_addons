@@ -1,0 +1,16 @@
+<openerp>
+    <data>
+
+        <record id="hr_field_rescission_form" model="ir.ui.view">
+            <field name="name">hr_field_rescission_form</field>
+            <field name="model">hr.field.rescission</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="codigo"/>
+                    <field name="descricao"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>
