@@ -8,6 +8,25 @@ import collections
 from collections import OrderedDict
 
 
+class provento_obj(object):
+    def __init__(self, line_ids):
+        self.valor_provento = line_ids['valor_provento']
+        self.amount = line_ids['amount']
+        self.round_total = line_ids['round_total']
+        self.display_name = line_ids['display_name']
+        self.col = line_ids['col']
+
+
+class deducao_obj(object):
+    def __init__(self, line_ids):
+        self.amount = line_ids['amount']
+        self.valor_deducao_fmt = line_ids['valor_deducao_fmt']
+        self.round_total = line_ids['round_total']
+        self.display_name = line_ids['display_name']
+        self.col = line_ids['col']
+
+
+
 def buscar_ultimo_salario(
         pool, cr, uid, mes_da_rescisao, contract_id, context):
     ultimo_holerite_id = pool['hr.payslip'].search(
@@ -37,8 +56,10 @@ def payslip_rescisao(pool, cr, uid, local_context, context):
                 pool, cr, uid, local_context['objects'].mes_do_ano,
                 local_context['objects'].contract_id.id, context
             ),
-        'correct_line_ids': valor_provento(pool, cr, uid, local_context[
-            'objects'].line_ids, context)
+        'provento_line': valor_provento(pool, cr, uid, local_context[
+            'objects'].line_ids, context),
+        'deducao_line': valor_deducao(pool, cr, uid, local_context[
+            'objects'].line_ids, context),
     }
     local_context.update(data)
     pass
@@ -67,10 +88,54 @@ def valor_provento(pool, cr, uid, line_ids, context):
             # cada regra da linha
             for rule in rec['salary_rule_id']['campo_rescisao']:
                 print str(rule.codigo) + ' -> ' + str(record)
-                if rule.codigo == record:
+                if rule.codigo == record and rec.category_id.code == \
+                        'PROVENTO':
                     line['valor_provento'] += rec.valor_provento
                     line['amount'] += rec.amount
-                    line['code'] = rec.category_id.code
+                    line['round_total'] = rec.round_total
+                    print rec.code
+
+        line['display_name'] = str(record) + lines[record][
+            'descricao']
+        line['column'] = col
+        col += 1
+        obj = provento_obj(line)
+        lines[record].update(obj)
+
+    OrderedDict(sorted(lines.items(), key=lambda t: t[0]))
+    col = 0
+    for item in lines:
+        lines[item].column = col
+        col += 1
+    return lines
+
+
+def valor_deducao(pool, cr, uid, line_ids, context):
+    fields = pool['hr.field.rescission'].search(
+        cr, uid, [], context=context
+    )
+    lines = collections.OrderedDict()
+    campos = []
+    # impede registros repetidos
+    for field in fields:
+        record = pool['hr.field.rescission'].browse(cr, uid, field)
+        if record.codigo not in campos:
+            campos.append(record.codigo)
+            lines.update({record.codigo: {
+                'descricao': record.descricao}})
+    col = 0
+    # para cada campo
+    for record in campos:
+        line = {'valor_provento': 0.0, 'amount': 0.0}
+
+        # procura linhas que possuem o campo e faz a soma dos seus proventos
+        for rec in line_ids:
+            # cada regra da linha
+            for rule in rec['salary_rule_id']['campo_rescisao']:
+                print str(rule.codigo) + ' -> ' + str(record)
+                if rule.codigo == record and rec.category_id.code not in [
+                    'PROVENTO', 'BRUTO', 'REFERENCIA', 'LIQUIDO', 'FGTS']:
+                    line['amount'] += rec.amount
                     line['valor_deducao_fmt'] = rec.valor_deducao_fmt
                     line['round_total'] = rec.round_total
                     print rec.code
@@ -79,11 +144,12 @@ def valor_provento(pool, cr, uid, line_ids, context):
             'descricao']
         line['column'] = col
         col += 1
-        lines[record].update(line)
+        obj = deducao_obj(line)
+        lines[record].update(obj)
 
     OrderedDict(sorted(lines.items(), key=lambda t: t[0]))
     col = 0
     for item in lines:
-        lines[item]['column'] = col
+        lines[item].column = col
         col += 1
     return lines
