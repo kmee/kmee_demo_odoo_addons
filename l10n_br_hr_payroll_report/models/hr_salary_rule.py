@@ -7,6 +7,6 @@ class HrSalaryRule(models.Model):
 
     campo_rescisao = fields.One2many(
         comodel_name='hr.field.rescission',
-        inverse_name='codigo',
+        inverse_name='rule',
         string='Campo da Rescisão',
     )

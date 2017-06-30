@@ -8,6 +8,7 @@
                 <tree>
                     <field name="codigo"/>
                     <field name="descricao"/>
+                    <field name="rule" invisible="1"/>
                 </tree>
             </field>
         </record>
