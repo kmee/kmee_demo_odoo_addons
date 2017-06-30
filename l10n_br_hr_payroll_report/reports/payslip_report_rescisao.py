@@ -7,23 +7,29 @@ from openerp import api
 import collections
 from collections import OrderedDict
 
+class linha(object):
+    def __init__(self, one, two, three):
+        self.one = one
+        self.two = two
+        self.three = three
+
 
 class provento_obj(object):
     def __init__(self, line_ids):
+        self.campo = line_ids['campo']
         self.valor_provento = line_ids['valor_provento']
         self.amount = line_ids['amount']
         self.round_total = line_ids['round_total']
         self.display_name = line_ids['display_name']
-        self.col = line_ids['col']
 
 
 class deducao_obj(object):
     def __init__(self, line_ids):
+        self.campo = line_ids['campo']
         self.amount = line_ids['amount']
         self.valor_deducao_fmt = line_ids['valor_deducao_fmt']
         self.round_total = line_ids['round_total']
         self.display_name = line_ids['display_name']
-        self.col = line_ids['col']
 
 
 
@@ -69,16 +75,16 @@ def valor_provento(pool, cr, uid, line_ids, context):
     fields = pool['hr.field.rescission'].search(
         cr, uid, [], context=context
     )
-    lines = collections.OrderedDict()
+    lines = []
     campos = []
+    descricao = {}
     # impede registros repetidos
     for field in fields:
         record = pool['hr.field.rescission'].browse(cr, uid, field)
         if record.codigo not in campos:
             campos.append(record.codigo)
-            lines.update({record.codigo: {
+            descricao.update({record.codigo: {
                 'descricao': record.descricao}})
-    col = 0
     # para cada campo
     for record in campos:
         line = {'valor_provento': 0.0, 'amount': 0.0}
@@ -95,35 +101,62 @@ def valor_provento(pool, cr, uid, line_ids, context):
                     line['round_total'] = rec.round_total
                     print rec.code
 
-        line['display_name'] = str(record) + lines[record][
+        line['display_name'] = str(record) + descricao[record][
             'descricao']
-        line['column'] = col
-        col += 1
-        obj = provento_obj(line)
-        lines[record].update(obj)
+        line['campo'] = record
+        if line.get('valor_provento'):
+            obj = provento_obj(line)
+            lines.append(obj)
+    if len(lines) != 0:
+        sorted(lines, key=lambda t: t.campo)
 
-    OrderedDict(sorted(lines.items(), key=lambda t: t[0]))
-    col = 0
-    for item in lines:
-        lines[item].column = col
-        col += 1
-    return lines
+    table_lines = []
+    for it in range(0, len(lines), 3):
+        if it + 3 > len(lines):
+            line1 = {}
+            line1['campo'] = ''
+            line1['valor_provento'] = ''
+            line1['amount'] = ''
+            line1['round_total'] = ''
+            line1['display_name'] = ''
+            obj1 = provento_obj(line1)
+            line2 = {}
+            line2['campo'] = ''
+            line2['valor_provento'] = ''
+            line2['amount'] = ''
+            line2['round_total'] = ''
+            line2['display_name'] = ''
+            obj2 = provento_obj(line2)
+            line_obj = linha(lines[it], obj1, obj2)
+        elif it + 3 > len(lines):
+            line1 = {}
+            line1['campo'] = ''
+            line1['valor_provento'] = ''
+            line1['amount'] = ''
+            line1['round_total'] = ''
+            line1['display_name'] = ''
+            obj1 = provento_obj(line1)
+            line_obj = linha(lines[it], lines[it + 1], obj1)
+        else:
+            line_obj = linha(lines[it], lines[it + 1], lines[it + 2])
+        table_lines.append(line_obj)
+    return table_lines
 
 
 def valor_deducao(pool, cr, uid, line_ids, context):
     fields = pool['hr.field.rescission'].search(
         cr, uid, [], context=context
     )
-    lines = collections.OrderedDict()
+    lines = []
     campos = []
+    descricao = {}
     # impede registros repetidos
     for field in fields:
         record = pool['hr.field.rescission'].browse(cr, uid, field)
         if record.codigo not in campos:
             campos.append(record.codigo)
-            lines.update({record.codigo: {
+            descricao.update({record.codigo: {
                 'descricao': record.descricao}})
-    col = 0
     # para cada campo
     for record in campos:
         line = {'valor_provento': 0.0, 'amount': 0.0}
@@ -140,16 +173,17 @@ def valor_deducao(pool, cr, uid, line_ids, context):
                     line['round_total'] = rec.round_total
                     print rec.code
 
-        line['display_name'] = str(record) + lines[record][
+        line['display_name'] = str(record) + descricao[record][
             'descricao']
-        line['column'] = col
-        col += 1
-        obj = deducao_obj(line)
-        lines[record].update(obj)
-
-    OrderedDict(sorted(lines.items(), key=lambda t: t[0]))
-    col = 0
-    for item in lines:
-        lines[item].column = col
-        col += 1
-    return lines
+        line['campo'] = record
+        if line.get('valor_deducao_fmt',False):
+            obj = deducao_obj(line)
+            lines.append(obj)
+    if len(lines) != 0:
+        sorted(lines, key=lambda t: t.campo)
+    table_lines = []
+    for it in range(0, len(lines), 3):
+        line_obj = linha(lines[it], lines[it + 1] or False, lines[it + 2] or
+                         False)
+        table_lines.append(line_obj)
+    return table_lines
