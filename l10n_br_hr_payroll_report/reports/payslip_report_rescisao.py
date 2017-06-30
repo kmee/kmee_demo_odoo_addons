@@ -4,6 +4,7 @@
 
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 from openerp import api
+import collections
 from collections import OrderedDict
 
 
@@ -47,12 +48,15 @@ def valor_provento(pool, cr, uid, line_ids, context):
     fields = pool['hr.field.rescission'].search(
         cr, uid, [], context=context
     )
-    lines = {}
+    lines = collections.OrderedDict()
     campos = []
+    # impede registros repetidos
     for field in fields:
         record = pool['hr.field.rescission'].browse(cr, uid, field)
         if record.codigo not in campos:
-            campos.append(record)
+            campos.append(record.codigo)
+            lines.update({record.codigo: {
+                'descricao': record.descricao}})
     col = 0
     # para cada campo
     for record in campos:
@@ -60,17 +64,26 @@ def valor_provento(pool, cr, uid, line_ids, context):
 
         # procura linhas que possuem o campo e faz a soma dos seus proventos
         for rec in line_ids:
+            # cada regra da linha
             for rule in rec['salary_rule_id']['campo_rescisao']:
-                if rule.codigo == record.codigo:
+                print str(rule.codigo) + ' -> ' + str(record)
+                if rule.codigo == record:
                     line['valor_provento'] += rec.valor_provento
                     line['amount'] += rec.amount
                     line['code'] = rec.category_id.code
                     line['valor_deducao_fmt'] = rec.valor_deducao_fmt
+                    line['round_total'] = rec.round_total
+                    print rec.code
 
-        line['display_name'] = str(record.codigo) + record.descricao
+        line['display_name'] = str(record) + lines[record][
+            'descricao']
         line['column'] = col
         col += 1
-        lines.update({record.codigo: line})
+        lines[record].update(line)
 
     OrderedDict(sorted(lines.items(), key=lambda t: t[0]))
+    col = 0
+    for item in lines:
+        lines[item]['column'] = col
+        col += 1
     return lines
