@@ -4,8 +4,15 @@
 
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 from openerp import api
-import collections
-from collections import OrderedDict
+import logging
+
+_logger = logging.getLogger(__name__)
+try:
+    from pybrasil import valor
+
+except ImportError:
+    _logger.info('Cannot import pybrasil')
+
 
 class linha(object):
     def __init__(self, one, two, three):
@@ -17,7 +24,7 @@ class linha(object):
 class provento_obj(object):
     def __init__(self, line_ids):
         self.campo = line_ids['campo']
-        self.valor_provento = line_ids['valor_provento']
+        self.valor_provento_fmt = line_ids['valor_provento_fmt']
         self.amount = line_ids['amount']
         self.round_total = line_ids['round_total']
         self.display_name = line_ids['display_name']
@@ -30,7 +37,6 @@ class deducao_obj(object):
         self.valor_deducao_fmt = line_ids['valor_deducao_fmt']
         self.round_total = line_ids['round_total']
         self.display_name = line_ids['display_name']
-
 
 
 def buscar_ultimo_salario(
@@ -53,8 +59,8 @@ def buscar_ultimo_salario(
     'l10n_br_hr_payroll_report.report_payslip_py3o_rescisao')
 def payslip_rescisao(pool, cr, uid, local_context, context):
     companylogo = \
-        pool['hr.payslip'] \
-        .browse(cr, uid, context['active_id']).company_id.logo
+        pool['hr.payslip'].browse(cr, uid, context[
+            'active_id']).company_id.logo
     data = {
         'companylogo': companylogo,
         'ultimo_salario':
@@ -68,7 +74,6 @@ def payslip_rescisao(pool, cr, uid, local_context, context):
             'objects'].line_ids, context),
     }
     local_context.update(data)
-    pass
 
 
 def valor_provento(pool, cr, uid, line_ids, context):
@@ -93,36 +98,36 @@ def valor_provento(pool, cr, uid, line_ids, context):
         for rec in line_ids:
             # cada regra da linha
             for rule in rec['salary_rule_id']['campo_rescisao']:
-                print str(rule.codigo) + ' -> ' + str(record)
                 if rule.codigo == record and rec.category_id.code == \
                         'PROVENTO':
                     line['valor_provento'] += rec.valor_provento
                     line['amount'] += rec.amount
                     line['round_total'] = rec.round_total
-                    print rec.code
 
-        line['display_name'] = str(record) + descricao[record][
+        line['display_name'] = str(record) + " " + descricao[record][
             'descricao']
         line['campo'] = record
         if line.get('valor_provento'):
+            line['valor_provento_fmt'] = valor.formata_valor(
+                line['valor_provento'])
             obj = provento_obj(line)
             lines.append(obj)
     if len(lines) != 0:
-        sorted(lines, key=lambda t: t.campo)
+        lines = sorted(lines, key=lambda t: t.campo)
 
     table_lines = []
     for it in range(0, len(lines), 3):
-        if it + 3 > len(lines):
+        if it + 2 > len(lines):
             line1 = {}
             line1['campo'] = ''
-            line1['valor_provento'] = ''
+            line1['valor_provento_fmt'] = ''
             line1['amount'] = ''
             line1['round_total'] = ''
             line1['display_name'] = ''
             obj1 = provento_obj(line1)
             line2 = {}
             line2['campo'] = ''
-            line2['valor_provento'] = ''
+            line2['valor_provento_fmt'] = ''
             line2['amount'] = ''
             line2['round_total'] = ''
             line2['display_name'] = ''
@@ -131,7 +136,7 @@ def valor_provento(pool, cr, uid, line_ids, context):
         elif it + 3 > len(lines):
             line1 = {}
             line1['campo'] = ''
-            line1['valor_provento'] = ''
+            line1['valor_provento_fmt'] = ''
             line1['amount'] = ''
             line1['round_total'] = ''
             line1['display_name'] = ''
@@ -159,31 +164,57 @@ def valor_deducao(pool, cr, uid, line_ids, context):
                 'descricao': record.descricao}})
     # para cada campo
     for record in campos:
-        line = {'valor_provento': 0.0, 'amount': 0.0}
+        line = {'valor_deducao': 0.0, 'amount': 0.0, 'valor_deducao_fmt': ''}
 
-        # procura linhas que possuem o campo e faz a soma dos seus proventos
+        # procura linhas que possuem o campo e faz a soma de suas deduções
         for rec in line_ids:
             # cada regra da linha
             for rule in rec['salary_rule_id']['campo_rescisao']:
-                print str(rule.codigo) + ' -> ' + str(record)
-                if rule.codigo == record and rec.category_id.code not in [
-                    'PROVENTO', 'BRUTO', 'REFERENCIA', 'LIQUIDO', 'FGTS']:
+                if rule.codigo == record and rec.category_id.\
+                        code not in ['PROVENTO', 'BRUTO', 'REFERENCIA',
+                                     'LIQUIDO', 'FGTS']:
                     line['amount'] += rec.amount
-                    line['valor_deducao_fmt'] = rec.valor_deducao_fmt
+                    line['valor_deducao'] += rec.valor_deducao
                     line['round_total'] = rec.round_total
-                    print rec.code
-
-        line['display_name'] = str(record) + descricao[record][
+        line['display_name'] = str(record) + " " + descricao[record][
             'descricao']
         line['campo'] = record
-        if line.get('valor_deducao_fmt',False):
+        if line.get('valor_deducao', False):
+            line['valor_deducao_fmt'] = valor.formata_valor(
+                line['valor_deducao'])
             obj = deducao_obj(line)
             lines.append(obj)
     if len(lines) != 0:
-        sorted(lines, key=lambda t: t.campo)
+        lines = sorted(lines, key=lambda t: t.campo)
+
     table_lines = []
     for it in range(0, len(lines), 3):
-        line_obj = linha(lines[it], lines[it + 1] or False, lines[it + 2] or
-                         False)
+        if it + 2 > len(lines):
+            line1 = {}
+            line1['campo'] = ''
+            line1['valor_deducao_fmt'] = ''
+            line1['amount'] = ''
+            line1['round_total'] = ''
+            line1['display_name'] = ''
+            obj1 = deducao_obj(line1)
+            line2 = {}
+            line2['campo'] = ''
+            line2['valor_deducao_fmt'] = ''
+            line2['amount'] = ''
+            line2['round_total'] = ''
+            line2['display_name'] = ''
+            obj2 = deducao_obj(line2)
+            line_obj = linha(lines[it], obj1, obj2)
+        elif it + 3 > len(lines):
+            line1 = {}
+            line1['campo'] = ''
+            line1['valor_deducao_fmt'] = ''
+            line1['amount'] = ''
+            line1['round_total'] = ''
+            line1['display_name'] = ''
+            obj1 = deducao_obj(line1)
+            line_obj = linha(lines[it], lines[it + 1], obj1)
+        else:
+            line_obj = linha(lines[it], lines[it + 1], lines[it + 2])
         table_lines.append(line_obj)
     return table_lines
