@@ -3,7 +3,9 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
-from openerp import api
+
+from openerp import api, _, exceptions
+from mako.template import Template
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -69,26 +71,27 @@ def payslip_rescisao(pool, cr, uid, local_context, context):
                 local_context['objects'].contract_id.id, context
             ),
         'provento_line': valor_provento(pool, cr, uid, local_context[
-            'objects'].line_ids, context),
+            'objects'], context),
         'deducao_line': valor_deducao(pool, cr, uid, local_context[
-            'objects'].line_ids, context),
+            'objects'], context),
     }
     local_context.update(data)
 
 
-def valor_provento(pool, cr, uid, line_ids, context):
+def valor_provento(pool, cr, uid, objects, context):
+    line_ids = objects.line_ids
     fields = pool['hr.field.rescission'].search(
         cr, uid, [], context=context
     )
     lines = []
     campos = []
-    descricao = {}
+    descricao_dict = {}
     # impede registros repetidos
     for field in fields:
         record = pool['hr.field.rescission'].browse(cr, uid, field)
         if record.codigo not in campos:
             campos.append(record.codigo)
-            descricao.update({record.codigo: {
+            descricao_dict.update({record.codigo: {
                 'descricao': record.descricao}})
     # para cada campo
     for record in campos:
@@ -103,9 +106,51 @@ def valor_provento(pool, cr, uid, line_ids, context):
                     line['valor_provento'] += rec.valor_provento
                     line['amount'] += rec.amount
                     line['round_total'] = rec.round_total
+        try:
+            wd = objects.worked_days_line_ids
+            base_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_BASE')],
+                context=context
+            )
+            base = pool['hr.payslip.worked_days'].browse(cr, uid, base_id)
+            uteis_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_UTEIS')],
+                context=context
+            )
+            uteis = pool['hr.payslip.worked_days'].browse(cr, uid, uteis_id)
+            ferias_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'FERIAS')],
+                context=context
+            )
+            ferias = pool['hr.payslip.worked_days'].browse(cr, uid, ferias_id)
+            abono_id = pool['hr.payslip.worked_days'].search(
+                cr, uid,
+                [('id', 'in', wd.ids), ('code', '=', 'ABONO_PECUNIARIO')],
+                context=context
+            )
+            abono = pool['hr.payslip.worked_days'].browse(cr, uid, abono_id)
+            trabalhado_id = pool['hr.payslip.worked_days'].search(
+                cr, uid,
+                [('id', 'in', wd.ids), ('code', '=', 'DIAS_TRABALHADOS')],
+                context=context
+            )
+            trabalhado = pool['hr.payslip.worked_days'].browse(cr, uid,
+                                                               trabalhado_id)
 
-        line['display_name'] = str(record) + " " + descricao[record][
-            'descricao']
+            descricao = Template(descricao_dict[record]['descricao']).render(
+                DIAS_BASE=base.number_of_days,
+                DIAS_UTEIS=uteis.number_of_days,
+                FERIAS=ferias.number_of_days,
+                ABONO_PECUNIARIO=abono.number_of_days,
+                DIAS_TRABALHADOS=trabalhado.number_of_days, )
+            # PERIODO_AQUISITIVO='00/00/0000 a 99/99/9999')
+            print descricao
+        except:
+            # FIXME
+            raise exceptions.Warning(
+                _("Confira as variaveis do campo de rescisao"))
+
+        line['display_name'] = str(record) + " " + descricao
         line['campo'] = record
         if line.get('valor_provento'):
             line['valor_provento_fmt'] = valor.formata_valor(
@@ -148,7 +193,8 @@ def valor_provento(pool, cr, uid, line_ids, context):
     return table_lines
 
 
-def valor_deducao(pool, cr, uid, line_ids, context):
+def valor_deducao(pool, cr, uid, objects, context):
+    line_ids = objects.line_ids
     fields = pool['hr.field.rescission'].search(
         cr, uid, [], context=context
     )
@@ -170,7 +216,7 @@ def valor_deducao(pool, cr, uid, line_ids, context):
         for rec in line_ids:
             # cada regra da linha
             for rule in rec['salary_rule_id']['campo_rescisao']:
-                if rule.codigo == record and rec.category_id.\
+                if rule.codigo == record and rec.category_id. \
                         code not in ['PROVENTO', 'BRUTO', 'REFERENCIA',
                                      'LIQUIDO', 'FGTS']:
                     line['amount'] += rec.amount
