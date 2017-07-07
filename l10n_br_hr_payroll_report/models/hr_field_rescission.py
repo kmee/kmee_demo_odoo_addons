@@ -18,7 +18,7 @@ class HrFieldRescission(models.Model):
         readonly=True,
         default='${DIAS_BASE} - ${DIAS_UTEIS} - ${FERIAS} - ${'
                 'ABONO_PECUNIARIO} - ${DIAS_TRABALHADOS} - '
-                '${PERIODO_AQUISITIVO}'
+                '${PERIODO_FERIAS_VENCIDAS} - ${AVOS}'
     )
     rule = fields.Many2one(
         readonly=True,

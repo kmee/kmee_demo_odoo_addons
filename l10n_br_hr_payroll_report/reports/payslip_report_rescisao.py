@@ -10,7 +10,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 try:
-    from pybrasil import valor
+    from pybrasil import valor, data
 
 except ImportError:
     _logger.info('Cannot import pybrasil')
@@ -93,6 +93,7 @@ def valor_provento(pool, cr, uid, objects, context):
             campos.append(record.codigo)
             descricao_dict.update({record.codigo: {
                 'descricao': record.descricao}})
+            print descricao_dict[record.codigo]['descricao']
     # para cada campo
     for record in campos:
         line = {'valor_provento': 0.0, 'amount': 0.0}
@@ -136,19 +137,27 @@ def valor_provento(pool, cr, uid, objects, context):
             )
             trabalhado = pool['hr.payslip.worked_days'].browse(cr, uid,
                                                                trabalhado_id)
+            peraq = data.formata_data(
+                objects.ferias_vencidas.inicio_aquisitivo) + " a " + \
+                data.formata_data(objects.ferias_vencidas.fim_aquisitivo)
+            if objects.contract_id.wage != 0.0:
+                avos = line['valor_provento'] / (objects.contract_id.wage / 12)
+            else:
+                avos = 0.0
 
             descricao = Template(descricao_dict[record]['descricao']).render(
                 DIAS_BASE=base.number_of_days,
                 DIAS_UTEIS=uteis.number_of_days,
                 FERIAS=ferias.number_of_days,
                 ABONO_PECUNIARIO=abono.number_of_days,
-                DIAS_TRABALHADOS=trabalhado.number_of_days, )
-            # PERIODO_AQUISITIVO='00/00/0000 a 99/99/9999')
+                DIAS_TRABALHADOS=trabalhado.number_of_days,
+                PERIODO_FERIAS_VENCIDAS=peraq,
+                AVOS=int(avos))
             print descricao
         except:
             # FIXME
             raise exceptions.Warning(
-                _("Confira as variaveis do campo de rescisao"))
+                _("Confira as variaveis do campo de rescisao %d" % record))
 
         line['display_name'] = str(record) + " " + descricao
         line['campo'] = record
@@ -200,13 +209,13 @@ def valor_deducao(pool, cr, uid, objects, context):
     )
     lines = []
     campos = []
-    descricao = {}
+    descricao_dict = {}
     # impede registros repetidos
     for field in fields:
         record = pool['hr.field.rescission'].browse(cr, uid, field)
         if record.codigo not in campos:
             campos.append(record.codigo)
-            descricao.update({record.codigo: {
+            descricao_dict.update({record.codigo: {
                 'descricao': record.descricao}})
     # para cada campo
     for record in campos:
@@ -222,8 +231,58 @@ def valor_deducao(pool, cr, uid, objects, context):
                     line['amount'] += rec.amount
                     line['valor_deducao'] += rec.valor_deducao
                     line['round_total'] = rec.round_total
-        line['display_name'] = str(record) + " " + descricao[record][
-            'descricao']
+        try:
+            wd = objects.worked_days_line_ids
+            base_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_BASE')],
+                context=context
+            )
+            base = pool['hr.payslip.worked_days'].browse(cr, uid, base_id)
+            uteis_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_UTEIS')],
+                context=context
+            )
+            uteis = pool['hr.payslip.worked_days'].browse(cr, uid, uteis_id)
+            ferias_id = pool['hr.payslip.worked_days'].search(
+                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'FERIAS')],
+                context=context
+            )
+            ferias = pool['hr.payslip.worked_days'].browse(cr, uid, ferias_id)
+            abono_id = pool['hr.payslip.worked_days'].search(
+                cr, uid,
+                [('id', 'in', wd.ids), ('code', '=', 'ABONO_PECUNIARIO')],
+                context=context
+            )
+            abono = pool['hr.payslip.worked_days'].browse(cr, uid, abono_id)
+            trabalhado_id = pool['hr.payslip.worked_days'].search(
+                cr, uid,
+                [('id', 'in', wd.ids), ('code', '=', 'DIAS_TRABALHADOS')],
+                context=context
+            )
+            trabalhado = pool['hr.payslip.worked_days'].browse(cr, uid,
+                                                               trabalhado_id)
+            peraq = data.formata_data(
+                objects.ferias_vencidas.inicio_aquisitivo) + " a " + \
+                data.formata_data(objects.ferias_vencidas.fim_aquisitivo)
+            if objects.contract_id.wage != 0.0:
+                avos = line['valor_deducao'] / (objects.contract_id.wage / 12)
+            else:
+                avos = 0.0
+
+            descricao = Template(descricao_dict[record]['descricao']).render(
+                DIAS_BASE=base.number_of_days,
+                DIAS_UTEIS=uteis.number_of_days,
+                FERIAS=ferias.number_of_days,
+                ABONO_PECUNIARIO=abono.number_of_days,
+                DIAS_TRABALHADOS=trabalhado.number_of_days,
+                PERIODO_FERIAS_VENCIDAS=peraq,
+                AVOS=int(avos))
+            print descricao
+        except:
+            # FIXME
+            raise exceptions.Warning(
+                _("Confira as variaveis do campo de rescisao %d" % record))
+        line['display_name'] = str(record) + " " + descricao
         line['campo'] = record
         if line.get('valor_deducao', False):
             line['valor_deducao_fmt'] = valor.formata_valor(
