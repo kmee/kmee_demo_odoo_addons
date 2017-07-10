@@ -1,0 +1,18 @@
+<openerp>
+    <data>
+
+        <record id="view_salary_rule_form_rescission" model="ir.ui.view">
+            <field name="name">view_salary_rule_form_inherited</field>
+            <field name="model">hr.salary.rule</field>
+            <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+            <field name="arch" type="xml">
+                <page string="Description" position="before">
+                    <page string="Campos">
+                        <field name="campo_rescisao"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+    </data>
+</openerp>
