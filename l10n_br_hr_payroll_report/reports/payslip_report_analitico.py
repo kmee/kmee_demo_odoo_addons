@@ -103,7 +103,7 @@ def analytic_report(pool, cr, uid, local_context, context):
         join hr_salary_rule_category rule_category on rule_category.id =
         salary_rule.category_id
     WHERE
-        payslip.mes_do_ano = {}
+        payslip.mes_do_ano = {} AND payslip.company_id = {} AND payslip.tipo_de_folha = '{}' AND payslip.state = 'done' AND payslip.is_simulacao = false
     GROUP BY
         salary_rule.code,
         salary_rule.name,
@@ -137,7 +137,9 @@ def analytic_report(pool, cr, uid, local_context, context):
     ORDER BY
         salary_rule.name;
     '''
-    SQL_BUSCA_RUBRICAS = SQL_BUSCA_RUBRICAS.format(wizard.mes_do_ano)
+    SQL_BUSCA_RUBRICAS = SQL_BUSCA_RUBRICAS.format(
+        wizard.mes_do_ano, wizard.company_id.id, wizard.tipo_de_folha
+    )
     cr.execute(SQL_BUSCA_RUBRICAS)
     payslip_lines = cr.dictfetchall()
     cr.execute(SQL_BUSCA_SEFIP)
