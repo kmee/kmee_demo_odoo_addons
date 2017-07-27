@@ -4,7 +4,6 @@
 
 from openerp import api, fields, models, _
 from openerp.addons.l10n_br_hr_payroll.models.hr_payslip import (
-    TIPO_DE_FOLHA,
     MES_DO_ANO,
 )
 from openerp.exceptions import ValidationError
@@ -15,9 +14,12 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
     _name = 'wizard.l10n_br_hr_payroll.analytic_report'
 
     tipo_de_folha = fields.Selection(
-        selection=TIPO_DE_FOLHA,
+        selection=(("('normal', 'rescisao')", "Folha Normal"),
+                   ("('ferias')", "Férias"),
+                   ("('decimo_terceiro')", "Décimo Terceiro (13º)"),
+        ),
         string=u'Tipo de folha',
-        default='normal',
+        default="('normal', 'rescisao')",
     )
 
     mes_do_ano = fields.Selection(
@@ -41,7 +43,7 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
     def doit(self):
         payslip_ids = self.env['hr.payslip'].search([
             ('company_id', '=', self.company_id.id),
-            ('tipo_de_folha', '=', self.tipo_de_folha),
+            ('tipo_de_folha', 'in', eval(self.tipo_de_folha)),
             ('mes_do_ano', '=', self.mes_do_ano),
             ('ano', '=', self.ano)
         ])

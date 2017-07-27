@@ -12,10 +12,10 @@
             <form string="Wizard L10n_br_hr_payroll Analytic_report">
                 <!-- TODO -->
                 <group>
-                    <field name="tipo_de_folha"/>
-                    <field name="mes_do_ano"/>
-                    <field name="ano"/>
-                    <field name="company_id"/>
+                    <field name="tipo_de_folha" required="1"/>
+                    <field name="mes_do_ano" required="1"/>
+                    <field name="ano" required="1"/>
+                    <field name="company_id" required="1"/>
                 </group>
                 <footer>
                     <button name='doit'
