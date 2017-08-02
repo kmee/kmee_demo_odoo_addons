@@ -103,7 +103,8 @@ def analytic_report(pool, cr, uid, local_context, context):
         join hr_salary_rule_category rule_category on rule_category.id =
         salary_rule.category_id
     WHERE
-        payslip.mes_do_ano = {mes_do_ano} 
+        payslip.mes_do_ano = {mes_do_ano}
+        AND payslip.ano = {ano} 
         AND payslip.company_id = {company_id} 
         AND payslip.tipo_de_folha in {tipo_de_folha}
         AND payslip.is_simulacao = false
@@ -132,7 +133,8 @@ def analytic_report(pool, cr, uid, local_context, context):
         salary_rule.category_id
     WHERE
         rule_category.code = 'SEFIP' 
-        AND payslip.mes_do_ano = {mes_do_ano} 
+        AND payslip.mes_do_ano = {mes_do_ano}
+        AND payslip.ano = {ano}
         AND payslip.company_id = {company_id} 
         AND payslip.tipo_de_folha in {tipo_de_folha} 
         AND payslip.is_simulacao = false
@@ -146,6 +148,7 @@ def analytic_report(pool, cr, uid, local_context, context):
     '''
     SQL_BUSCA_RUBRICAS = SQL_BUSCA_RUBRICAS.format(
         mes_do_ano=wizard.mes_do_ano,
+        ano=wizard.ano,
         company_id=wizard.company_id.id,
         tipo_de_folha=wizard.tipo_de_folha
     )
@@ -153,6 +156,7 @@ def analytic_report(pool, cr, uid, local_context, context):
     payslip_lines = cr.dictfetchall()
     SQL_BUSCA_SEFIP = SQL_BUSCA_SEFIP.format(
         mes_do_ano=wizard.mes_do_ano,
+        ano=wizard.ano,
         company_id=wizard.company_id.id,
         tipo_de_folha=wizard.tipo_de_folha
     )
