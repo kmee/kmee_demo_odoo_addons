@@ -42,7 +42,7 @@ class deducao_obj(object):
 
 
 def buscar_ultimo_salario(
-        pool, cr, uid, mes_da_rescisao, contract_id, context):
+        pool, cr, uid, mes_da_rescisao, ano, contract_id, context):
     ultimo_holerite_id = pool['hr.payslip'].search(
         cr, uid, [
             ('contract_id', '=', contract_id),
@@ -69,6 +69,7 @@ def payslip_rescisao(pool, cr, uid, local_context, context):
         'ultimo_salario':
             buscar_ultimo_salario(
                 pool, cr, uid, local_context['objects'].mes_do_ano,
+                local_context['objects'].ano,
                 local_context['objects'].contract_id.id, context
             ),
         'provento_line': valor_provento(pool, cr, uid, local_context[
