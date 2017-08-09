@@ -47,6 +47,7 @@ def buscar_ultimo_salario(
         cr, uid, [
             ('contract_id', '=', contract_id),
             ('mes_do_ano', '=', mes_da_rescisao - 1),
+            ('ano', '=', ano)
             ('tipo_de_folha', '=', 'normal'),
         ], context=context
     )
