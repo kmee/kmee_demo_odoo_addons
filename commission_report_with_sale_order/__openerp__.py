@@ -36,6 +36,6 @@
     'test': [
     ],
     'category': 'Report',
-    'installable': True,
+    'installable': False,
 
 }
