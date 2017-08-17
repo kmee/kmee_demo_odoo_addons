@@ -4,21 +4,19 @@
 
 		<record id="sale_stock_multicompany_form" model="ir.ui.view">
 			<field name="name">sale_stock_multicompany_form.order.form</field>
-			<field name="model">sale.order</field>
-			<field name="inherit_id" ref="sale.view_order_form" />
-			<field name="arch" type="xml">				
-				<xpath expr="//field[@name='order_line']/form/label[@for='name']" position="replace"/>				
-				<xpath expr="//field[@name='order_line']/form/field[@name='name']" position="replace">
-					<field name="name" invisible="1"/>
-					<field name="stock_line_id" widget="one2many_list" nolabel="1" attrs="{'invisible': [('state','!=','draft')] }">
-	        					<tree>
-							        <field name="company_id" />
-									<field name="stock_location" />							        
-							        <field name="qty_available" sum="Total geral"/>
-									<field name="virtual_available" sum="Total virtual"/>							                                     
-							    </tree>
+            <field name="model">sale.order.line</field>
+			<field name="inherit_id" ref="sped_sale.sale_order_line_brazil_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[@name='valores']/group" position="after">
+					<field name="stock_line_id" widget="one2many_list" nolabel="1">
+						<tree>
+							<field name="company_id" />
+							<field name="stock_location" />
+							<field name="qty_available" sum="Total geral"/>
+							<field name="virtual_available" sum="Total virtual"/>
+						</tree>
 					</field>
-				</xpath>		
+				</xpath>
 			</field>
 		</record>		
 

@@ -2,12 +2,14 @@
 # Copyright 2017 KMEE
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from __future__ import division, print_function, unicode_literals
+
 from odoo import SUPERUSER_ID, models, api, fields
 
 
 class ProductStockMultiCompany(models.TransientModel):
 
-    _name = 'product.stock_multicompany'
+    _name = b'product.stock_multicompany'
 
     product_id = fields.Many2one(
         string='Product',
@@ -51,22 +53,17 @@ class ProductStockMultiCompany(models.TransientModel):
         )
 
         for location in locations:
-            # cria um objeto de product
-            product_obj = self.env['product.product']
-            # adiciona o location no context
-            product_obj = product_obj.with_context(location=location.id)
-            # adiciona id do produto procurado no context
-            product_obj._ids = [product_id]
             # chama metodo da classe que retorna a disponibilidade no location
-            qty = product_obj._product_available()
+            qty = product_id.with_context(
+                location=location.id)._product_available()
             # cria instancia para cada location das informacoes de
             # disponibilidade e apenda em um vetor
             product_stock_multicompany_obj = (self.create({
-                'product_id': product_id,
+                'product_id': product_id.id,
                 'company_id': location.company_id.id,
                 'stock_location': location.id,
-                'qty_available': qty[product_id]['qty_available'],
-                'virtual_available': qty[product_id]['virtual_available'],
+                'qty_available': qty[product_id.id]['qty_available'],
+                'virtual_available': qty[product_id.id]['virtual_available'],
             }))
             result.append(product_stock_multicompany_obj.id)
 

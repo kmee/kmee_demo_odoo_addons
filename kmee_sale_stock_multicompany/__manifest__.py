@@ -12,6 +12,8 @@
     'website' : 'http://www.kmee.com.br',
     'depends' : [
         'sale',
+        'stock',
+        'sped_sale',
     ],
     'data': [
         'view/sale_order_view.xml',
