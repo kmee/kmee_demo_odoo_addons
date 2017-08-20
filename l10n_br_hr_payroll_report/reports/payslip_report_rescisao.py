@@ -148,13 +148,13 @@ def valor_provento(pool, cr, uid, objects, context):
                 avos = 0.0
 
             descricao = Template(descricao_dict[record]['descricao']).render(
-                DIAS_BASE=base.number_of_days,
-                DIAS_UTEIS=uteis.number_of_days,
-                FERIAS=ferias.number_of_days,
-                ABONO_PECUNIARIO=abono.number_of_days,
-                DIAS_TRABALHADOS=trabalhado.number_of_days,
+                DIAS_BASE="%d" % (base.number_of_days),
+                DIAS_UTEIS="%d" % (uteis.number_of_days),
+                FERIAS="%d" % (ferias.number_of_days),
+                ABONO_PECUNIARIO="%d" % (abono.number_of_days),
+                DIAS_TRABALHADOS="%d" % (trabalhado.number_of_days),
                 PERIODO_FERIAS_VENCIDAS=peraq,
-                AVOS=int(avos))
+                AVOS="%d" % (int(avos)))
             print descricao
         except:
             # FIXME

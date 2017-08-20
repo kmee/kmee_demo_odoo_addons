@@ -70,13 +70,17 @@ def analytic_report(pool, cr, uid, local_context, context):
     if active_model == 'wizard.l10n_br_hr_payroll.analytic_report':
         proxy = pool['wizard.l10n_br_hr_payroll.analytic_report']
         wizard = proxy.browse(cr, uid, context['active_id'])
+        busca = [
+            ('company_id', '=', wizard.company_id.id),
+            ('mes_do_ano', '=', wizard.mes_do_ano),
+            ('ano', '=', wizard.ano),
+        ]
+        if wizard.tipo_de_folha == "('normal', 'rescisao')":
+            busca.append(('tipo_de_folha', 'in', eval(wizard.tipo_de_folha)))
+        else:
+            busca.append(('tipo_de_folha', '=', eval(wizard.tipo_de_folha)))
         payslip_ids = \
-            pool['hr.payslip'].search(cr, uid, [
-                ('company_id', '=', wizard.company_id.id),
-                ('tipo_de_folha', 'in', eval(wizard.tipo_de_folha)),
-                ('mes_do_ano', '=', wizard.mes_do_ano),
-                ('ano', '=', wizard.ano)]
-            )
+            pool['hr.payslip'].search(cr, uid, busca)
 
         payslips = []
         for payslip_id in payslip_ids:
