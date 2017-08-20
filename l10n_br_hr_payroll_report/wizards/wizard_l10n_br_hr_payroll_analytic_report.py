@@ -17,6 +17,8 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
         selection=(("('normal', 'rescisao')", "Folha Normal"),
                    ("('ferias')", "Férias"),
                    ("('decimo_terceiro')", "Décimo Terceiro (13º)"),
+                   ("('provisao_decimo_terceiro')", "Provisão 13º Salário"),
+                   ("('provisao_ferias')", "Provisão de Férias"),
         ),
         string=u'Tipo de folha',
         default="('normal', 'rescisao')",
@@ -41,12 +43,16 @@ class WizardL10n_br_hr_payrollAnalytic_report(models.TransientModel):
 
     @api.multi
     def doit(self):
-        payslip_ids = self.env['hr.payslip'].search([
+        busca = [
             ('company_id', '=', self.company_id.id),
-            ('tipo_de_folha', 'in', eval(self.tipo_de_folha)),
             ('mes_do_ano', '=', self.mes_do_ano),
-            ('ano', '=', self.ano)
-        ])
+            ('ano', '=', self.ano),
+        ]
+        if self.tipo_de_folha == "('normal', 'rescisao')":
+            busca.append(('tipo_de_folha', 'in', eval(self.tipo_de_folha)))
+        else:
+            busca.append(('tipo_de_folha', '=', eval(self.tipo_de_folha)))
+        payslip_ids = self.env['hr.payslip'].search(busca)
 
         if not payslip_ids:
             raise ValidationError(
