@@ -32,7 +32,9 @@ class SaleOrdeLine(models.Model):
     @api.multi
     def _default_line(self):
         if self.env.context.get('ref_ids'):
-            self.line_number = len(self.env.context['ref_ids']) + 1
+            return len(self.env.context['ref_ids']) + 1
+        else:
+            return 1
 
     @api.multi
     def _get_line_numbers(self):
@@ -43,5 +45,5 @@ class SaleOrdeLine(models.Model):
 
     line_number = fields.Integer(string="Item",
                                  compute='_get_line_numbers',
-                                 default="_default_line",
+                                 default=_default_line,
                                  copy=False)
