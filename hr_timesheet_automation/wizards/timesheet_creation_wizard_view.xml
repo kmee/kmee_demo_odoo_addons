@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record id="action_task_timesheet_creation" model="ir.actions.act_window">
+            <field name="name">Timesheet line creation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">timesheet.creation.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="timesheet_creation_wizard_form"/>
+        </record>
+
+        <record id="timesheet_creation_wizard_form" model="ir.ui.view">
+            <field name="name">New timesheet line</field>
+            <field name="model">timesheet.creation.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="activity_description" placeholder="Describe the work done here"/>
+                            <field name="duration" widget="float_time"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_create_timesheet" type="object" string="Create timesheet line"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

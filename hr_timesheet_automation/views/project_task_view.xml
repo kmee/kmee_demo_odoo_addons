@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record id="hr_timesheet_automation_project_task_form" model="ir.ui.view">
+            <field name="name">project.task.form (in hr_timesheet_automation)</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <field name="stop_label" invisible="1"/>
+                    <button string="Start timer" name="action_log_time" type="object" class="oe_stat_button" icon="fa-play" attrs="{'invisible': [('stop_label', '=', True)]}" />
+                    <button string="Stop timer" name="action_log_time" type="object" class="oe_stat_button" icon="fa-stop" attrs="{'invisible': [('stop_label', '=', False)]}" />
+                    <field name="datetime_start" invisible="1"/>
+                    <field name="datetime_end" invisible="1"/>
+                </div>
+                <notebook position="inside">
+                    <page string="Acompanhamento de estágios">
+                        <field name="task_stage_time_ids">
+                            <tree nolabel="1">
+                                <field name="stage_id"/>
+                                <field name="duration" widget="float_time"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="user_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</odoo>
