@@ -23,5 +23,5 @@
         'views/hr_salary_rule.xml',
         'views/hr_field_rescission.xml',
     ],
-    'installable': True,
+    'installable': False,
 }

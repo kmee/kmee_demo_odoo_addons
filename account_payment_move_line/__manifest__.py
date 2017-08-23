@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Commission Update Wizard
-#    Copyright (C) 2016 KMEE (http://www.kmee.com.br)
-#    @author Daniel Sadamo <daniel.sadamo@kmee.com.br>
+#    Account Payment Move Line module for OpenERP
+#    Copyright (C) 2014 KMEE (http://www.kmee.com.br)
+#    @author Luis Felipe Miléo <mileo@kmee.com.br>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,22 +20,29 @@
 #
 ##############################################################################
 
-{
-    'name': 'Commission Report With Sale Order',
-    'license': 'AGPL-3',
-    'author': 'KMEE',
-    'version': '8.0.1.0.0',
-    'website': 'http://www.kmee.com.br',
-    'depends': [
-        'sale_commission',
-        'account_invoice_sale_link',
-    ],
-    'data': [
-        'report/settlements_report.xml'
-    ],
-    'test': [
-    ],
-    'category': 'Report',
-    'installable': True,
 
+{
+    'name': 'Account Payment Move Line',
+    'version': '0.1',
+    'category': 'Banking addons',
+    'license': 'AGPL-3',
+    'summary': 'Adds payment mode on move lines',
+    'description': """
+Account Move Line
+=======================
+
+This module adds the payment mode field in account move line
+
+* the *Payment Mode* from Invoices is copied when the move lines are created.
+""",
+    'author': 'KMEE',
+    'website': 'http://www.kmee.com.br',
+    'depends': ['account_payment_partner'],
+    'data': [
+        'view/account_move_line.xml',
+    ],
+    'demo': [
+    ],
+    'active': False,
+    'installable': False,
 }
