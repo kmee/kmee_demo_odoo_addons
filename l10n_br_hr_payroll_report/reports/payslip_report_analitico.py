@@ -207,15 +207,15 @@ def analytic_report(pool, cr, uid, local_context, context):
 #       Somar os valores do INSS_EMPRESA e outros calculados nos holerites
 #       Ao invés de recalcular os valores aqui
         if rubrica['code'] in ('INSS_EMPRESA_BASE', 'INSS_EMPRESA_BASE_FERIAS'):
-            inss_empresa_funcionario.base = rubrica['sum']
+            inss_empresa_funcionario.base += rubrica['sum']
         elif rubrica['code'] in ('INSS_EMPRESA', 'INSS_EMPRESA_FERIAS'):
-            inss_empresa_funcionario.inss_empresa = rubrica['sum']
+            inss_empresa_funcionario.inss_empresa += rubrica['sum']
             inss_empresa_funcionario.total += rubrica['sum']
         elif rubrica['code'] in ('INSS_RAT_FAP', 'INSS_RAT_FAP_FERIAS'):
-            inss_empresa_funcionario.rat_fap = rubrica['sum']
+            inss_empresa_funcionario.rat_fap += rubrica['sum']
             inss_empresa_funcionario.total += rubrica['sum']
         elif rubrica['code'] in ('INSS_OUTRAS_ENTIDADES', 'INSS_OUTRAS_ENTIDADES_FERIAS'):
-            inss_empresa_funcionario.terceiros = rubrica['sum']
+            inss_empresa_funcionario.terceiros += rubrica['sum']
             inss_empresa_funcionario.total += rubrica['sum']
 #       if rubrica['code'] == 'INSS_EMPRESA':
 #           inss_empresa_funcionario.base = rubrica['sum']
@@ -235,7 +235,7 @@ def analytic_report(pool, cr, uid, local_context, context):
             descontos.append(rubrica_obj(rubrica))
             total_descontos += rubrica['sum']
             if rubrica['category'] == 'INSS':
-                inss_funcionario_retido = rubrica['sum']
+                inss_funcionario_retido += rubrica['sum']
         if rubrica['code'] == 'BASE_FGTS':
             base_fgts = rubrica['sum']
 
