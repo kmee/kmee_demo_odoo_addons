@@ -5,7 +5,6 @@
 from openerp.addons.report_py3o.py3o_parser import py3o_report_extender
 
 from openerp import api, _, exceptions
-from mako.template import Template
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -23,36 +22,28 @@ class linha(object):
         self.three = three
 
 
-class provento_obj(object):
+class item_obj(object):
     def __init__(self, line_ids):
-        self.campo = line_ids['campo']
-        self.valor_provento_fmt = line_ids['valor_provento_fmt']
-        self.amount = line_ids['amount']
-        self.round_total = line_ids['round_total']
         self.display_name = line_ids['display_name']
+        self.valor_fmt = line_ids['valor_fmt']
 
 
-class deducao_obj(object):
-    def __init__(self, line_ids):
-        self.campo = line_ids['campo']
-        self.amount = line_ids['amount']
-        self.valor_deducao_fmt = line_ids['valor_deducao_fmt']
-        self.round_total = line_ids['round_total']
-        self.display_name = line_ids['display_name']
+def buscar_ultimo_salario(self):
+    mes = self.mes_do_ano - 1
+    ano = self.ano
+    if mes == 0:
+        mes = 12
+        ano -= 1
 
-
-def buscar_ultimo_salario(
-        pool, cr, uid, mes_da_rescisao, ano, contract_id, context):
-    ultimo_holerite_id = pool['hr.payslip'].search(
-        cr, uid, [
-            ('contract_id', '=', contract_id),
-            ('mes_do_ano', '=', mes_da_rescisao - 1),
+    ultimo_holerite_id = self.env['hr.payslip'].search(
+        [
+            ('contract_id', '=', self.contract_id.id),
+            ('mes_do_ano', '=', mes),
             ('ano', '=', ano),
             ('tipo_de_folha', '=', 'normal'),
-        ], context=context
+        ]
     )
-    ultimo_holerite = pool['hr.payslip'].browse(cr, uid, ultimo_holerite_id)
-    for line in ultimo_holerite.line_ids:
+    for line in ultimo_holerite_id.line_ids:
         if line.code == "SALARIO":
             return line.total
 
@@ -60,268 +51,44 @@ def buscar_ultimo_salario(
 @api.model
 @py3o_report_extender(
     'l10n_br_hr_payroll_report.report_payslip_py3o_rescisao')
-def payslip_rescisao(pool, cr, uid, local_context, context):
-    companylogo = \
-        pool['hr.payslip'].browse(cr, uid, context[
-            'active_id']).company_id.logo
+def payslip_rescisao(pool, cr, uid, localcontext, context):
+    self = localcontext['objects']
+    companylogo = self.env.user.company_id.logo
     data = {
         'companylogo': companylogo,
         'ultimo_salario':
-            buscar_ultimo_salario(
-                pool, cr, uid, local_context['objects'].mes_do_ano,
-                local_context['objects'].ano,
-                local_context['objects'].contract_id.id, context
-            ),
-        'provento_line': valor_provento(pool, cr, uid, local_context[
-            'objects'], context),
-        'deducao_line': valor_deducao(pool, cr, uid, local_context[
-            'objects'], context),
+            buscar_ultimo_salario(self),
+        'provento_line': popula_valor(self,'PROVENTO'),
+        'deducao_line': popula_valor(self,'DEDUCAO'),
     }
-    local_context.update(data)
+    localcontext.update(data)
 
 
-def valor_provento(pool, cr, uid, objects, context):
-    line_ids = objects.line_ids
-    fields = pool['hr.field.rescission'].search(
-        cr, uid, [], context=context
-    )
-    lines = []
-    campos = []
-    descricao_dict = {}
-    # impede registros repetidos
-    for field in fields:
-        record = pool['hr.field.rescission'].browse(cr, uid, field)
-        if record.codigo not in campos:
-            campos.append(record.codigo)
-            descricao_dict.update({record.codigo: {
-                'descricao': record.descricao}})
-            print descricao_dict[record.codigo]['descricao']
-    # para cada campo
-    for record in campos:
-        line = {'valor_provento': 0.0, 'amount': 0.0}
+def popula_valor(self, tipo):
 
-        # procura linhas que possuem o campo e faz a soma dos seus proventos
-        for rec in line_ids:
-            # cada regra da linha
-            for rule in rec['salary_rule_id']['campo_rescisao']:
-                if rule.codigo == record and rec.category_id.code == \
-                        'PROVENTO':
-                    line['valor_provento'] += rec.valor_provento
-                    line['amount'] += rec.amount
-                    line['round_total'] = rec.round_total
-        try:
-            wd = objects.worked_days_line_ids
-            base_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_BASE')],
-                context=context
-            )
-            base = pool['hr.payslip.worked_days'].browse(cr, uid, base_id)
-            uteis_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_UTEIS')],
-                context=context
-            )
-            uteis = pool['hr.payslip.worked_days'].browse(cr, uid, uteis_id)
-            ferias_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'FERIAS')],
-                context=context
-            )
-            ferias = pool['hr.payslip.worked_days'].browse(cr, uid, ferias_id)
-            abono_id = pool['hr.payslip.worked_days'].search(
-                cr, uid,
-                [('id', 'in', wd.ids), ('code', '=', 'ABONO_PECUNIARIO')],
-                context=context
-            )
-            abono = pool['hr.payslip.worked_days'].browse(cr, uid, abono_id)
-            trabalhado_id = pool['hr.payslip.worked_days'].search(
-                cr, uid,
-                [('id', 'in', wd.ids), ('code', '=', 'DIAS_TRABALHADOS')],
-                context=context
-            )
-            trabalhado = pool['hr.payslip.worked_days'].browse(cr, uid,
-                                                               trabalhado_id)
-            peraq = data.formata_data(
-                objects.ferias_vencidas.inicio_aquisitivo) + " a " + \
-                data.formata_data(objects.ferias_vencidas.fim_aquisitivo)
-            if objects.contract_id.wage != 0.0:
-                avos = line['valor_provento'] / (objects.contract_id.wage / 12)
-            else:
-                avos = 0.0
+    # Popula as linhas para impressão
+    coluna = 1
+    linhas = []
+    for registro in self.rescisao_ids:
+        if registro.tipo == tipo:
+            line = {}
+            line['display_name'] = str(registro.codigo) + ' ' + registro.name
+            line['valor_fmt'] = valor.formata_valor(registro.valor)
+            if coluna == 1:
+                objeto1 = item_obj(line)
+                coluna = 2
+            elif coluna == 2:
+                objeto2 = item_obj(line)
+                coluna = 3
+            elif coluna == 3:
+                objeto3 = item_obj(line)
+                linha_obj = linha(objeto1, objeto2, objeto3)
+                linhas.append(linha_obj)
+                coluna = 1
+    objeto_branco = item_obj({'display_name': '', 'valor_fmt': ''})
+    if coluna == 3:
+        linhas.append(linha(objeto1, objeto2, objeto_branco))
+    elif coluna == 2:
+        linhas.append(linha(objeto1, objeto_branco, objeto_branco))
 
-            descricao = Template(descricao_dict[record]['descricao']).render(
-                DIAS_BASE="%d" % (base.number_of_days),
-                DIAS_UTEIS="%d" % (uteis.number_of_days),
-                FERIAS="%d" % (ferias.number_of_days),
-                ABONO_PECUNIARIO="%d" % (abono.number_of_days),
-                DIAS_TRABALHADOS="%d" % (trabalhado.number_of_days),
-                PERIODO_FERIAS_VENCIDAS=peraq,
-                AVOS="%d" % (int(avos)))
-            print descricao
-        except:
-            # FIXME
-            raise exceptions.Warning(
-                _("Confira as variaveis do campo de rescisao %d" % record))
-
-        line['display_name'] = str(record) + " " + descricao
-        line['campo'] = record
-        if line.get('valor_provento'):
-            line['valor_provento_fmt'] = valor.formata_valor(
-                line['valor_provento'])
-            obj = provento_obj(line)
-            lines.append(obj)
-    if len(lines) != 0:
-        lines = sorted(lines, key=lambda t: t.campo)
-
-    table_lines = []
-    for it in range(0, len(lines), 3):
-        if it + 2 > len(lines):
-            line1 = {}
-            line1['campo'] = ''
-            line1['valor_provento_fmt'] = ''
-            line1['amount'] = ''
-            line1['round_total'] = ''
-            line1['display_name'] = ''
-            obj1 = provento_obj(line1)
-            line2 = {}
-            line2['campo'] = ''
-            line2['valor_provento_fmt'] = ''
-            line2['amount'] = ''
-            line2['round_total'] = ''
-            line2['display_name'] = ''
-            obj2 = provento_obj(line2)
-            line_obj = linha(lines[it], obj1, obj2)
-        elif it + 3 > len(lines):
-            line1 = {}
-            line1['campo'] = ''
-            line1['valor_provento_fmt'] = ''
-            line1['amount'] = ''
-            line1['round_total'] = ''
-            line1['display_name'] = ''
-            obj1 = provento_obj(line1)
-            line_obj = linha(lines[it], lines[it + 1], obj1)
-        else:
-            line_obj = linha(lines[it], lines[it + 1], lines[it + 2])
-        table_lines.append(line_obj)
-    return table_lines
-
-
-def valor_deducao(pool, cr, uid, objects, context):
-    line_ids = objects.line_ids
-    fields = pool['hr.field.rescission'].search(
-        cr, uid, [], context=context
-    )
-    lines = []
-    campos = []
-    descricao_dict = {}
-    # impede registros repetidos
-    for field in fields:
-        record = pool['hr.field.rescission'].browse(cr, uid, field)
-        if record.codigo not in campos:
-            campos.append(record.codigo)
-            descricao_dict.update({record.codigo: {
-                'descricao': record.descricao}})
-    # para cada campo
-    for record in campos:
-        line = {'valor_deducao': 0.0, 'amount': 0.0, 'valor_deducao_fmt': ''}
-
-        # procura linhas que possuem o campo e faz a soma de suas deduções
-        for rec in line_ids:
-            # cada regra da linha
-            for rule in rec['salary_rule_id']['campo_rescisao']:
-                if rule.codigo == record and rec.category_id. \
-                        code not in ['PROVENTO', 'BRUTO', 'REFERENCIA',
-                                     'LIQUIDO', 'FGTS']:
-                    line['amount'] += rec.amount
-                    line['valor_deducao'] += rec.valor_deducao
-                    line['round_total'] = rec.round_total
-        try:
-            wd = objects.worked_days_line_ids
-            base_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_BASE')],
-                context=context
-            )
-            base = pool['hr.payslip.worked_days'].browse(cr, uid, base_id)
-            uteis_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'DIAS_UTEIS')],
-                context=context
-            )
-            uteis = pool['hr.payslip.worked_days'].browse(cr, uid, uteis_id)
-            ferias_id = pool['hr.payslip.worked_days'].search(
-                cr, uid, [('id', 'in', wd.ids), ('code', '=', 'FERIAS')],
-                context=context
-            )
-            ferias = pool['hr.payslip.worked_days'].browse(cr, uid, ferias_id)
-            abono_id = pool['hr.payslip.worked_days'].search(
-                cr, uid,
-                [('id', 'in', wd.ids), ('code', '=', 'ABONO_PECUNIARIO')],
-                context=context
-            )
-            abono = pool['hr.payslip.worked_days'].browse(cr, uid, abono_id)
-            trabalhado_id = pool['hr.payslip.worked_days'].search(
-                cr, uid,
-                [('id', 'in', wd.ids), ('code', '=', 'DIAS_TRABALHADOS')],
-                context=context
-            )
-            trabalhado = pool['hr.payslip.worked_days'].browse(cr, uid,
-                                                               trabalhado_id)
-            peraq = data.formata_data(
-                objects.ferias_vencidas.inicio_aquisitivo) + " a " + \
-                data.formata_data(objects.ferias_vencidas.fim_aquisitivo)
-            if objects.contract_id.wage != 0.0:
-                avos = line['valor_deducao'] / (objects.contract_id.wage / 12)
-            else:
-                avos = 0.0
-
-            descricao = Template(descricao_dict[record]['descricao']).render(
-                DIAS_BASE=base.number_of_days,
-                DIAS_UTEIS=uteis.number_of_days,
-                FERIAS=ferias.number_of_days,
-                ABONO_PECUNIARIO=abono.number_of_days,
-                DIAS_TRABALHADOS=trabalhado.number_of_days,
-                PERIODO_FERIAS_VENCIDAS=peraq,
-                AVOS=int(avos))
-            print descricao
-        except:
-            # FIXME
-            raise exceptions.Warning(
-                _("Confira as variaveis do campo de rescisao %d" % record))
-        line['display_name'] = str(record) + " " + descricao
-        line['campo'] = record
-        if line.get('valor_deducao', False):
-            line['valor_deducao_fmt'] = valor.formata_valor(
-                line['valor_deducao'])
-            obj = deducao_obj(line)
-            lines.append(obj)
-    if len(lines) != 0:
-        lines = sorted(lines, key=lambda t: t.campo)
-
-    table_lines = []
-    for it in range(0, len(lines), 3):
-        if it + 2 > len(lines):
-            line1 = {}
-            line1['campo'] = ''
-            line1['valor_deducao_fmt'] = ''
-            line1['amount'] = ''
-            line1['round_total'] = ''
-            line1['display_name'] = ''
-            obj1 = deducao_obj(line1)
-            line2 = {}
-            line2['campo'] = ''
-            line2['valor_deducao_fmt'] = ''
-            line2['amount'] = ''
-            line2['round_total'] = ''
-            line2['display_name'] = ''
-            obj2 = deducao_obj(line2)
-            line_obj = linha(lines[it], obj1, obj2)
-        elif it + 3 > len(lines):
-            line1 = {}
-            line1['campo'] = ''
-            line1['valor_deducao_fmt'] = ''
-            line1['amount'] = ''
-            line1['round_total'] = ''
-            line1['display_name'] = ''
-            obj1 = deducao_obj(line1)
-            line_obj = linha(lines[it], lines[it + 1], obj1)
-        else:
-            line_obj = linha(lines[it], lines[it + 1], lines[it + 2])
-        table_lines.append(line_obj)
-    return table_lines
+    return linhas
