@@ -20,14 +20,27 @@
                     <sheet>
                         <group>
                             <field name="codigo"/>
-                            <field name="descricao" string="descrição"/>
+                            <field name="descricao"/>
                             <field name="variaveis"/>
-                            <field name="rule" invisible="1"/>
+                            <field name="rule" readonly="1"/>
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
+
+        <act_window id="action_field_rescission"
+                    name="Campos de Rescisão"
+                    res_model="hr.field.rescission"
+                    view_mode="tree,form"
+        />
+        <menuitem id="menu_field_rescission"
+                  name="Campos de Rescisão"
+                  action="action_field_rescission"
+                  groups="base.group_hr_user"
+                  parent="hr_payroll.payroll_configure"
+                  sequence="200"
+        />
 
     </data>
 </openerp>

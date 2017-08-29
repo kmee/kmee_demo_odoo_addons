@@ -5,8 +5,8 @@ from openerp import models, fields
 class HrSalaryRule(models.Model):
     _inherit = 'hr.salary.rule'
 
-    campo_rescisao = fields.One2many(
+    campo_rescisao = fields.Many2one(
         comodel_name='hr.field.rescission',
         inverse_name='rule',
-        string='Campo da Rescisão',
+        string=u'Código da Rescisão',
     )
