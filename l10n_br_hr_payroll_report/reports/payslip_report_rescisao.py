@@ -59,7 +59,7 @@ def payslip_rescisao(pool, cr, uid, localcontext, context):
         'ultimo_salario':
             buscar_ultimo_salario(self),
         'provento_line': popula_valor(self,'PROVENTO'),
-        'deducao_line': popula_valor(self,'DEDUCAO'),
+        'deducao_line': popula_valor(self,['DEDUCAO','INSS']),
     }
     localcontext.update(data)
 
@@ -70,9 +70,9 @@ def popula_valor(self, tipo):
     coluna = 1
     linhas = []
     for registro in self.rescisao_ids:
-        if registro.tipo == tipo:
+        if registro.tipo in tipo:
             line = {}
-            line['display_name'] = str(registro.codigo) + ' ' + registro.name
+            line['display_name'] = str(registro.codigo_fmt) + ' ' + registro.name
             line['valor_fmt'] = valor.formata_valor(registro.valor)
             if coluna == 1:
                 objeto1 = item_obj(line)
