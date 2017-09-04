@@ -6,7 +6,7 @@
             <field name="model">hr.field.rescission</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="codigo" string="codigo"/>
+                    <field name="codigo_fmt" string="codigo"/>
                     <field name="descricao" string="descrição"/>
                 </tree>
             </field>
@@ -20,6 +20,7 @@
                     <sheet>
                         <group>
                             <field name="codigo"/>
+                            <field name="codigo_fmt"/>
                             <field name="descricao"/>
                             <field name="variaveis"/>
                             <field name="rule" readonly="1"/>
