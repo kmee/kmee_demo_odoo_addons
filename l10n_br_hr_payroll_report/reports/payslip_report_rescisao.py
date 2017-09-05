@@ -58,8 +58,8 @@ def payslip_rescisao(pool, cr, uid, localcontext, context):
         'companylogo': companylogo,
         'ultimo_salario':
             buscar_ultimo_salario(self),
-        'provento_line': popula_valor(self,'PROVENTO'),
-        'deducao_line': popula_valor(self,['DEDUCAO','INSS']),
+        'provento_line': popula_valor(self, 'PROVENTO'),
+        'deducao_line': popula_valor(self, ['DEDUCAO', 'INSS', 'IRPF']),
     }
     localcontext.update(data)
 
