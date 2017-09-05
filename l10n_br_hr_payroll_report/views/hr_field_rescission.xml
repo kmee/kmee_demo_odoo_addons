@@ -20,7 +20,6 @@
                     <sheet>
                         <group>
                             <field name="codigo"/>
-                            <field name="codigo_fmt"/>
                             <field name="descricao"/>
                             <field name="variaveis"/>
                             <field name="rule" readonly="1"/>
