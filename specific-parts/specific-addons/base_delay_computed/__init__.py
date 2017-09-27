@@ -7,7 +7,7 @@ import pprint
 
 from logging import getLogger
 
-from openerp import api, models
+from openerp import models
 # from openerp.addons.base.ir import ir_model
 
 
@@ -27,7 +27,7 @@ class patch_into(object):
         self.target = target
 
     def __call__(self, method):
-        _log.info("patching %s into %s", method.func_name, self.target)
+        _log.debug("patching %s into %s", method.func_name, self.target)
         if getattr(self.target, method.func_name, None) is None:
             # regular patching without origin
             setattr(self.target, method.func_name, method)
@@ -65,8 +65,8 @@ def delay_store_compute(self, delay_map):
 
     yield self
 
-    _log.critical("Recomputing the delayed:\n%s",
-                  pprint.pformat(context[DELAYED_KEY]))
+    _log.debug("Recomputing the delayed:\n%s",
+               pprint.pformat(context[DELAYED_KEY]))
     # the next block of lines adapted from inside BaseModel._write()
     done = {}
     env.recompute_old.extend(context[DELAYED_KEY])
@@ -122,6 +122,7 @@ def _store_get_values(self, cr, uid, ids, fields, context):
         )
         # return the non-delayed now and save the delayed in context for later
         if now_fields:
+            _log.debug("Not delaying:%s", now_fields)
             result.append((priority, store_model, store_ids, now_fields))
         if later_fields:
             delayed = (priority, store_model, store_ids, later_fields)
