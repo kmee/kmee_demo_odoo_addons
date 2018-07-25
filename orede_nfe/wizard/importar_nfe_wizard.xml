@@ -11,7 +11,6 @@
         <field name="arch" type="xml">
             <form string="NFe" version="7.0">
                 <group>
-                    <field name="caminho" required="1" string="Caminho"/>
                     <field name="arquivo_nfe" widget="many2many_binary"
                            string="Arquivos"/>
                 </group>
