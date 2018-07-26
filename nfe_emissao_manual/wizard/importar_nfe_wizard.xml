@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2018 KMEE INFORMATICA LTDA
+    License AGPL-3 or later (http://www.gnu.org/licenses/agpl)
+-->
+<openerp>
+    <data>
+    <record id="importar_nfe_wizard_form" model="ir.ui.view">
+        <field name="name">importar.nfe.wizard.form</field>
+        <field name="model">importar.nfe.wizard</field>
+        <field name="arch" type="xml">
+            <form string="NFe" version="7.0">
+                <group>
+                    <field name="status" invisible="1"/>
+                    <field name="arquivo_nfe" widget="many2many_binary"
+                           string="Arquivos" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+                    <field name="notas_nao_processadas" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
+                    <field name="notas_processadas" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
+                </group>
+            </form>
+            <footer>
+            <button string="Importar" name="importar_nfe" type="object"
+                    class="oe_highlight" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+            <button string="Cancel" special="cancel" type="object"
+                    class="oe_link" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+            <button string="OK" special="cancel" type="object"
+                    class="oe_highlight" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
+            </footer>
+        </field>
+    </record>
+
+        <record id="action_importar_nfe_wizard" model="ir.actions.act_window">
+        <field name="name">Importar NFe</field>
+        <field name="res_model">importar.nfe.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="importar_nfe_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_processamento_nfe" name="Importar NFes"
+              parent="l10n_br_account.menu_l10n_br_account_fiscal"
+              action="action_importar_nfe_wizard" sequence="99"/>
+
+    </data>
+</openerp>
+
