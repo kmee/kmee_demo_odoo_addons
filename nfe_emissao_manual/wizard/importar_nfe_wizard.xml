@@ -45,9 +45,9 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_processamento_nfe" name="Importar NFes"
-              parent="l10n_br_account.menu_l10n_br_account_fiscal"
-              action="action_importar_nfe_wizard" sequence="99"/>
+    <menuitem id="menu_processar_nfe" name="Importar NFes"
+              parent="nfe_attach.menu_l10n_br_account_processamento_periodico"
+              action="action_importacao_nfe_wizard" sequence="99"/>
 
     </data>
 </openerp>
