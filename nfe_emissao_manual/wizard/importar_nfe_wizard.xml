@@ -47,7 +47,7 @@
 
     <menuitem id="menu_processar_nfe" name="Importar NFes"
               parent="nfe_attach.menu_l10n_br_account_processamento_periodico"
-              action="action_importacao_nfe_wizard" sequence="99"/>
+              action="action_importar_nfe_wizard" sequence="99"/>
 
     </data>
 </openerp>
