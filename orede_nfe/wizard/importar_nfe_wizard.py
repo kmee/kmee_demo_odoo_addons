@@ -26,10 +26,30 @@ class ImportarNFe(models.TransientModel):
         help='Arquivos com extensão .xml, .zip ou .whl',
     )
 
+    status = fields.Boolean(
+        'Status do Wizard',
+        default=False,
+    )
+
+    notas_nao_processadas = fields.Char(
+        'Número das faturas não processadas',
+        readonly=True,
+        help='As notas não foram processadas porque o documento de origem'
+             '(fatura) referente a elas não foi encontrado.',
+    )
+
+    notas_processadas = fields.Char(
+        'Número das faturas processadas',
+        readonly=True,
+        help='As faturas foram processadas.',
+    )
+
     def importar_nfe(self, cr, uid, ids, context=None):
 
         arquivos = self.browse(cr, uid, ids, context)[0]
         data = []
+        nao_processado = ""
+        processado = ""
 
         for arq in arquivos.arquivo_nfe:
             # tratamento caso o arquivo seja um zip
@@ -140,12 +160,23 @@ class ImportarNFe(models.TransientModel):
                         'nfe_access_key': protNFe["nfe_access_key"]
                     })
 
-            else:
-                raise UserError(
-                    "Documento de origem ao qual o arquivo de NFe igual "
-                    "a %d "
-                    "nao foi encontrado" % (
-                        nfe_obj.NFe.infNFe.ide.nNF.valor))
+                    processado += str(
+                        nfe_obj.NFe.infNFe.ide.nNF.valor) + " "
 
-        return True
+            else:
+                nao_processado += str(nfe_obj.NFe.infNFe.ide.nNF.valor) + " "
+
+        arquivos.notas_nao_processadas = nao_processado
+        arquivos.notas_processadas = processado
+        arquivos.status = True
+        return {
+            'context': arquivos.env.context,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'importar.nfe.wizard',
+            'res_id': arquivos.id,
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
 

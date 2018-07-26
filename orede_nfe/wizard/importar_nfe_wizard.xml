@@ -11,14 +11,26 @@
         <field name="arch" type="xml">
             <form string="NFe" version="7.0">
                 <group>
+                    <field name="status" invisible="1"/>
                     <field name="arquivo_nfe" widget="many2many_binary"
-                           string="Arquivos"/>
+                           string="Arquivos" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+                    <field name="notas_nao_processadas" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
+                    <field name="notas_processadas" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
                 </group>
             </form>
             <footer>
             <button string="Importar" name="importar_nfe" type="object"
-                    class="oe_highlight"/> or
-            <button string="Cancel" special="cancel" type="object" class="oe_link"/>
+                    class="oe_highlight" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+            <button string="Cancel" special="cancel" type="object"
+                    class="oe_link" attrs="{'invisible': [('status',
+                           '=', True)]}"/>
+            <button string="OK" special="cancel" type="object"
+                    class="oe_highlight" attrs="{'invisible': [('status',
+                           '=', False)]}"/>
             </footer>
         </field>
     </record>
@@ -38,3 +50,4 @@
 
     </data>
 </openerp>
+
