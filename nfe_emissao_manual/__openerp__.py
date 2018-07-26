@@ -10,6 +10,7 @@
     'author': 'KMEE INFORMATICA',
     'website': 'www.kmee.com.br',
     'depends': [
+        'l10n_br_account_product',
     ],
     'data': [
         'wizard/importar_nfe_wizard.xml',
