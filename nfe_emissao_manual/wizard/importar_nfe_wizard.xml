@@ -20,18 +20,19 @@
                     <field name="notas_processadas" attrs="{'invisible': [('status',
                            '=', False)]}"/>
                 </group>
+            
+                <footer>
+                <button string="Importar" name="importar_nfe" type="object"
+                        class="oe_highlight" attrs="{'invisible': [('status',
+                               '=', True)]}"/>
+                <button string="Cancel" special="cancel" type="object"
+                        class="oe_link" attrs="{'invisible': [('status',
+                               '=', True)]}"/>
+                <button string="OK" special="cancel" type="object"
+                        class="oe_highlight" attrs="{'invisible': [('status',
+                               '=', False)]}"/>
+                </footer>
             </form>
-            <footer>
-            <button string="Importar" name="importar_nfe" type="object"
-                    class="oe_highlight" attrs="{'invisible': [('status',
-                           '=', True)]}"/>
-            <button string="Cancel" special="cancel" type="object"
-                    class="oe_link" attrs="{'invisible': [('status',
-                           '=', True)]}"/>
-            <button string="OK" special="cancel" type="object"
-                    class="oe_highlight" attrs="{'invisible': [('status',
-                           '=', False)]}"/>
-            </footer>
         </field>
     </record>
 
