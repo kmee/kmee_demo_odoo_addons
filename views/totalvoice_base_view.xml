@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- totalvoice.message -->
+    <record model="ir.ui.view" id="totalvoice_message_tree">
+        <field name="name">totalvoice.message.tree</field>
+        <field name="model">totalvoice.message</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="TotalVoice_Message_Tree">
+                <field name="message_date" />
+                <field name="message_origin" />
+                <field name="message" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="totalvoice_message_form">
+        <field name="name">totalvoice.message.form</field>
+        <field name="model">totalvoice.message</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="TotalVoice_Message_Form">
+                <sheet>
+                    <group col="4">
+                        <field name="sms_id" colspan="2" />
+                        <field name="message_date" colspan="2" />
+                        <field name="message" colspan="4" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- totalvoice.voice -->
+    <record model="ir.ui.view" id="totalvoice_form">
+        <field name="name">totalvoice.form</field>
+        <field name="model">totalvoice.base</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="TotalVoice">
+            <header>
+                <button name="send_sms" type="object" String="Send SMS"
+                        class="oe_highlight" icon="fa-commenting-o" confirm="Are you sure want to send an SMS"
+                        attrs="{'invisible':[('state','in',('sent', 'done', 'waiting'))]}"
+                        help="This button will send an SMS " />
+
+                <button name="get_sms_status" type="object" String="Get SMS Status"
+                        class="oe_highlight" icon="fa-commenting-o"
+                        attrs="{'invisible':[('state','not in',('sent', 'done', 'waiting'))]}"
+                        help="This button will get an SMS Status" />
+
+                <field name="state" widget="statusbar"/>
+
+            </header>
+            <sheet>
+                <group string="Send SMS" col="4">
+
+                    <group col="4" colspan="2">
+                        <field name="image" widget="image" class="oe_left oe_avatar" nolabel="1"
+                               options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                        <newline/>
+                        <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="auto_resend" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('wait_for_answer','=',False)]}" />
+                        <newline/>
+                        <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="wait_for_answer" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="subject" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                    </group>
+
+                    <newline/>
+
+                    <group col="2" colspan="2" attrs="{'invisible':[('state','=','draft')]}">
+                        <field name="message_date" />
+                        <field name="sms_id" />
+                        <field name="server_message" />
+                    </group>
+
+                    <newline/>
+
+                    <group string="Answers" colspan="2" attrs="{'invisible':[('wait_for_answer','=',False)]}">
+                        <field name="answer_ids" nolabel="1"/>
+                    </group>
+
+                </group>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="totalvoice_tree">
+        <field name="name">totalvoice.tree</field>
+        <field name="model">totalvoice.base</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="TotalVoice_Tree">
+                <field name="partner_id" />
+                <field name="number_to" />
+                <field name="message" />
+                <field name="state" />
+                <field name="message_date" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_totalvoice_base_view">
+        <field name="name">Conversations</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="res_model">totalvoice.base</field>
+    </record>
+
+    <menuitem name="TotalVoice" icon="terp-project" id="TotalVoice" />
+    <menuitem name="Services" parent="TotalVoice" id="TotalVoice_Services" />
+    <menuitem name="SMS" parent="TotalVoice_Services" id="TotalVoice_SMS"
+            action="action_totalvoice_base_view" />
+ </odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!--webhook totalvoice data-->
+        <record model="webhook" id="webhook_totalvoice">
+            <field name="name">totalvoice</field>
+            <field name="python_code_get_event">request.httprequest.headers.get('X-Forwarded-Proto')</field>
+        </record>
+        <!--webhook totalvoice data of remote address-->
+        <record model="webhook.address" id="webhook_address_totalvoice">
+            <field name="name">https://ca78adc1.ngrok.io</field>
+            <field name="webhook_id" ref="webhook_totalvoice"/>
+        </record>
+
+    </data>
+</openerp>

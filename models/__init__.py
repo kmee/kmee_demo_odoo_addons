@@ -1,0 +1,1 @@
+from . import totalvoice_odoo
