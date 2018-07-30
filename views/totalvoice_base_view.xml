@@ -104,10 +104,80 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="totalvoice_kanban">
+        <field name="name">Kanban</field>
+        <field name="model">totalvoice.base</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" default_order="message_date"
+                    class="o_kanban_small_column">
+                <field name="partner_id"/>
+                <field name="number_to" />
+                <field name="image"/>
+                <field name="state"/>
+                <field name="message_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_vignette oe_semantic_html_override">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a type="open">
+                                            <li style="list-style-type: none;">
+                                                Contact Name:
+                                                <strong>
+                                                    <field name="partner_id" />
+                                                </strong>
+                                            </li>
+
+                                            <img height="80" width="90"
+                                                t-att-src="kanban_image('totavoice.base', 'image', record.id.value)"
+                                                class="oe_kanban_image" />
+                                                <li style="list-style-type: none;">
+                                                    Number:
+                                                    <strong>
+                                                        <field name="number_to" style="background-color: #FF8C00;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Status
+                                                    <strong>
+                                                        <field name="state" style="background-color: #FF0000;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Date Time
+                                                    <strong>
+                                                        <field name="message_date" style="background-color: #000000;" />
+                                                    </strong>
+                                                </li>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="totalvoice_search" model="ir.ui.view">
+        <field name="name">totalvoice.search</field>
+        <field name="model">totalvoice.base</field>
+        <field name="arch" type="xml">
+            <search string="Search for Conversations">
+                <field name="partner_id"/>
+                <field name="number_to"/>
+            </search>
+        </field>
+    </record>
+
     <record model="ir.actions.act_window" id="action_totalvoice_base_view">
         <field name="name">Conversations</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,kanban</field>
         <field name="res_model">totalvoice.base</field>
     </record>
 
