@@ -100,10 +100,10 @@ class TotalVoiceBase(models.Model):
         ondelete='cascade',
     )
 
-    answer_ids = fields.One2many(
+    message_ids = fields.One2many(
         comodel_name='totalvoice.message',
         inverse_name='coversation_id',
-        string='Contact Answers',
+        string='Conversation Messages',
         readonly=True,
         invisible=True,
     )
@@ -215,15 +215,15 @@ class TotalVoiceBase(models.Model):
             else:
                 record.active_sms_id = data.get('id')
 
-                new_message = {
-                    'message_date': fields.Datetime.now(),
-                    'sms_id': data.get('id'),
-                    'message': send_message,
-                    'coversation_id': record.id,
-                    'message_origin': 'sent',
-                }
+            new_message = {
+                'message_date': fields.Datetime.now(),
+                'sms_id': data.get('id'),
+                'message': send_message,
+                'coversation_id': record.id,
+                'message_origin': 'sent',
+            }
 
-                self.env['totalvoice.message'].create(new_message)
+            self.env['totalvoice.message'].create(new_message)
             return True
 
     @api.multi
@@ -240,7 +240,7 @@ class TotalVoiceBase(models.Model):
 
             if answers:
                 for answer in answers:
-                    if answer['id'] in record.answer_ids.mapped('sms_id'):
+                    if answer['id'] in record.message_ids.mapped('sms_id'):
                         continue
                     new_answer = {
                         'message_date': datetime.strptime(

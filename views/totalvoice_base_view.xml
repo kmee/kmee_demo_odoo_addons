@@ -42,12 +42,12 @@
             <header>
                 <button name="send_sms" type="object" String="Send SMS"
                         class="oe_highlight" icon="fa-commenting-o" confirm="Are you sure want to send an SMS"
-                        attrs="{'invisible':[('state','in',('sent', 'done', 'waiting'))]}"
+                        attrs="{'invisible':[('state','in',('done', 'waiting'))]}"
                         help="This button will send an SMS " />
 
                 <button name="get_sms_status" type="object" String="Get SMS Status"
                         class="oe_highlight" icon="fa-commenting-o"
-                        attrs="{'invisible':[('state','not in',('sent', 'done', 'waiting'))]}"
+                        attrs="{'invisible':[('state','not in',('done', 'waiting'))]}"
                         help="This button will get an SMS Status" />
 
                 <field name="state" widget="statusbar"/>
@@ -65,7 +65,7 @@
                         <newline/>
                         <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <field name="wait_for_answer" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
-                        <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('state','in',('done', 'waiting'))]}" />
                         <field name="subject" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                     </group>
 
@@ -79,8 +79,8 @@
 
                     <newline/>
 
-                    <group string="Answers" colspan="2" attrs="{'invisible':[('wait_for_answer','=',False)]}">
-                        <field name="answer_ids" nolabel="1"/>
+                    <group string="messages" colspan="2" attrs="{'invisible':[('wait_for_answer','=',False)]}">
+                        <field name="message_ids" nolabel="1"/>
                     </group>
 
                 </group>
