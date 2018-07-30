@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import datetime
 
 from totalvoice.cliente import Cliente
@@ -23,7 +23,7 @@ class WebHook(models.Model):
         # You will have all request data in
         # variable: self.env.request
         return self.totalvoice_id.get_sms_status(
-            received_message=[self.env.request.jsonrequest])
+            received_message=self.env.request.jsonrequest)
 
 
 
@@ -33,14 +33,14 @@ class TotalVoiceMessage(models.Model):
     sms_id = fields.Integer(
         string='SMS ID',
         readonly=True,
-        help="SMS ID provided by Total Voice's server"
+        help=_("SMS ID provided by Total Voice's server"),
     )
 
     active_sms_id = fields.Integer(
         string='SMS ID',
         readonly=True,
         invisible=True,
-        help="Active SMS ID waiting for answers"
+        help=_("Active SMS ID waiting for answers"),
     )
 
     coversation_id = fields.Many2one(
@@ -136,7 +136,7 @@ class TotalVoiceBase(models.Model):
         string='Phone',
         related='partner_id.mobile',
         readonly=True,
-        help="Contact's number",
+        help=_("Contact's number"),
     )
 
     number_to_raw = fields.Char(
@@ -161,20 +161,26 @@ class TotalVoiceBase(models.Model):
 
     @api.depends('number_to')
     def _number_to_raw(self):
+        """
+        Remove any characters other then numbers from partner's phone number
+        """
         self.number_to_raw = re.sub('\D', '', self.number_to)
 
     @api.multi
-    def send_sms(self, env=False, message=False, wait=True):
+    def send_sms(self, env=False, custom_message=False, wait=True):
         """
         Send an SMS to the selected res_partner
         :param message: If this isn't None, then the SMS sent will be added
         in the conversation as a reply to the user's last answer
         :param wait: Should this message wait for new answers?
+        :return: True if send is OK, False if it's not OK
         """
         for record in self:
 
-            send_message = message or record.message
+            send_message = custom_message or record.message
             wait_for_answer = wait and record.wait_for_answer
+
+            # Sends the SMS
             response = client.sms.enviar(
                 record.number_to_raw, send_message,
                 resposta_usuario=wait_for_answer
@@ -183,6 +189,7 @@ class TotalVoiceBase(models.Model):
             response = json.loads(response)
             data = response.get('dados')
 
+            # If this conversation isn't waiting for an answer
             if not wait_for_answer:
                 record.state = 'done'
             else:
@@ -190,15 +197,15 @@ class TotalVoiceBase(models.Model):
 
             # if this function is being called for the first time in this
             # conversation
-            if not message:
+            if not custom_message:
 
                 record.server_message = 'Motivo: ' + \
-                                        str(response.get('motivo')) + ' - ' + \
-                                        response.get('mensagem')
+                                        str(response.get('motivo')) + \
+                                        ' - ' + response.get('mensagem')
 
                 if not response.get('sucesso'):
                     record.state = 'failed'
-                    return
+                    return False
 
                 record.sms_id = record.active_sms_id = data.get('id')
 
@@ -217,12 +224,16 @@ class TotalVoiceBase(models.Model):
                 }
 
                 self.env['totalvoice.message'].create(new_message)
+            return True
 
     @api.multi
     def get_sms_status(self, env=False, received_message=False):
+        """
+        :param received_message: Message received by the Webhook
+        """
         for record in self:
 
-            answers = received_message or \
+            answers = (received_message and [received_message]) or \
                       json.loads(
                           client.sms.get_by_id(str(record.active_sms_id))).\
                           get('dados').get('respostas')
@@ -245,28 +256,40 @@ class TotalVoiceBase(models.Model):
                     self.review_sms_answer(answer_id)
 
     def review_sms_answer(self, answer):
+        """
+        Handles the received message.
+        :param answer: Received message
+        """
         if not answer.message:
             return
-        func = str(self.subject) + '_' + str(answer.message)
+        func = self.subject + '_' + answer.message
         try:
             eval('self.%s()' % func)
         except Exception:
             new_message = 'Opcao selecionada invalida. Tente novamente. ' + \
                           self.message
-            if self.auto_resend:
-                self.send_sms(message=new_message, wait=True)
+
+            self.send_automatically_answer(message=new_message, wait=True)
 
         finally:
             return
 
+    def send_automatically_answer(self, message=False, wait=False):
+        """
+        Sends an automatic response depending on the user's previous response
+        :param message: Message to be sent
+        :param wait: Should the conversation wait for new answers?
+        :return: True if send is OK, False if it's not OK
+        """
+        # It only sends the response if the variable 'auto_resend' is true
+        if self.auto_resend:
+            return self.send_sms(custom_message=message, wait=wait)
+        return False
+
     def assign_task_0(self):
-        if not self.auto_resend:
-            return
         new_message = "Opcao Selecionada: 0. Voce NAO foi designado a tarefa."
-        return self.send_sms(message=new_message, wait=False)
+        return self.send_automatically_answer(message=new_message, wait=False)
 
     def assign_task_1(self):
-        if not self.auto_resend:
-            return
         new_message = "Opcao Selecionada: 1. Voce foi designado a tarefa."
-        return self.send_sms(message=new_message, wait=False)
+        return self.send_automatically_answer(message=new_message, wait=False)
