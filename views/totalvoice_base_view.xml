@@ -181,8 +181,8 @@
         <field name="res_model">totalvoice.base</field>
     </record>
 
-    <menuitem name="TotalVoice" icon="terp-project" id="TotalVoice" />
-    <menuitem name="Services" parent="TotalVoice" id="TotalVoice_Services" />
+    <menuitem name="TotalVoice" icon="terp-project" id="TotalVoice_Menu" />
+    <menuitem name="Services" parent="TotalVoice_Menu" id="TotalVoice_Services" />
     <menuitem name="SMS" parent="TotalVoice_Services" id="TotalVoice_SMS"
             action="action_totalvoice_base_view" />
  </odoo>

@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_totalvoice_config_settings" model="ir.ui.view">
+        <field name="name">TotalVoice Configuration</field>
+        <field name="model">totalvoice.api.config</field>
+        <field name="arch" type="xml">
+            <form string="TotalVoice Configuration"
+                  class="oe_form_configuration">
+                <sheet>
+                    <div>
+                        <button string="Save" type="object" name="execute" class="oe_highlight" />
+                        or
+                        <button string="Cancel" type="object" name="cancel" class="oe_link" />
+                    </div>
+                    <group string="TotalVoice API Settings">
+                        <field name="api_key" />
+                        <field name="api_url" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_totalvoice_configuration" model="ir.actions.act_window">
+        <field name="name">TotalVoice Configuration</field>
+        <field name="res_model">totalvoice.api.config</field>
+        <field name="priority" eval="50" />
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <menuitem
+        id="menu_totalvoice_configuration"
+        name="Configuration"
+        parent="totalvoice_odoo.TotalVoice_Menu"
+        action="action_totalvoice_configuration"
+    />
+
+</odoo>

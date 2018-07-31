@@ -7,7 +7,6 @@ from totalvoice.cliente import Cliente
 import json
 import re
 
-client = Cliente("49c31c417f21915f1ced29182c5dea56", 'api.totalvoice.com.br')
 date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
@@ -181,9 +180,10 @@ class TotalVoiceBase(models.Model):
             wait_for_answer = wait and record.wait_for_answer
 
             # Sends the SMS
-            response = client.sms.enviar(
-                record.number_to_raw, send_message,
-                resposta_usuario=wait_for_answer
+            response = \
+                self.env['totalvoice.api.config'].get_client().sms.enviar(
+                    record.number_to_raw, send_message,
+                    resposta_usuario=wait_for_answer
             )
 
             response = json.loads(response)
@@ -235,8 +235,9 @@ class TotalVoiceBase(models.Model):
 
             answers = (received_message and [received_message]) or \
                       json.loads(
-                          client.sms.get_by_id(str(record.active_sms_id))).\
-                          get('dados').get('respostas')
+                          self.env['totalvoice.api.config'].get_client()
+                              .sms.get_by_id(str(record.active_sms_id)))\
+                          .get('dados').get('respostas')
 
             if answers:
                 for answer in answers:
