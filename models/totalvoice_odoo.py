@@ -256,6 +256,18 @@ class TotalVoiceBase(models.Model):
                         self.env['totalvoice.message'].create(new_answer)
                     self.review_sms_answer(answer_id)
 
+    def resend_message(self, message=False, wait=False):
+        """
+        Sends an automatic response depending on the user's previous response
+        :param message: Message to be sent
+        :param wait: Should the conversation wait for new answers?
+        :return: True if send is OK, False if it's not OK
+        """
+        # It only sends the response if the variable 'auto_resend' is true
+        if self.auto_resend:
+            return self.send_sms(custom_message=message, wait=wait)
+        return False
+
     def review_sms_answer(self, answer):
         """
         Handles the received message.
@@ -270,27 +282,15 @@ class TotalVoiceBase(models.Model):
             new_message = 'Opcao selecionada invalida. Tente novamente. ' + \
                           self.message
 
-            self.send_automatically_answer(message=new_message, wait=True)
+            self.resend_message(message=new_message, wait=True)
 
         finally:
             return
 
-    def send_automatically_answer(self, message=False, wait=False):
-        """
-        Sends an automatic response depending on the user's previous response
-        :param message: Message to be sent
-        :param wait: Should the conversation wait for new answers?
-        :return: True if send is OK, False if it's not OK
-        """
-        # It only sends the response if the variable 'auto_resend' is true
-        if self.auto_resend:
-            return self.send_sms(custom_message=message, wait=wait)
-        return False
-
     def assign_task_0(self):
         new_message = "Opcao Selecionada: 0. Voce NAO foi designado a tarefa."
-        return self.send_automatically_answer(message=new_message, wait=False)
+        return self.resend_message(message=new_message, wait=False)
 
     def assign_task_1(self):
         new_message = "Opcao Selecionada: 1. Voce foi designado a tarefa."
-        return self.send_automatically_answer(message=new_message, wait=False)
+        return self.resend_message(message=new_message, wait=False)
