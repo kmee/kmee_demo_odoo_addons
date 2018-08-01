@@ -11,6 +11,7 @@
                 <field name="message_date" />
                 <field name="message_origin" />
                 <field name="message" />
+                <field name="server_message" />
             </tree>
         </field>
     </record>
@@ -26,6 +27,7 @@
                         <field name="sms_id" colspan="2" />
                         <field name="message_date" colspan="2" />
                         <field name="message" colspan="4" />
+                        <field name="server_message" />
                     </group>
                 </sheet>
             </form>
@@ -74,12 +76,11 @@
                     <group col="2" colspan="2" attrs="{'invisible':[('state','=','draft')]}">
                         <field name="message_date" />
                         <field name="sms_id" />
-                        <field name="server_message" />
                     </group>
 
                     <newline/>
 
-                    <group string="messages" colspan="2" attrs="{'invisible':[('wait_for_answer','=',False)]}">
+                    <group string="Message" colspan="2">
                         <field name="message_ids" nolabel="1"/>
                     </group>
 
