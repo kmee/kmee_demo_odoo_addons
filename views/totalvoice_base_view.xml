@@ -171,6 +171,15 @@
             <search string="Search for Conversations">
                 <field name="partner_id"/>
                 <field name="number_to"/>
+                <separator string="State"/>
+                <filter string="Draft" name="state_filter" domain="[('state','=','draft')]"/>
+                <filter string="Waiting" name="state_filter" domain="[('state','=','waiting')]"/>
+                <filter string="Done" name="state_filter" domain="[('state','=','done')]"/>
+                <filter string="Failed" name="state_filter" domain="[('state','=','failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Partner" name="partner_group" context="{'group_by':'partner_id'}"/>
+                    <filter string="State" name="state_group" context="{'group_by':'state'}"/>
+                </group>
             </search>
         </field>
     </record>
