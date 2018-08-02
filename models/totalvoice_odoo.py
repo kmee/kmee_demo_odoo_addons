@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api, _
 from datetime import datetime
+from odoo.exceptions import UserError
 
 import json
 import re
@@ -147,6 +148,14 @@ class TotalVoiceBase(models.Model):
         string='Auto-Resend',
         default=True,
     )
+
+    @api.multi
+    def write(self, vals):
+        if self.env.args[2].get('params').get('view_type') == 'kanban' and \
+                'state' in vals:
+            raise UserError(_("You can't move this card"))
+
+        return super(TotalVoiceBase, self).write(vals)
 
     @api.depends('number_to')
     def _number_to_raw(self):
