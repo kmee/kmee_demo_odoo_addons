@@ -110,7 +110,7 @@
         <field name="model">totalvoice.base</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" default_order="message_date"
-                    class="o_kanban_small_column">
+                    class="o_kanban_small_column" group_draggable="false">
                 <field name="partner_id"/>
                 <field name="number_to" />
                 <field name="image"/>
@@ -187,7 +187,7 @@
     <record model="ir.actions.act_window" id="action_totalvoice_base_view">
         <field name="name">Conversations</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="res_model">totalvoice.base</field>
     </record>
 
