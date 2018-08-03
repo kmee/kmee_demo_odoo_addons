@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-30 13:30+0000\n"
-"PO-Revision-Date: 2018-07-30 13:30+0000\n"
+"POT-Creation-Date: 2018-08-03 18:29+0000\n"
+"PO-Revision-Date: 2018-08-03 18:29+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,17 +16,22 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:43
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_key
+msgid "API-KEY"
+msgstr "API-KEY"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_url
+msgid "API-URL"
+msgstr "API-URL"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:42
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_active_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_active_sms_id
 #, python-format
 msgid "Active SMS ID waiting for answers"
 msgstr "ID de SMS ativo esperando por respostas"
-
-#. module: totalvoice_odoo
-#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
-msgid "Answers"
-msgstr "Respostas"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -41,7 +46,22 @@ msgstr "Atribuir uma Tarefa"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_auto_resend
 msgid "Auto-Resend"
-msgstr "Reenviar Automático"
+msgstr "Reenviar Automaticamente"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: totalvoice_odoo
+#: selection:totalvoice.base,subject:0
+msgid "Cancel an Assigned Task"
+msgstr "Cancelar uma Tarefa atribuída"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.menu,name:totalvoice_odoo.menu_totalvoice_configuration
+msgid "Configuration"
+msgstr "Configuração"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_partner_id
@@ -49,21 +69,26 @@ msgid "Contact"
 msgstr "Contato"
 
 #. module: totalvoice_odoo
-#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_answer_ids
-msgid "Contact Answers"
-msgstr "Respostas do Contato"
-
-#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_image
 msgid "Contact Avatar"
 msgstr "Avatar do Contato"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:139
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_kanban
+msgid "Contact Name:"
+msgstr "Nome do Contato:"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:141
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_number_to
 #, python-format
 msgid "Contact's number"
 msgstr "Número do Contato"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_message_ids
+msgid "Conversation Messages"
+msgstr "Mensagens da Conversa"
 
 #. module: totalvoice_odoo
 #: model:ir.actions.act_window,name:totalvoice_odoo.action_totalvoice_base_view
@@ -71,66 +96,91 @@ msgid "Conversations"
 msgstr "Conversas"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_create_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_create_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_create_uid
 msgid "Created by"
 msgstr "Criado por"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_create_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_create_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_create_date
 msgid "Created on"
 msgstr "Criado em"
 
 #. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_kanban
+msgid "Date Time"
+msgstr "Data da Mensagem"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_display_name
 msgid "Display Name"
 msgstr "Nome para Exibição"
 
 #. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 #: selection:totalvoice.base,state:0
 msgid "Done"
 msgstr "Confirmado"
 
 #. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 #: selection:totalvoice.base,state:0
 msgid "Draft"
 msgstr "Rascunho"
 
 #. module: totalvoice_odoo
+#: selection:totalvoice.message,message_origin:0
+msgid "Error"
+msgstr "Erro"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 #: selection:totalvoice.base,state:0
 msgid "Failed"
 msgstr "Falha"
 
 #. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
+msgid "Group By"
+msgstr "Agrupar Por"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_id
 msgid "ID"
 msgstr "ID"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config___last_update
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base___last_update
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message___last_update
 msgid "Last Modified on"
 msgstr "Última Modificação em"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_write_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_write_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_write_uid
 msgid "Last Updated by"
-msgstr "Última atualização por"
+msgstr "Última Atualização por"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_write_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_write_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_write_date
 msgid "Last Updated on"
-msgstr "Última atualização em"
+msgstr "Última Atualização em"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_image_medium
 msgid "Medium-sized image"
-msgstr "Imagem de tamanho Médio"
+msgstr "Imagem de Tamanho Médio"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_image_medium
@@ -140,6 +190,7 @@ msgstr "Imagem média deste contato. Ela é automaticamente redimensionada como 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_message
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_message
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
 msgid "Message"
 msgstr "Mensagem"
 
@@ -158,7 +209,17 @@ msgstr "Origem da Mensagem"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_number_to_raw
 msgid "Number to raw"
-msgstr "Número sem caracteres"
+msgstr "Número sem Caracteres"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_kanban
+msgid "Number:"
+msgstr "Número:"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
+msgid "Partner"
+msgstr "Parceiro"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_number_to
@@ -184,12 +245,22 @@ msgid "SMS ID"
 msgstr "SMS ID"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:36
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:35
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_sms_id
 #, python-format
 msgid "SMS ID provided by Total Voice's server"
 msgstr "ID de SMS fornecido pelo servidor TotalVoice"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "Save"
+msgstr "Salvar"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
+msgid "Search for Conversations"
+msgstr "Pesquisar por Conversas"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -203,6 +274,7 @@ msgstr "Enviado"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_server_message
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_server_message
 msgid "Server Message"
 msgstr "Mensagem do Servidor"
 
@@ -219,12 +291,18 @@ msgstr "Imagem pequena"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_image_small
 msgid "Small-sized image of this contact. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
-msgstr "Imagem em tamannho reduzido do contato. O tamanho da imagem será automaticamente ajustado para 64x64px, mantendo-se as proporções da imagem original. Utilize esse campo em lugares onde uma pequena imagem for necessária."
+msgstr "Imagem em tamanho reduzido do contato. O tamanho da imagem será automaticamente ajustado para 64x64px, mantendo-se as proporções da imagem original. Utilize esse campo em lugares onde uma pequena imagem for necessária."
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_state
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 msgid "State"
 msgstr "Estado"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_kanban
+msgid "Status"
+msgstr "Situação"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_subject
@@ -247,10 +325,21 @@ msgid "This field holds the image used as avatar for this contact, limited to 10
 msgstr "Esta área contém a imagem usada como avatar para este contato, limitado a 1024x1024px."
 
 #. module: totalvoice_odoo
-#: model:ir.ui.menu,name:totalvoice_odoo.TotalVoice
+#: model:ir.ui.menu,name:totalvoice_odoo.TotalVoice_Menu
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
 msgid "TotalVoice"
 msgstr "TotalVoice"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "TotalVoice API Settings"
+msgstr "Configurações da API TotalVoice"
+
+#. module: totalvoice_odoo
+#: model:ir.actions.act_window,name:totalvoice_odoo.action_totalvoice_configuration
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "TotalVoice Configuration"
+msgstr "Configuração TotalVoice"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_coversation_id
@@ -274,14 +363,14 @@ msgid "TotalVoice_Tree"
 msgstr "TotalVoice_Tree"
 
 #. module: totalvoice_odoo
-#: model:ir.model.fields,field_description:totalvoice_odoo.field_webhook_totalvoice_id
-msgid "Totalvoice id"
-msgstr "Totalvoice id"
-
-#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_wait_for_answer
 msgid "Wait for answer"
 msgstr "Esperar por Resposta"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
+msgid "Waiting"
+msgstr "Aguardando"
 
 #. module: totalvoice_odoo
 #: selection:totalvoice.base,state:0
@@ -289,14 +378,25 @@ msgid "Waiting Answer"
 msgstr "Esperando Resposta"
 
 #. module: totalvoice_odoo
-#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_webhook_id
-msgid "Webhook"
-msgstr "Webhook"
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:171
+#, python-format
+msgid "You can't move this card"
+msgstr "Você não pode mover este card"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_message_id
 msgid "message_id"
 msgstr "message_id"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "or"
+msgstr "ou"
+
+#. module: totalvoice_odoo
+#: model:ir.model,name:totalvoice_odoo.model_totalvoice_api_config
+msgid "totalvoice.api.config"
+msgstr "totalvoice.api.config"
 
 #. module: totalvoice_odoo
 #: model:ir.model,name:totalvoice_odoo.model_totalvoice_base
@@ -312,4 +412,3 @@ msgstr "totalvoice.message"
 #: model:ir.model,name:totalvoice_odoo.model_webhook
 msgid "webhook"
 msgstr "webhook"
-
