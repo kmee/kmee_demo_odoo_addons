@@ -26,7 +26,7 @@
 	    <record model="ir.ui.view" id="view_5acts_crmlead_form2">
 	        <field name="name">5_acts.crmlead.form2</field>
 	        <field name="model">crm.lead</field>
-	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_case_form_view_leads1" />
+	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_leads_form" />
 	        <field name="type">form</field>
 	        <field name="arch" type="xml">       
 				<xpath expr="//field[@name='state_id']" position="attributes">
@@ -34,13 +34,13 @@
 				</xpath>
 				<xpath expr="//field[@name='l10n_br_city_id']" position="attributes">
 					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
-				</xpath>
+				</xpath> 
 	        </field>
-	    </record>
-	    <record model="ir.ui.view" id="view_5acts_crmlead_form3">
+	    </record> 
+	   <record model="ir.ui.view" id="view_5acts_crmlead_form3">
 	        <field name="name">5_acts.crmlead.form3</field>
 	        <field name="model">crm.lead</field>
-	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_case_form_view_oppor1" />
+	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_opportunities_form" />
 	        <field name="type">form</field>
 	        <field name="arch" type="xml">       
 				<xpath expr="//field[@name='state_id']" position="attributes">
