@@ -15,6 +15,11 @@
                         <field name="api_key" />
                         <field name="api_url" />
                     </group>
+
+                    <group string="Account Information">
+                        <field name="api_balance" />
+                    </group>
+
                 </sheet>
             </form>
         </field>
