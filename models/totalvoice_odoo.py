@@ -14,7 +14,7 @@ class WebHook(models.Model):
     _inherit = 'webhook'
 
     @api.one
-    def run_totalvoice_https(self):
+    def run_totalvoice_totalvoice(self):
         # You will have all request data in
         # variable: self.env.request
         sms_id = self.env.request.jsonrequest.get('sms_id')

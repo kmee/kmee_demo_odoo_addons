@@ -5,7 +5,7 @@
         <!--webhook totalvoice data-->
         <record model="webhook" id="webhook_totalvoice">
             <field name="name">totalvoice</field>
-            <field name="python_code_get_event">request.httprequest.headers.get('X-Forwarded-Proto')</field>
+            <field name="python_code_get_event">request.httprequest.environ.get('PATH_INFO').replace('/webhook/','')</field>
         </record>
         <!--webhook totalvoice data of remote address-->
         <record model="webhook.address" id="webhook_address_totalvoice">
