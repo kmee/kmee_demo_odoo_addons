@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Views -->
+    <record id="view_wizard_register_number_form" model="ir.ui.view">
+        <field name="name">view.wizard.register.number.form</field>
+        <field name="model">wizard.register.number</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Registering a new TotalVoice Number">
+                <group col="4">
+                    <field name="partner_id" attrs="{'required': True}" />
+                    <field name="number" attrs="{'required': True}" />
+                    <newline/>
+                    <field name="activation_code" />
+                    <newline/>
+                    <field name="server_message" attrs="{'invisible': [('server_message', '=', False)]}"/>
+                    <newline/>
+                </group>
+
+                <footer>
+                    <button name="action_register_number" class="btn-primary"
+                            string="Register Number" type="object" />
+                    <button name="action_confirm_number_code" class="oe_highlight"
+                            string="Send Activation Code" type="object" />
+                    <button special="cancel" string="Cancel"
+                            class="oe_link oe_inline"
+                            type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- totalvoice.message -->
+    <record model="ir.ui.view" id="totalvoice_message_tree">
+        <field name="name">totalvoice.message.tree</field>
+        <field name="model">totalvoice.message</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="TotalVoice_Message_Tree">
+                <field name="message_date" />
+                <field name="message_origin" />
+                <field name="message" />
+                <field name="server_message" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="totalvoice_message_form">
+        <field name="name">totalvoice.message.form</field>
+        <field name="model">totalvoice.message</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="TotalVoice_Message_Form">
+                <sheet>
+                    <group col="4">
+                        <field name="sms_id" colspan="2" />
+                        <field name="message_date" colspan="2" />
+                        <field name="message" colspan="4" />
+                        <field name="server_message" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- totalvoice.voice -->
+    <record model="ir.ui.view" id="totalvoice_form">
+        <field name="name">totalvoice.form</field>
+        <field name="model">totalvoice.base</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="TotalVoice">
+            <header>
+                <button name="send_sms" type="object" String="Send SMS"
+                        class="oe_highlight" icon="fa-commenting-o" confirm="Are you sure want to send an SMS"
+                        attrs="{'invisible':[('state','in',('done', 'waiting'))]}"
+                        help="This button will send an SMS " />
+
+                <button name="get_sms_status" type="object" String="Get SMS Status"
+                        class="oe_highlight" icon="fa-commenting-o"
+                        attrs="{'invisible':[('state','not in',('done', 'waiting'))]}"
+                        help="This button will get an SMS Status" />
+
+                <field name="state" widget="statusbar"/>
+
+            </header>
+            <sheet>
+                <group string="Send SMS" col="4">
+
+                    <group col="4" colspan="2">
+                        <field name="image" widget="image" class="oe_left oe_avatar" nolabel="1"
+                               options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                        <newline/>
+                        <button string="Register Contact's Number"
+                                type="object" name="action_register_number"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('number_to', '!=', False)]}"/>
+                        <newline/>
+                        <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="auto_resend" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('wait_for_answer','=',False)]}" />
+                        <newline/>
+                        <field name="number_to_raw" attrs="{'invisible': True}" />
+                        <newline/>
+                        <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="wait_for_answer" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('state','in',('done', 'waiting'))]}" />
+                        <field name="subject" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                    </group>
+
+                    <newline/>
+
+                    <group col="2" colspan="2" attrs="{'invisible':[('state','=','draft')]}">
+                        <field name="message_date" />
+                        <field name="sms_id" />
+                    </group>
+
+                    <newline/>
+
+                    <group string="Message" colspan="2">
+                        <field name="message_ids" nolabel="1"/>
+                    </group>
+
+                </group>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="totalvoice_tree">
+        <field name="name">totalvoice.tree</field>
+        <field name="model">totalvoice.base</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="TotalVoice_Tree">
+                <field name="partner_id" />
+                <field name="number_to" />
+                <field name="number_to_raw" attrs="{'invisible': True}" />
+                <field name="message" />
+                <field name="state" />
+                <field name="message_date" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="totalvoice_kanban">
+        <field name="name">Kanban</field>
+        <field name="model">totalvoice.base</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" default_order="message_date"
+                    class="o_kanban_small_column" group_draggable="false">
+                <field name="partner_id"/>
+                <field name="number_to" />
+                <field name="image"/>
+                <field name="state"/>
+                <field name="message_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_vignette oe_semantic_html_override">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a type="open">
+                                            <li style="list-style-type: none;">
+                                                Contact Name:
+                                                <strong>
+                                                    <field name="partner_id" />
+                                                </strong>
+                                            </li>
+
+                                            <img height="80" width="90"
+                                                t-att-src="kanban_image('totavoice.base', 'image', record.id.value)"
+                                                class="oe_kanban_image" />
+                                                <li style="list-style-type: none;">
+                                                    Number:
+                                                    <strong>
+                                                        <field name="number_to" style="background-color: #FF8C00;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Status
+                                                    <strong>
+                                                        <field name="state" style="background-color: #FF0000;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Date Time
+                                                    <strong>
+                                                        <field name="message_date" style="background-color: #000000;" />
+                                                    </strong>
+                                                </li>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="totalvoice_search" model="ir.ui.view">
+        <field name="name">totalvoice.search</field>
+        <field name="model">totalvoice.base</field>
+        <field name="arch" type="xml">
+            <search string="Search for Conversations">
+                <field name="partner_id"/>
+                <field name="number_to"/>
+                <separator string="State"/>
+                <filter string="Draft" name="state_filter" domain="[('state','=','draft')]"/>
+                <filter string="Waiting" name="state_filter" domain="[('state','=','waiting')]"/>
+                <filter string="Done" name="state_filter" domain="[('state','=','done')]"/>
+                <filter string="Failed" name="state_filter" domain="[('state','=','failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Partner" name="partner_group" context="{'group_by':'partner_id'}"/>
+                    <filter string="State" name="state_group" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_ view_wizard_register_number">
+        <field name="name">Register Number</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="res_model">wizard.register.number</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_totalvoice_base_view">
+        <field name="name">Conversations</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="res_model">totalvoice.base</field>
+    </record>
+
+    <menuitem name="TotalVoice" icon="terp-project" id="TotalVoice_Menu" web_icon="totalvoice_odoo,static/description/icon.png"/>
+    <menuitem name="Services" parent="TotalVoice_Menu" id="TotalVoice_Services" />
+    <menuitem name="SMS" parent="TotalVoice_Services" id="TotalVoice_SMS"
+            action="action_totalvoice_base_view" />
+ </odoo>
