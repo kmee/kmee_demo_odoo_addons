@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
 
         <!--webhook totalvoice data-->
         <record model="webhook" id="webhook_totalvoice">
@@ -9,7 +9,7 @@
         </record>
         <!--webhook totalvoice data of remote address-->
         <record model="webhook.address" id="webhook_address_totalvoice">
-            <field name="name">http://fa1b686f.ngrok.io</field>
+            <field name="name">https://www.yourcompany.com</field>
             <field name="webhook_id" ref="webhook_totalvoice"/>
         </record>
 
