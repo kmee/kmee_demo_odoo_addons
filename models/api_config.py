@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 from totalvoice.cliente import Cliente
 
 import json
@@ -32,8 +33,13 @@ class ApiConfig(models.TransientModel):
         res = super(ApiConfig, self).default_get(fields)
 
         # api_balance
-        res['api_balance'] = json.loads(self.get_client().minha_conta.
-                                        get_saldo()).get('dados').get('saldo')
+        try:
+            res['api_balance'] = json.loads(
+                self.get_client().minha_conta
+                    .get_saldo()).get('dados', _raise=False).get('saldo')
+        except Exception:
+            res['api_balance'] = 0
+
         self.env['ir.config_parameter'].\
             set_param('api_balance', str(res['api_balance']))
 
@@ -59,12 +65,19 @@ class ApiConfig(models.TransientModel):
         conf.set_param('api_registered_partner_ids',
                        str(self.api_registered_partner_ids.ids))
 
-    def get_client(self):
+    def get_client(self, _raise=True):
         """
         :return: The Totalvoice Client Object
         """
-        return Cliente(self.env['ir.config_parameter'].get_param('api_key'),
-                       self.env['ir.config_parameter'].get_param('api_url'),)
+        try:
+            client = \
+                Cliente(self.env['ir.config_parameter'].get_param('api_key'),
+                        self.env['ir.config_parameter'].get_param('api_url'),)
+        except Exception:
+            if _raise:
+                raise UserError(_('API-KEY and API-URL not configured'))
+
+        return client
 
 
     def verify_registered_number(self, number):
@@ -74,6 +87,7 @@ class ApiConfig(models.TransientModel):
         :param number: number to be verified
         :return: True if the number is already registered. Else if it's not
         """
+
         bina_report = json.loads(self.get_client().bina.get_relatorio())
 
         already_registered = \

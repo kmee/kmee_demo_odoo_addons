@@ -21,6 +21,12 @@ msgid "API-KEY"
 msgstr "API-KEY"
 
 #. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/api_config.py:78
+#, python-format
+msgid "API-KEY and API-URL not configured"
+msgstr "API-KEY ou API-URL não configurado"
+
+#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_url
 msgid "API-URL"
 msgstr "API-URL"
