@@ -178,7 +178,8 @@ class TotalVoiceBase(models.Model):
         """
         Remove any characters other then numbers from partner's phone number
         """
-        self.number_to_raw = re.sub('\D', '', self.number_to or '')
+        for record in self:
+            record.number_to_raw = re.sub('\D', '', record.number_to or '')
 
     @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None):

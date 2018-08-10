@@ -8,11 +8,7 @@
     'license': 'AGPL-3',
     'installable': True,
     'application': False,
-    'images': ['images/main_screenshot.png'],
     'depends': ['base', 'webhook'],
-    'external_dependencies': {
-        'python': ['totalvoice'],
-    },
     'data': [
          'views/totalvoice_base_view.xml',
          'views/totalvoice_webhook.xml',
