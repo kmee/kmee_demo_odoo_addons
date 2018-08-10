@@ -1,4 +1,18 @@
 <odoo>
+
+    <!-- res.partner -->
+    <record id="view_registered_partner_tree" model="ir.ui.view">
+        <field name="name">view.registered.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="ponto_base.simple_partner_tree" />
+        <field name="arch" type="xml">
+            <field name="phone" position="after">
+                <field name="totalvoice_number"></field>
+            </field>
+        </field>
+    </record>
+
+    <!-- Config View -->
     <record id="view_totalvoice_config_settings" model="ir.ui.view">
         <field name="name">TotalVoice Configuration</field>
         <field name="model">totalvoice.api.config</field>
@@ -20,6 +34,9 @@
                         <field name="api_balance" />
                     </group>
 
+                    <group string="Registered Contacts (Partners)">
+                        <field name="api_registered_partner_ids" nolabel="1"/>
+                    </group>
                 </sheet>
             </form>
         </field>

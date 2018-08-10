@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Wizard Views -->
+    <record id="view_wizard_register_number_form" model="ir.ui.view">
+        <field name="name">view.wizard.register.number.form</field>
+        <field name="model">wizard.register.number</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Registering a new TotalVoice Number">
+                <group col="4">
+                    <field name="partner_id" attrs="{'required': True}" />
+                    <field name="number" attrs="{'required': True}" />
+                    <newline/>
+                    <field name="activation_code" />
+                    <newline/>
+                    <field name="server_message" attrs="{'invisible': [('server_message', '=', False)]}"/>
+                    <newline/>
+                </group>
+
+                <footer>
+                    <button name="action_register_number" class="btn-primary"
+                            string="Register Number" type="object" />
+                    <button name="action_confirm_number_code" class="oe_highlight"
+                            string="Send Activation Code" type="object" />
+                    <button special="cancel" string="Cancel"
+                            class="oe_link oe_inline"
+                            type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
     <!-- totalvoice.message -->
     <record model="ir.ui.view" id="totalvoice_message_tree">
         <field name="name">totalvoice.message.tree</field>
@@ -62,8 +92,15 @@
                         <field name="image" widget="image" class="oe_left oe_avatar" nolabel="1"
                                options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
                         <newline/>
+                        <button string="Register Contact's Number"
+                                type="object" name="action_register_number"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('number_to', '!=', False)]}"/>
+                        <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <field name="auto_resend" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('wait_for_answer','=',False)]}" />
+                        <newline/>
+                        <field name="number_to_raw" attrs="{'invisible': True}" />
                         <newline/>
                         <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <field name="wait_for_answer" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
@@ -98,6 +135,7 @@
             <tree string="TotalVoice_Tree">
                 <field name="partner_id" />
                 <field name="number_to" />
+                <field name="number_to_raw" attrs="{'invisible': True}" />
                 <field name="message" />
                 <field name="state" />
                 <field name="message_date" />
@@ -182,6 +220,13 @@
                 </group>
             </search>
         </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_ view_wizard_register_number">
+        <field name="name">Register Number</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="res_model">wizard.register.number</field>
     </record>
 
     <record model="ir.actions.act_window" id="action_totalvoice_base_view">

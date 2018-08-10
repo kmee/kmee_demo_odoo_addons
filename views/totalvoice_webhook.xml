@@ -9,7 +9,7 @@
         </record>
         <!--webhook totalvoice data of remote address-->
         <record model="webhook.address" id="webhook_address_totalvoice">
-            <field name="name">https://ca78adc1.ngrok.io</field>
+            <field name="name">http://fa1b686f.ngrok.io</field>
             <field name="webhook_id" ref="webhook_totalvoice"/>
         </record>
 

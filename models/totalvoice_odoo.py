@@ -2,7 +2,7 @@
 
 from odoo import models, fields, api, _
 from datetime import datetime
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 import json
 import re
@@ -135,10 +135,10 @@ class TotalVoiceBase(models.Model):
     )
 
     number_to = fields.Char(
-        string='Phone',
-        related='partner_id.mobile',
+        string='TotalVoice Number',
+        related='partner_id.totalvoice_number',
         readonly=True,
-        help=_("Contact's number"),
+        help=_("Contact's Totalvoice Registered Number"),
     )
 
     number_to_raw = fields.Char(
@@ -190,6 +190,10 @@ class TotalVoiceBase(models.Model):
         :return: True if send is OK, False if it's not OK
         """
         for record in self:
+            if not record.number_to:
+                raise ValidationError(_("The contact you want to send a "
+                                        "message to needs to have a "
+                                        "totalvoice registered phone number"))
 
             send_message = custom_message or record.message
             record.message = send_message
@@ -221,6 +225,15 @@ class TotalVoiceBase(models.Model):
                     'message_origin': 'error',
                     'server_message': server_message
                 }
+
+                # 'Motivo=8' means the number isn't registered at
+                # Totalvoice Configuration. So we need to remove the
+                # partner from the api_registered_partner_ids
+                if response.get('motivo') == 8:
+                    self.env['totalvoice.api.config'].\
+                        remove_partner(self.partner_id)
+                    new_message['server_message'] = \
+                        _('Number not registered on TotalVoice')
 
                 self.env['totalvoice.message'].create(new_message)
 
@@ -316,3 +329,18 @@ class TotalVoiceBase(models.Model):
 
         finally:
             return
+
+    def action_register_number(self):
+        action = {
+            'name': _('Register a New TotalVoice Number'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.register.number',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.partner_id and self.partner_id.id,
+            },
+        }
+
+        return action
