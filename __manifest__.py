@@ -12,6 +12,7 @@
     'data': [
          'views/totalvoice_base_view.xml',
          'views/totalvoice_webhook.xml',
-         'views/totalvoice_config_view.xml'
+         'views/totalvoice_config_view.xml',
+         'security/ir.model.access.csv',
     ],
 }
