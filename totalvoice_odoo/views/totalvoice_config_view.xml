@@ -4,7 +4,6 @@
     <record id="view_registered_partner_tree" model="ir.ui.view">
         <field name="name">view.registered.partner.tree</field>
         <field name="model">res.partner</field>
-        <field eval="5" name="priority"/>
         <field name="arch" type="xml">
             <tree string="Contacts">
                 <field name="display_name" string="Name"/>
