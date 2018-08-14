@@ -36,7 +36,7 @@ class ApiConfig(models.TransientModel):
         try:
             res['api_balance'] = json.loads(
                 self.get_client().minha_conta
-                    .get_saldo()).get('dados', _raise=False).get('saldo')
+                    .get_saldo()).get('dados').get('saldo')
         except Exception:
             res['api_balance'] = 0
 
