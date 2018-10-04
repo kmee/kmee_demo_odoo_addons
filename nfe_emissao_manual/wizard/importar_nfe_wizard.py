@@ -92,10 +92,19 @@ class ImportarNFe(models.TransientModel):
             nfe_obj.set_xml(inv.decode("utf-8"))
 
             # busca o documento ao qual o xml se refere
-            documento_origem = arquivos.env[
-                        'account.invoice'].search([('internal_number', '=',
-                                                    nfe_obj.NFe.infNFe.ide.
-                                                    nNF.valor)])
+            # 1 eh operacaco de saida
+            if nfe_obj.NFe.infNFe.ide.tpNF.valor == 1:
+                documento_origem = arquivos.env['account.invoice'].search([
+                    ('internal_number', '=', nfe_obj.NFe.infNFe.ide.nNF.valor),
+                    ('type', 'in', ('out_invoice', 'out_refund'))
+                ])
+
+            # 2 eh operacao de entrada
+            elif nfe_obj.NFe.infNFe.ide.tpNF.valor == 0:
+                documento_origem = arquivos.env['account.invoice'].search([
+                    ('internal_number', '=', nfe_obj.NFe.infNFe.ide.nNF.valor),
+                    ('type', 'in', ('in_invoice', 'in_refund'))
+                ])
 
             if documento_origem:
                 try:
