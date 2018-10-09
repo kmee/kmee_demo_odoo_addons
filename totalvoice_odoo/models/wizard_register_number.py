@@ -23,12 +23,12 @@ class WizardRegisterNumber(models.TransientModel):
         partner_id = self.partner_id or self.env['res.partner'].browse(
             self.env.context.get('default_partner_id'))
         if partner_id.mobile:
-            mobile = re.sub('\D', '', partner_id.mobile or '')
+            mobile = re.sub('\D', '', partner_id.mobile or '').lstrip('0')
             selection_numbers.append((mobile,
                                       _('Mobile: ') + partner_id.mobile))
 
         if partner_id.phone:
-            phone = re.sub('\D', '', partner_id.phone or '')
+            phone = re.sub('\D', '', partner_id.phone or '').lstrip('0')
             selection_numbers.append((phone, _('Phone: ') + partner_id.phone))
 
         return selection_numbers
@@ -78,8 +78,14 @@ class WizardRegisterNumber(models.TransientModel):
         if already_registered:
             return self.action_already_registered()
         else:
-            totalvoice_api.get_client().bina.enviar(self.number)
-            self.server_message = _('Code sent')
+            send_report = json.loads(totalvoice_api.get_client().bina.enviar(self.number))
+
+            if json.loads(send_report).get("sucesso"):
+                self.server_message = _('Code sent')
+            else:
+                self.server_message = _('Error ') + \
+                                      str(send_report.get('motivo')) + ' - ' +\
+                                      send_report.get('mensagem')
 
         return {
             "type": "ir.actions.do_nothing",
