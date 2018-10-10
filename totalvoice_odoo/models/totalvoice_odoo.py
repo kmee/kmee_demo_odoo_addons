@@ -286,11 +286,16 @@ class TotalVoiceBase(models.Model):
                         [a for a in answers
                          if a['id']
                             not in record.message_ids.mapped('sms_id')]:
+
+                    try:
+                        message_date = datetime.strptime(
+                            answer['data_resposta'],date_format_webhook)
+                    except:
+                        message_date = datetime.strptime(
+                            answer['data_resposta'],date_format)
+
                     new_answer = {
-                        'message_date': datetime.strptime(
-                            answer['data_resposta'],
-                            ((received_message and date_format_webhook)
-                             or date_format)),
+                        'message_date': message_date,
                         'sms_id': answer['id'],
                         'message': answer['resposta'],
                         'coversation_id': record.id,
