@@ -183,7 +183,7 @@ class TotalVoiceBase(models.Model):
                                           ).lstrip('0')
 
     @api.multi
-    def send_sms(self, env=False, custom_message=False, wait=None):
+    def send_sms(self, env=False, custom_message=False, wait=None, multi_sms=True):
         """
         Send an SMS to the selected res_partner
         :param message: If this isn't None, then the SMS sent will be added
@@ -206,7 +206,8 @@ class TotalVoiceBase(models.Model):
             response = \
                 self.env['totalvoice.api.config'].get_client().sms.enviar(
                     record.number_to_raw, send_message,
-                    resposta_usuario=wait_for_answer
+                    resposta_usuario=wait_for_answer,
+                    multi_sms=multi_sms
             )
 
             response = json.loads(response)
