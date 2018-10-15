@@ -250,7 +250,10 @@ class TotalVoiceBase(models.Model):
 
             data = response.get('dados')
 
-            record.active_sms_id = data.get('id')
+            sms_ids = data.get('id')
+            record.active_sms_id = sms_ids \
+                if type(sms_ids) is int \
+                else sms_ids[-1]
 
             record.sms_id = record.sms_id \
                 if record.sms_id \
@@ -258,7 +261,7 @@ class TotalVoiceBase(models.Model):
 
             new_message = {
                 'message_date': fields.Datetime.now(),
-                'sms_id': data.get('id'),
+                'sms_id': record.active_sms_id,
                 'message': send_message,
                 'coversation_id': record.id,
                 'message_origin': 'sent',
