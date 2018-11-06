@@ -85,6 +85,13 @@ class TotalVoiceBase(models.Model):
         'draft',
     ]
 
+    conversation_code = fields.Char(
+        string=_("Conversation Code"),
+        help=_("This code will be used as an ID for identifying answers."),
+        readonly=True,
+        size=3,
+    )
+
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Contact',
@@ -163,6 +170,11 @@ class TotalVoiceBase(models.Model):
     _group_by_full = {
         'state': state_groups,
     }
+
+    _sql_constraints = [
+        ('conversation_code_unique', 'unique (conversation_code)',
+         _("The conversation_code must be unique")),
+    ]
 
     @api.multi
     def write(self, vals):

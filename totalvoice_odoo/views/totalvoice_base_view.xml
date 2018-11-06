@@ -97,6 +97,8 @@
                                 class="oe_highlight"
                                 attrs="{'invisible': [('number_to', '!=', False)]}"/>
                         <newline/>
+                        <field name="conversation_code" />
+                        <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <field name="auto_resend" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('wait_for_answer','=',False)]}" />
                         <newline/>
@@ -149,6 +151,7 @@
         <field name="arch" type="xml">
             <kanban default_group_by="state" default_order="message_date"
                     class="o_kanban_small_column" group_draggable="false">
+                <field name="conversation_code"/>
                 <field name="partner_id"/>
                 <field name="number_to" />
                 <field name="image"/>
@@ -171,6 +174,13 @@
                                             <img height="80" width="90"
                                                 t-att-src="kanban_image('totavoice.base', 'image', record.id.value)"
                                                 class="oe_kanban_image" />
+                                                <li style="list-style-type: none;">
+                                                    Code:
+                                                    <strong>
+                                                        <field name="conversation_code" style="background-color: #FF8C00;" />
+                                                    </strong>
+                                                </li>
+
                                                 <li style="list-style-type: none;">
                                                     Number:
                                                     <strong>
