@@ -10,6 +10,8 @@ import re
 date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
+MAXIMUM_CONVERSATION_CODES = 1000
+
 class WebHook(models.Model):
     _inherit = 'webhook'
 
@@ -194,6 +196,31 @@ class TotalVoiceBase(models.Model):
         for record in self:
             record.number_to_raw = re.sub('\D', '', record.number_to or ''
                                           ).lstrip('0')
+
+    def get_conversation_code(self):
+        """
+        Get the smallest conversation code available based on the existing
+        active conversations.
+        This method also sets the self.conversation_code to the code found
+        :return: the smallest available conversation code
+        """
+
+        smallest_code = False
+
+        active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
+                                   ).mapped('conversation_code')
+
+        smallest_range = range(0, min(int(max(active_codes)) + 2,
+                                      MAXIMUM_CONVERSATION_CODES))
+
+        available_codes = [i for i in smallest_range
+                           if i not in map(int, active_codes)]
+
+        if(len(available_codes) > 0):
+            smallest_code = str(available_codes[0])
+            self.conversation_code = smallest_code
+
+        return smallest_code
 
     @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None, multi_sms=True):
