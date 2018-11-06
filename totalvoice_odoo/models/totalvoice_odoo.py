@@ -78,6 +78,7 @@ class TotalVoiceBase(models.Model):
 
     STATES = [('draft', 'Draft'),
               ('waiting', 'Waiting Answer'),
+              ('timeout', 'Answer Time Out'),
               ('done', 'Done'),
               ('failed', 'Failed')]
 
