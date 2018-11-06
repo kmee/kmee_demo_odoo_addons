@@ -80,7 +80,7 @@ class WizardRegisterNumber(models.TransientModel):
         else:
             send_report = json.loads(totalvoice_api.get_client().bina.enviar(self.number))
 
-            if json.loads(send_report).get("sucesso"):
+            if send_report.get("sucesso"):
                 self.server_message = _('Code sent')
             else:
                 self.server_message = _('Error ') + \
