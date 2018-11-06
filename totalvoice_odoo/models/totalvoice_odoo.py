@@ -242,6 +242,29 @@ class TotalVoiceBase(models.Model):
             wait_for_answer = record.wait_for_answer if wait is None else wait
             record.wait_for_answer = wait_for_answer
 
+            if(record.state not in ['draft', 'waiting']):
+                # Get a new conversation code to this conversation
+                if not self.get_conversation_code():
+                    record.state = 'failed'
+
+                    new_message = {
+                        'message_date': fields.Datetime.now(),
+                        'message': send_message,
+                        'coversation_id': record.id,
+                        'message_origin': 'error',
+                    }
+
+                    new_message['server_message'] = \
+                        _("There's not free conversation_code left for "
+                          "sending this message")
+
+                    self.env['totalvoice.message'].create(new_message)
+
+                    self.cr.commit()
+
+                    raise StandardError(_("There's not free conversation_code "
+                                          "left for sending this message"))
+
             # Sends the SMS
             response = \
                 self.env['totalvoice.api.config'].get_client().sms.enviar(
