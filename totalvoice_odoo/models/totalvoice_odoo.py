@@ -178,11 +178,6 @@ class TotalVoiceBase(models.Model):
         'state': state_groups,
     }
 
-    _sql_constraints = [
-        ('conversation_code_unique', 'unique (conversation_code)',
-         _("The conversation_code must be unique")),
-    ]
-
     @api.multi
     def write(self, vals):
         params = self.env.args[2].get('params')
