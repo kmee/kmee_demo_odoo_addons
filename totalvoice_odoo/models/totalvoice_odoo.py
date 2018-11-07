@@ -88,10 +88,14 @@ class TotalVoiceBase(models.Model):
         'draft',
     ]
 
+    def _get_conversation_code(self):
+        return self.get_conversation_code()
+
     conversation_code = fields.Char(
         string=_("Conversation Code"),
         help=_("This code will be used as an ID for identifying answers."),
         readonly=True,
+        default=_get_conversation_code,
         size=3,
     )
 
@@ -210,15 +214,19 @@ class TotalVoiceBase(models.Model):
         active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
                                    ).mapped('conversation_code')
 
-        smallest_range = range(0, min(int(max(active_codes)) + 2,
+        smallest_range = range(1, min(int(max(active_codes)) + 2,
                                       MAXIMUM_CONVERSATION_CODES))
 
         available_codes = [i for i in smallest_range
                            if i not in map(int, active_codes)]
 
         if(len(available_codes) > 0):
-            smallest_code = str(available_codes[0])
-            self.conversation_code = smallest_code
+            smallest_code = self.conversation_code \
+                if self.conversation_code in available_codes \
+                else str(available_codes[0])
+
+            if self.id:
+                self.conversation_code = smallest_code
 
         return smallest_code
 
