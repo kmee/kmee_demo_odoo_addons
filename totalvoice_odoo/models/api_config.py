@@ -21,6 +21,12 @@ class ApiConfig(models.TransientModel):
         readonly=True,
     )
 
+    timeout = fields.Integer(
+        string='Conversation Time Out',
+        help='The conversation time out for waiting answers (in Hours) !!!',
+        default=8,
+    )
+
     api_registered_partner_ids = fields.Many2many(
         comodel_name='res.partner',
         string='Registered Contacts (Partners)',
@@ -105,6 +111,7 @@ class ApiConfig(models.TransientModel):
             'api_key': conf.get_param('api_key'),
             'api_url': conf.get_param('api_url'),
             'api_server_message': conf.get_param('api_server_message'),
+            'timeout': int(conf.get_param('timeout')),
             'api_balance': float(conf.get_param('api_balance')),
             'api_username': conf.get_param('api_username'),
             'api_login': conf.get_param('api_login'),

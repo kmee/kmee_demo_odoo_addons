@@ -32,6 +32,10 @@
                         <field name="api_url" />
                     </group>
 
+                    <group string="Conversation Settings">
+                        <field name="timeout" />
+                    </group>
+
                     <group string="Account Information">
                         <field name="api_username" />
                         <field name="api_balance" />
