@@ -19,13 +19,52 @@ class WebHook(models.Model):
     def run_totalvoice_totalvoice(self):
         # You will have all request data in
         # variable: self.env.request
-        sms_id = self.env.request.jsonrequest.get('sms_id')
-        conversation_id = \
-            self.env['totalvoice.base'].search([('sms_id', '=', sms_id)])
 
-        return conversation_id.get_sms_status(
-            received_message=self.env.request.jsonrequest)
+        received_message = self.env.request.jsonrequest
+        message = received_message.get('resposta')
 
+        conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
+
+        conversation_id = self.env['totalvoice.base'].search(
+            [('conversation_code', '=', conversation_code),
+             ('state', 'in', ['waiting'])], limit=1
+        )
+
+        if conversation_id:
+            return conversation_id.get_sms_status(
+                received_message=received_message)
+
+        self.send_message_wrong_code(conversation_code)
+
+    def send_message_wrong_code(self, conversation_code):
+        """
+        This method is called if there isn't any active conversation using the
+        code specified in the SMS answer.
+        """
+        
+        # First we'll find the conversation the user tried to answer
+        received_message = self.env.request.jsonrequest
+        sms_id = received_message.get('sms_id')
+
+        conversation_id = self.env['totalvoice.base'].search(
+            [('sms_id', '=', sms_id)]
+        )
+
+        # Getting the res_partner
+        res_partner = conversation_id.partner_id
+
+        # Searching the available conversation_codes for this specific
+        # res_partner
+
+        available_conversation_codes = self.search(
+            [('partner_id', '=', res_partner.id)]
+        ).mapped('conversation_code')
+
+        message = 'Unavailable code received: ' + conversation_code + '.'
+        message += 'Available codes are: ' + \
+                   [code + " " for code in available_conversation_codes]
+
+        conversation_id.send_sms(self, custom_message=message, wait=False)
 
 
 class TotalVoiceMessage(models.Model):
@@ -393,7 +432,8 @@ class TotalVoiceBase(models.Model):
         if not answer.message:
             return
         func_name = re.split(r'[^a-zA-Z\d:]', answer.message)[0]
-        func = self.subject + '_' + func_name
+        # func = self.subject + '_' + func_name
+        func = self.subject
         parameters = answer.message.replace(func_name, '').strip()
         try:
             eval("self.%s(%s)" %
