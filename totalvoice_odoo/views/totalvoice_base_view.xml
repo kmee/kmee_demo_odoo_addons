@@ -74,8 +74,13 @@
             <header>
                 <button name="send_sms" type="object" String="Send SMS"
                         class="oe_highlight" icon="fa-commenting-o" confirm="Are you sure want to send an SMS"
-                        attrs="{'invisible':[('state','in',('done', 'waiting'))]}"
+                        attrs="{'invisible':[('state','in',('waiting', 'timeout', 'done', 'failed'))]}"
                         help="This button will send an SMS " />
+
+                <button name="send_sms" type="object" String="Resend last SMS"
+                        class="oe_highlight" style="background-color:red; text-color:white;" icon="fa-commenting-o" confirm="Are you sure want to Resend the last SMS"
+                        attrs="{'invisible':[('state','in',('draft', 'waiting', 'done'))]}"
+                        help="This button will Resend the Last SMS in the conversation" />
 
                 <button name="get_sms_status" type="object" String="Get SMS Status"
                         class="oe_highlight" icon="fa-commenting-o"
