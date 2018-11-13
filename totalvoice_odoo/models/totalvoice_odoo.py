@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, tools
 from datetime import datetime
+from dateutil import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
 import json
@@ -11,6 +12,7 @@ date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
 MAXIMUM_CONVERSATION_CODES = 1000
+MESSAGE_TIMEOUT_HOURS = tools.config.get('timeout')
 
 class WebHook(models.Model):
     _inherit = 'webhook'
@@ -234,6 +236,45 @@ class TotalVoiceBase(models.Model):
         for record in self:
             record.number_to_raw = re.sub('\D', '', record.number_to or ''
                                           ).lstrip('0')
+
+    @api.model
+    def cron_check_message_timeout(self):
+        """
+        Iterates over all the "Waiting for Answer" messages, updating their
+        states to "Time Out" if necessary
+        """
+        waiting_conversations = self.search([('state', '=', 'waiting')])
+
+        for conversation in waiting_conversations:
+            conversation.update_timeout_state()
+
+    def update_timeout_state(self):
+        """
+        This method updates the conversation state based on the time spent from
+        the message sent to the method call.
+        If this time is greater or equal "MESSAGE_TIMEOUT_HOURS", the new state
+        will be 'waiting'.
+        If the conversation has no active_message, the state will be 'done'
+        :return: Nothing if the conversation has no active_message
+        """
+
+        active_message = self.message_ids.filtered(
+            lambda m: m.sms_id == m.active_sms_id
+        )
+
+        if not active_message:
+            self.state = 'done'
+            return
+
+        now_date = datetime.now()
+        message_date = fields.Datetime.from_string(active_message.message_date)
+
+        delta = relativedelta.relativedelta(now_date, message_date)
+
+        # if the message is older than MESSAGE_TIMEOUT_HOURS
+        if delta.hours >= MESSAGE_TIMEOUT_HOURS:
+            self.state = 'timeout'
+
 
     def get_conversation_code(self):
         """
