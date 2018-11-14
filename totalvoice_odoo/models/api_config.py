@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from totalvoice.cliente import Cliente
 
 import json
+import re
 
 class ApiConfig(models.TransientModel):
     _name = 'totalvoice.api.config'
@@ -79,6 +80,56 @@ class ApiConfig(models.TransientModel):
 
         return client
 
+    def number_to_raw(self, number):
+        """
+        This method cleans an parameter number, removing all its unnecessary
+        characters.
+        :param number: The string number to be cleaned
+        :return: The raw version of the number
+        """
+        raw_number = re.sub('\D', '', number or '').lstrip('0')
+        return raw_number
+
+    def update_registered_partner_numbers(self):
+        """
+        This method updates the registered partner numbers o2m field, including
+        the new numbers that have been added to the TotalVoice Account since
+        the last sync.
+        Old numbers will be removed.
+        Note: If an number is registered but there isn't any partner carrying
+        it, a new partner won't be created with this number.
+        """
+        bina_report = json.loads(self.get_client().bina.get_relatorio())
+
+        # For every number registered in the Totalvoice's system
+        for bina in bina_report.get('dados').get('relatorio'):
+            phone_number = bina.get('numero_telefone')
+
+            # Checking if the phone_number isn't already in the partner list
+            if self.api_registered_partner_ids.filtered(
+                    lambda r: r.totalvoice_number == phone_number):
+                continue
+
+            # Looking for partners containing the phone_number
+
+            partners = self.env['res.partner'].search(['|',
+                                                       ('phone', '!=', False),
+                                                       ('mobile', '!=', False)
+                                                       ]).filtered(
+                lambda r: r.phone and phone_number in [
+                    self.number_to_raw(r.phone),
+                    self.number_to_raw(r.mobile),
+                ]
+            )
+
+            for partner in partners:
+                # Register the partner as a new totalvoice contact
+                self.env['wizard.register.number'].create({
+                    'partner_id': partner.id,
+                    'number': [(phone_number, phone_number)],
+                }).action_register_number()
+
+        return True
 
     def verify_registered_number(self, number):
         """
