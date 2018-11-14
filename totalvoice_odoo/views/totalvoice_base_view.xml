@@ -20,9 +20,9 @@
 
                 <footer>
                     <button name="action_register_number" class="btn-primary"
-                            string="Register Number" type="object" />
-                    <button name="action_confirm_number_code" class="oe_highlight"
                             string="Send Activation Code" type="object" />
+                    <button name="action_confirm_number_code" disabled="True" class="oe_highlight"
+                            string="Validate Activation Code" type="object" />
                     <button special="cancel" string="Cancel"
                             class="oe_link oe_inline"
                             type="object"/>

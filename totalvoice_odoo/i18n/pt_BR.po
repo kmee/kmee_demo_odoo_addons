@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-13 16:37+0000\n"
-"PO-Revision-Date: 2018-11-13 16:37+0000\n"
+"POT-Creation-Date: 2018-11-14 12:58+0000\n"
+"PO-Revision-Date: 2018-11-14 12:58+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -62,6 +62,11 @@ msgstr "Tempo de Resposta Excedido"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
+msgid "Are you sure want to Resend the last SMS"
+msgstr "Tem certeza que quer Reenviar o último SMS"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
 msgid "Are you sure want to send an SMS"
 msgstr "Você tem certeza de que deseja enviar um SMS?"
 
@@ -73,7 +78,7 @@ msgstr "Atribuir uma Tarefa"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_auto_resend
 msgid "Auto-Resend"
-msgstr "Reenvio Automático"
+msgstr "Reenviar Automático"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_balance
@@ -201,7 +206,7 @@ msgstr "Confirmado"
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 #: selection:totalvoice.base,state:0
 msgid "Draft"
-msgstr "Rascunho"
+msgstr "Provisório"
 
 #. module: totalvoice_odoo
 #: selection:totalvoice.message,message_origin:0
@@ -224,7 +229,7 @@ msgstr "Falhou"
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 msgid "Group By"
-msgstr "Agrupar por"
+msgstr "Agrupar Por"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_id
@@ -363,7 +368,6 @@ msgstr "Registrar Número do Contato"
 
 #. module: totalvoice_odoo
 #: model:ir.actions.act_window,name:totalvoice_odoo.action_ view_wizard_register_number
-#: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
 msgid "Register Number"
 msgstr "Registrar Número"
 
@@ -426,7 +430,7 @@ msgstr "Selecione um Número"
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
 msgid "Send Activation Code"
-msgstr "Validar Código de Ativação"
+msgstr "Enviar Código de Ativação"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -458,7 +462,7 @@ msgstr "Imagem pequena"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_image_small
 msgid "Small-sized image of this contact. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
-msgstr "Imagem em tamanho reduzido do contato. O tamanho da imagem será automaticamente ajustado para 64x64px, mantendo-se as proporções da imagem original. Utilize esse campo em lugares onde uma pequena imagem for necessária."
+msgstr "Imagem em tamannho reduzido do contato. O tamanho da imagem será automaticamente ajustado para 64x64px, mantendo-se as proporções da imagem original. Utilize esse campo em lugares onde uma pequena imagem for necessária."
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_state
@@ -499,6 +503,11 @@ msgstr "O número não pôde ser cadastrado. Provavelmente devido a um código d
 #, python-format
 msgid "There's not free conversation_code left for sending this message"
 msgstr "Não existe nenhum código de conversa livre para enviar esta mensagem"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
+msgid "This button will Resend the Last SMS in the conversation"
+msgstr "Este botão irá Reenviar o último SMS na conversa"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -578,6 +587,11 @@ msgstr "TotalVoice_Tree"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_res_users_union_entity_code
 msgid "Union entity code"
 msgstr "Union entity code"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
+msgid "Validate Activation Code"
+msgstr "Validar Código de Ativação"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_wait_for_answer
