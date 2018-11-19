@@ -222,7 +222,7 @@
         </field>
     </record>
 
-    <record model="ir.actions.act_window" id="action_ view_wizard_register_number">
+    <record model="ir.actions.act_window" id="action_view_wizard_register_number">
         <field name="name">Register Number</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
