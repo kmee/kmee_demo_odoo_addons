@@ -36,7 +36,11 @@
                     </group>
 
                     <group string="Registered Contacts (Partners)">
-                        <field name="api_registered_partner_ids"
+                        <group>
+                            <button name="action_register_partner" class="btn-primary"
+                            string="Register Number" type="object" />
+                        </group>
+                            <field name="api_registered_partner_ids"
                                nolabel="1" context="{'tree_view_ref': 'totalvoice_odoo.view_registered_partner_tree'}"/>
                     </group>
                 </sheet>
