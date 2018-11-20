@@ -16,6 +16,8 @@ class ApiConfig(models.TransientModel):
     )
     api_url = fields.Char(
         string='API-URL',
+        default='api.totalvoice.com.br',
+        readonly=True,
     )
 
     api_registered_partner_ids = fields.Many2many(
