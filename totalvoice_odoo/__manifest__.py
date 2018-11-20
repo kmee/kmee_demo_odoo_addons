@@ -13,6 +13,7 @@
          'views/totalvoice_base_view.xml',
          'views/totalvoice_webhook.xml',
          'views/totalvoice_config_view.xml',
+         'views/totalvoice_cron.xml',
          'security/ir.model.access.csv',
          'views/totalvoice_addnumber_view.xml',
     ],

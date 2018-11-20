@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="totalvoice_update_numbers_cron" model="ir.cron">
+            <field name="name">Auto-Update Registered Numbers</field>
+            <field name="active" eval="True" />
+            <field name="interval_number">60</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="model" eval="'totalvoice.api.config'" />
+            <field name="function" eval="'action_update_registered_partner_numbers'" />
+            <field name="priority" eval="5" />
+        </record>
+
+    </data>
+</odoo>

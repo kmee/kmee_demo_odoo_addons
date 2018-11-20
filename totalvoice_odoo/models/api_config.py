@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from totalvoice.cliente import Cliente
 
 import json
+import re
 
 class ApiConfig(models.TransientModel):
     _name = 'totalvoice.api.config'
@@ -28,6 +29,12 @@ class ApiConfig(models.TransientModel):
         readonly=True,
     )
 
+    api_server_message = fields.Char(
+        string='Server Message',
+        default='',
+        readonly=True,
+    )
+
     @api.model
     def default_get(self, fields):
         res = super(ApiConfig, self).default_get(fields)
@@ -43,6 +50,16 @@ class ApiConfig(models.TransientModel):
         self.env['ir.config_parameter'].\
             set_param('api_balance', str(res['api_balance']))
 
+        updated_res_partner_ids = self.update_registered_partner_numbers()
+
+        if updated_res_partner_ids:
+
+            res['api_registered_partner_ids'] = updated_res_partner_ids.ids
+
+            self.env['ir.config_parameter'].set_param(
+                'api_registered_partner_ids',
+                str(res['api_registered_partner_ids']))
+
         return res
 
     @api.model
@@ -51,6 +68,7 @@ class ApiConfig(models.TransientModel):
         return {
             'api_key': conf.get_param('api_key'),
             'api_url': conf.get_param('api_url'),
+            'api_server_message': conf.get_param('api_server_message'),
             'api_balance': float(conf.get_param('api_balance')),
             'api_registered_partner_ids': json.loads(
                 conf.get_param('api_registered_partner_ids') or '[]')
@@ -61,6 +79,9 @@ class ApiConfig(models.TransientModel):
         conf = self.env['ir.config_parameter']
         conf.set_param('api_key', str(self.api_key))
         conf.set_param('api_url', str(self.api_url))
+        conf.set_param('api_server_message', str(
+            self.api_server_message.encode('ascii', 'ignore').decode(
+                'ascii') if self.api_server_message else False))
         conf.set_param('api_balance', str(self.api_balance))
         conf.set_param('api_registered_partner_ids',
                        str(self.api_registered_partner_ids.ids))
@@ -79,6 +100,108 @@ class ApiConfig(models.TransientModel):
 
         return client
 
+    def number_to_raw(self, number):
+        """
+        This method cleans an parameter number, removing all its unnecessary
+        characters.
+        :param number: The string number to be cleaned
+        :return: The raw version of the number
+        """
+        raw_number = re.sub('\D', '', number or '').lstrip('0')
+        return raw_number
+
+    def action_update_registered_partner_numbers(self):
+        """
+        This method updates the registered_partner_numbers
+        """
+
+        updated_res_partner_ids = self.update_registered_partner_numbers()
+
+        if updated_res_partner_ids:
+            updated_res_partner_ids = updated_res_partner_ids.ids
+
+            self.env['ir.config_parameter'].set_param(
+                'api_registered_partner_ids',
+                str(updated_res_partner_ids))
+
+        return True
+
+    def update_registered_partner_numbers(self):
+        """
+        This method returns an updated registered partner numbers o2m field,
+        including the new numbers that have been added to the TotalVoice
+        Account since the last sync and excluding the old numbers not
+        registered anymore.
+        Note: If an number is registered but there isn't any partner carrying
+        it, a new partner won't be created with this number.
+
+        :return: an updated registered partner numbers o2m field
+        """
+
+        # If the user updated the API-KEY
+        if self.api_key:
+            self.env['ir.config_parameter'].set_param('api_key', self.api_key)
+
+        bina_report = json.loads(self.get_client().bina.get_relatorio())
+
+        message = bina_report.get('mensagem')
+
+        if self:
+            self.api_server_message = message
+
+        self.env['ir.config_parameter'].set_param(
+            'api_server_message', message)
+
+        # api_balance
+        api_balance = 0
+        try:
+            api_balance = json.loads(
+                self.get_client().minha_conta.get_saldo()) \
+                .get('dados').get('saldo')
+        except Exception:
+            api_balance = 0
+
+        if self:
+            self.api_balance = api_balance
+
+        self.env['ir.config_parameter']. \
+            set_param('api_balance', str(api_balance))
+
+        if not bina_report.get('dados'):
+            return
+
+        registered_partner_ids = self.env['res.partner'].browse(
+            json.loads(self.env['ir.config_parameter'].
+                       get_param('api_registered_partner_ids') or '[]')
+        )
+
+        new_registered_partner_ids = self.env['res.partner']
+
+        # For every number registered in the Totalvoice's system
+        for bina in bina_report.get('dados').get('relatorio'):
+            phone_number = bina.get('numero_telefone')
+
+            # Looking for partners containing the phone_number
+            partners = self.env['res.partner'].search(['|',
+                                                       ('phone', '!=', False),
+                                                       ('mobile', '!=', False),
+                                                       ]).filtered(
+                lambda r: phone_number in [
+                    self.number_to_raw(r.phone),
+                    self.number_to_raw(r.mobile),
+                ]
+            )
+
+            new_registered_partner_ids += partners
+
+            for partner in partners:
+                self.register_partner(partner, phone_number)
+
+        # Remove the old registered_partners
+        for partner in (registered_partner_ids - new_registered_partner_ids):
+            self.remove_partner(partner)
+
+        return new_registered_partner_ids
 
     def verify_registered_number(self, number):
         """
@@ -113,10 +236,13 @@ class ApiConfig(models.TransientModel):
             if partner.totalvoice_number != number:
                 partner.totalvoice_number = number
 
+            registered_partners += partner
             if partner not in registered_partners:
-                registered_partners += partner
                 self.env['ir.config_parameter'].set_param(
-                    'api_registered_partner_ids', registered_partners.ids)
+                    'api_registered_partner_ids', str(registered_partners.ids))
+            if self:
+                self.api_registered_partner_ids = registered_partners
+
 
     def remove_partner(self, partner):
         """
@@ -128,8 +254,10 @@ class ApiConfig(models.TransientModel):
             browse(self.get_default_values(None).
                    get('api_registered_partner_ids'))
         registered_partners -= partner
+        if self:
+            self.api_registered_partner_ids = registered_partners
         self.env['ir.config_parameter'].set_param(
-            'api_registered_partner_ids', registered_partners.ids)
+            'api_registered_partner_ids', str(registered_partners.ids))
 
     def action_register_partner(self):
         action = {
