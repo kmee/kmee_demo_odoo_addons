@@ -43,7 +43,7 @@ class WebHook(models.Model):
         This method is called if there isn't any active conversation using the
         code specified in the SMS answer.
         """
-        
+
         # First we'll find the conversation the user tried to answer
         received_message = self.env.request.jsonrequest
         sms_id = received_message.get('sms_id')
@@ -52,21 +52,31 @@ class WebHook(models.Model):
             [('sms_id', '=', sms_id)]
         )
 
+        # There isn't a conversation_id for this user
+        if not conversation_id:
+            return
+
         # Getting the res_partner
         res_partner = conversation_id.partner_id
 
         # Searching the available conversation_codes for this specific
         # res_partner
 
-        available_conversation_codes = self.search(
+        available_conversation_codes = conversation_id.search(
             [('partner_id', '=', res_partner.id)]
         ).mapped('conversation_code')
 
-        message = 'Unavailable code received: ' + conversation_code + '.'
+        message = 'Unavailable code received: ' + conversation_code + '. '
         message += 'Available codes are: ' + \
-                   [code + " " for code in available_conversation_codes]
+                   ''.join('%03d' % int(code) + ", "
+                           for code in available_conversation_codes)
 
-        conversation_id.send_sms(self, custom_message=message, wait=False)
+        # Create a new conversation for sending an Code Error message
+        conversation_id = self.env['totalvoice.base'].create({
+            'partner_id': res_partner.id,
+        })
+
+        conversation_id.send_sms(custom_message=message, wait=False)
 
 
 class TotalVoiceMessage(models.Model):
