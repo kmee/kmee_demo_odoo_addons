@@ -130,3 +130,17 @@ class ApiConfig(models.TransientModel):
         registered_partners -= partner
         self.env['ir.config_parameter'].set_param(
             'api_registered_partner_ids', registered_partners.ids)
+
+    def action_register_partner(self):
+        action = {
+            'name': _('Select contact'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.register.partner.number',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'view_id': self.env.ref('totalvoice_odoo.view_partner_form').id,
+            'target': 'new',
+            'context': {},
+        }
+
+        return action

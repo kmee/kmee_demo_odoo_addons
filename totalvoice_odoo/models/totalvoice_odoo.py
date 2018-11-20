@@ -350,7 +350,8 @@ class TotalVoiceBase(models.Model):
             'view_type': 'form',
             'target': 'new',
             'context': {
-                'default_partner_id': self.partner_id and self.partner_id.id,
+                'default_partner_id': self.partner_id and
+                                      self.partner_id.id,
             },
         }
 
