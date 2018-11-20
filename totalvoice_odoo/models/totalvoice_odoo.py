@@ -362,7 +362,7 @@ class TotalVoiceBase(models.Model):
             response = \
                 self.env['totalvoice.api.config'].get_client().sms.enviar(
                     record.number_to_raw, send_message,
-                    resposta_usuario=wait_for_answer,
+                    resposta_usuario=True,
                     multi_sms=multi_sms
             )
 
