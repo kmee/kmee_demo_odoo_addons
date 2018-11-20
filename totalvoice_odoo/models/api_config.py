@@ -4,6 +4,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 from totalvoice.cliente import Cliente
 
+from unicodedata import normalize
 import json
 import re
 
@@ -72,8 +73,12 @@ class ApiConfig(models.TransientModel):
             res['api_login'] = ''
             res['api_phone'] = ''
 
-        self.env['ir.config_parameter']. \
-            set_param('api_username', str(res['api_username']))
+        self.env['ir.config_parameter'].\
+            set_param('api_username',
+                      (normalize('NFKD',
+                                 unicode(self.api_username or '')).
+                       encode('ASCII', 'ignore')))
+
         self.env['ir.config_parameter']. \
             set_param('api_balance', str(res['api_balance']))
         self.env['ir.config_parameter']. \
@@ -113,11 +118,14 @@ class ApiConfig(models.TransientModel):
         conf = self.env['ir.config_parameter']
         conf.set_param('api_key', str(self.api_key))
         conf.set_param('api_url', str(self.api_url))
-        conf.set_param('api_server_message', str(
-            self.api_server_message.encode('ascii', 'ignore').decode(
-                'ascii') if self.api_server_message else False))
+        conf.set_param('api_server_message',
+                       (normalize('NFKD',
+                                  unicode(self.api_server_message or '')).
+                        encode('ASCII', 'ignore')))
         conf.set_param('api_balance', str(self.api_balance))
-        conf.set_param('api_username', str(self.api_username))
+        conf.set_param('api_username',
+                       (normalize('NFKD', unicode(self.api_username or '')).
+                        encode('ASCII', 'ignore')))
         conf.set_param('api_login', str(self.api_login))
         conf.set_param('api_phone', str(self.api_phone))
         conf.set_param('api_registered_partner_ids',
