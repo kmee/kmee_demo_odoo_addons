@@ -40,8 +40,8 @@
                         <group>
                             <button name="action_register_partner" class="btn-primary"
                             string="Register Number" type="object" />
+                            <button string="Update Registered Numbers" type="object" name="action_update_registered_partner_numbers" class="oe_highlight"/>
                         </group>
-                        <button string="Update Registered Numbers" type="object" name="action_update_registered_partner_numbers" class="oe_highlight"/>
                         <newline/>
                         <field name="api_registered_partner_ids"
                                nolabel="1" context="{'tree_view_ref': 'totalvoice_odoo.view_registered_partner_tree'}"/>
