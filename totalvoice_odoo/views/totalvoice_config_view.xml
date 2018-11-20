@@ -33,7 +33,10 @@
                     </group>
 
                     <group string="Account Information">
+                        <field name="api_username" />
                         <field name="api_balance" />
+                        <field name="api_login" />
+                        <field name="api_phone" />
                     </group>
 
                     <group string="Registered Contacts (Partners)">

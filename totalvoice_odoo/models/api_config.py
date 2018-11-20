@@ -26,8 +26,23 @@ class ApiConfig(models.TransientModel):
         readonly=True,
     )
 
+    api_username = fields.Char(
+        string='Name',
+        readonly=True,
+    )
+
     api_balance = fields.Float(
         string='Balance',
+        readonly=True,
+    )
+
+    api_login = fields.Char(
+        string='Email',
+        readonly=True,
+    )
+
+    api_phone = fields.Char(
+        string='Phone',
         readonly=True,
     )
 
@@ -41,16 +56,30 @@ class ApiConfig(models.TransientModel):
     def default_get(self, fields):
         res = super(ApiConfig, self).default_get(fields)
 
-        # api_balance
+        # Account Info
         try:
-            res['api_balance'] = json.loads(
-                self.get_client().minha_conta
-                    .get_saldo()).get('dados').get('saldo')
-        except Exception:
-            res['api_balance'] = 0
+            account_data = json.loads(
+                self.get_client().minha_conta.get_conta()
+            ).get('dados')
 
-        self.env['ir.config_parameter'].\
+            res['api_username'] = account_data.get('nome')
+            res['api_balance'] = account_data.get('saldo')
+            res['api_login'] = account_data.get('login')
+            res['api_phone'] = account_data.get('telefone')
+        except Exception:
+            res['api_username'] = ''
+            res['api_balance'] = 0
+            res['api_login'] = ''
+            res['api_phone'] = ''
+
+        self.env['ir.config_parameter']. \
+            set_param('api_username', str(res['api_username']))
+        self.env['ir.config_parameter']. \
             set_param('api_balance', str(res['api_balance']))
+        self.env['ir.config_parameter']. \
+            set_param('api_login', str(res['api_login']))
+        self.env['ir.config_parameter']. \
+            set_param('api_phone', str(res['api_phone']))
 
         updated_res_partner_ids = self.update_registered_partner_numbers()
 
@@ -72,6 +101,9 @@ class ApiConfig(models.TransientModel):
             'api_url': conf.get_param('api_url'),
             'api_server_message': conf.get_param('api_server_message'),
             'api_balance': float(conf.get_param('api_balance')),
+            'api_username': conf.get_param('api_username'),
+            'api_login': conf.get_param('api_login'),
+            'api_phone': conf.get_param('api_phone'),
             'api_registered_partner_ids': json.loads(
                 conf.get_param('api_registered_partner_ids') or '[]')
         }
@@ -85,6 +117,9 @@ class ApiConfig(models.TransientModel):
             self.api_server_message.encode('ascii', 'ignore').decode(
                 'ascii') if self.api_server_message else False))
         conf.set_param('api_balance', str(self.api_balance))
+        conf.set_param('api_username', str(self.api_username))
+        conf.set_param('api_login', str(self.api_login))
+        conf.set_param('api_phone', str(self.api_phone))
         conf.set_param('api_registered_partner_ids',
                        str(self.api_registered_partner_ids.ids))
 
@@ -144,7 +179,13 @@ class ApiConfig(models.TransientModel):
         if self.api_key:
             self.env['ir.config_parameter'].set_param('api_key', self.api_key)
 
-        bina_report = json.loads(self.get_client().bina.get_relatorio())
+        bina_report = {}
+
+        try:
+            bina_report = json.loads(self.get_client().bina.get_relatorio())
+        except Exception:
+            bina_report['mensagem'] = _('Problem when connecting to the '
+                                        'TotalVoice Server')
 
         message = bina_report.get('mensagem')
 
