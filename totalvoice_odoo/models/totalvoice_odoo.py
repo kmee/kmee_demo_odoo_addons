@@ -268,9 +268,7 @@ class TotalVoiceBase(models.Model):
         :return: Nothing if the conversation has no active_message
         """
 
-        active_message = self.message_ids.filtered(
-            lambda m: m.sms_id == m.active_sms_id
-        )
+        active_message = self.active_sms_id
 
         if not active_message:
             self.state = 'done'
