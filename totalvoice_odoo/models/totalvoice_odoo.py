@@ -18,11 +18,11 @@ class WebHook(models.Model):
     _inherit = 'webhook'
 
     @api.one
-    def run_totalvoice_totalvoice(self):
+    def run_totalvoice_totalvoice(self, json=False):
         # You will have all request data in
         # variable: self.env.request
 
-        received_message = self.env.request.jsonrequest
+        received_message = json or self.env.request.jsonrequest
         message = received_message.get('resposta')
 
         conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
@@ -36,16 +36,17 @@ class WebHook(models.Model):
             return conversation_id.get_sms_status(
                 received_message=received_message)
 
-        self.send_message_wrong_code(conversation_code)
+        self.send_message_wrong_code(conversation_code, received_message)
 
-    def send_message_wrong_code(self, conversation_code):
+    def send_message_wrong_code(self, conversation_code, json):
         """
         This method is called if there isn't any active conversation using the
         code specified in the SMS answer.
         """
 
         # First we'll find the conversation the user tried to answer
-        received_message = self.env.request.jsonrequest
+        received_message = json
+
         sms_id = received_message.get('sms_id')
 
         conversation_id = self.env['totalvoice.base'].search(
@@ -63,7 +64,8 @@ class WebHook(models.Model):
         # res_partner
 
         available_conversation_codes = conversation_id.search(
-            [('partner_id', '=', res_partner.id)]
+            [('partner_id', '=', res_partner.id),
+             ('state', 'in', ['waiting'])]
         ).mapped('conversation_code')
 
         message = 'Unavailable code received: ' + conversation_code + '. '
@@ -446,10 +448,13 @@ class TotalVoiceBase(models.Model):
 
                     try:
                         message_date = datetime.strptime(
-                            answer['data_resposta'],date_format_webhook)
+                            answer['data_resposta'], date_format_webhook)
                     except:
-                        message_date = datetime.strptime(
-                            answer['data_resposta'],date_format)
+                        try:
+                            message_date = datetime.strptime(
+                                answer['data_resposta'], date_format)
+                        except:
+                            message_date = answer['data_resposta']
 
                     new_answer = {
                         'message_date': message_date,
@@ -480,10 +485,17 @@ class TotalVoiceBase(models.Model):
         """
         if not answer.message:
             return
+
+        # Building the function that will be called to handle this message
         func_name = re.split(r'[^a-zA-Z\d:]', answer.message)[0]
         # func = self.subject + '_' + func_name
-        func = self.subject
         parameters = answer.message.replace(func_name, '').strip()
+
+        # If there isn't an subject, the message won't be reviewed
+        func = self.subject
+        if not func:
+            return
+
         try:
             eval("self.%s(%s)" %
                  (func, "'" + parameters + "'" if parameters else ''))

@@ -59,6 +59,21 @@ class ApiConfig(models.TransientModel):
         readonly=True,
     )
 
+    api_test_webhook_message = fields.Char(
+        string='Webhook Test Message',
+        default='010 - Test Message',
+    )
+
+    api_test_webhook_id = fields.Char(
+        string='Webhook Test ID',
+        default='16347',
+    )
+
+    api_test_webhook_sms_id = fields.Char(
+        string='Webhook Test SMS ID',
+        default='133830',
+    )
+
     @api.model
     def default_get(self, fields):
         res = super(ApiConfig, self).default_get(fields)
@@ -330,3 +345,16 @@ class ApiConfig(models.TransientModel):
         }
 
         return action
+
+    def action_test_webhook_message(self):
+        totalvoice_webhook = \
+            self.env['webhook'].search([('name', '=', 'totalvoice')], limit=1)
+
+        json = {
+            "id": self.api_test_webhook_id,
+            "sms_id": self.api_test_webhook_sms_id,
+            "resposta": self.api_test_webhook_message,
+            "data_resposta": fields.Datetime.now(),
+        }
+
+        totalvoice_webhook.run_totalvoice_totalvoice(json=json)

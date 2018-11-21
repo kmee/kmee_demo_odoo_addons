@@ -53,6 +53,14 @@
                         <field name="api_registered_partner_ids"
                                nolabel="1" context="{'tree_view_ref': 'totalvoice_odoo.view_registered_partner_tree'}"/>
                     </group>
+
+                    <group string="Totalvoice Test Webhook" groups="base.group_no_one">
+                        <field name="api_test_webhook_id" />
+                        <field name="api_test_webhook_sms_id" />
+                        <field name="api_test_webhook_message" />
+                        <button name="action_test_webhook_message" class="btn-primary" string="Test Webhook Message" type="object" />
+                    </group>
+
                 </sheet>
             </form>
         </field>
