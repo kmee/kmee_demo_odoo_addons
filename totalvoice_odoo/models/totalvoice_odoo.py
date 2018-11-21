@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api, _, tools
 from datetime import datetime
-from dateutil import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
 import json
@@ -13,6 +12,7 @@ date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
 MAXIMUM_CONVERSATION_CODES = 1000
 MESSAGE_TIMEOUT_HOURS = tools.config.get('timeout')
+
 
 class WebHook(models.Model):
     _inherit = 'webhook'
@@ -277,12 +277,17 @@ class TotalVoiceBase(models.Model):
             return
 
         now_date = datetime.now()
-        message_date = fields.Datetime.from_string(active_message.message_date)
+        active_message_id = self.message_ids.filtered(
+            lambda m: m.sms_id == active_message
+        )
+        message_date = fields.Datetime.from_string(
+            active_message_id.message_date)
 
-        delta = relativedelta.relativedelta(now_date, message_date)
+        delta = (now_date - message_date)
+        hours_passed = delta.total_seconds() // 3600
 
         # if the message is older than MESSAGE_TIMEOUT_HOURS
-        if delta.hours >= MESSAGE_TIMEOUT_HOURS:
+        if hours_passed >= MESSAGE_TIMEOUT_HOURS:
             self.state = 'timeout'
 
 
