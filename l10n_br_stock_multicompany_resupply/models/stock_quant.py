@@ -18,6 +18,7 @@ class StockQuant(models.Model):
         # This is necessary while the PR below is not merged:
         # https://github.com/odoo/odoo/pull/16189
         if location and 'force_company' not in self.env.context:
-            self = self.with_context(force_company=location.company_id.id)
+            if location.company_id.id:
+                self = self.with_context(force_company=location.company_id.id)
         return super(StockQuant, self)._quants_get_order(
             location, product, quantity, domain=domain, orderby=orderby)
