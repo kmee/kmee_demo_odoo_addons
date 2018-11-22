@@ -312,7 +312,7 @@ class TotalVoiceBase(models.Model):
         if(len(available_codes) > 0):
             smallest_code = self.conversation_code \
                 if self.conversation_code in available_codes \
-                else str(available_codes[0])
+                else ''.join('%03d' % available_codes[0])
 
             if self.id:
                 self.conversation_code = smallest_code
