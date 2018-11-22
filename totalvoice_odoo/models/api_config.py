@@ -284,13 +284,17 @@ class ApiConfig(models.TransientModel):
         :return: True if the number is already registered. Else if it's not
         """
 
-        bina_report = json.loads(self.get_client().bina.get_relatorio())
+        try:
+            bina_report = json.loads(self.get_client().bina.get_relatorio())
 
-        already_registered = \
-            any(number == bina.get('numero_telefone')
-                for bina in bina_report.get('dados').get('relatorio'))
+            already_registered = \
+                any(number == bina.get('numero_telefone')
+                    for bina in bina_report.get('dados').get('relatorio'))
 
-        return True if already_registered else False
+            return True if already_registered else False
+
+        except:
+            return True
 
     def register_partner(self, partner, number):
         """
