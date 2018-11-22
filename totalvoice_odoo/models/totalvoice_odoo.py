@@ -445,10 +445,15 @@ class TotalVoiceBase(models.Model):
                           get('dados').get('respostas')
 
             if answers:
-                for answer in \
-                        [a for a in answers
-                         if a['id']
-                            not in record.message_ids.mapped('sms_id')]:
+
+                new_answers = [a for a in answers if a['id']
+                               not in record.message_ids.mapped('sms_id')]
+
+                # Set the state to DONE:
+                if new_answers:
+                    record.state = 'done'
+
+                for answer in new_answers:
 
                     try:
                         message_date = datetime.strptime(
