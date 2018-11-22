@@ -109,7 +109,7 @@
                         <field name="number_to_raw" attrs="{'invisible': True}" />
                         <newline/>
                         <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
-                        <field name="wait_for_answer" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <newline/>
                         <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('state','in',('done', 'waiting'))]}" />
                         <field name="subject" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                     </group>

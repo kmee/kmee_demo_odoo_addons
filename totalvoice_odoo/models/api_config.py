@@ -153,6 +153,15 @@ class ApiConfig(models.TransientModel):
         conf.set_param('api_registered_partner_ids',
                        str(self.api_registered_partner_ids.ids))
 
+    def get_timeout(self):
+        """
+        Get the timeout config field
+        :return: the int timeout
+        """
+
+        time_out = self.env['ir.config_parameter'].get_param('timeout')
+        return int(time_out)
+
     def get_client(self, _raise=True):
         """
         :return: The Totalvoice Client Object

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api, _, tools
+from odoo import models, fields, api, _
 from datetime import datetime
 from odoo.exceptions import UserError, ValidationError
 
@@ -12,7 +12,6 @@ date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
 MAXIMUM_CONVERSATION_CODES = 1000
-MESSAGE_TIMEOUT_HOURS = tools.config.get('timeout')
 log = logging.getLogger(__name__)
 
 
@@ -217,7 +216,6 @@ class TotalVoiceBase(models.Model):
 
     wait_for_answer = fields.Boolean(
         default=True,
-        invisible=True,
     )
 
     @api.model
@@ -285,7 +283,7 @@ class TotalVoiceBase(models.Model):
         hours_passed = delta.total_seconds() // 3600
 
         # if the message is older than MESSAGE_TIMEOUT_HOURS
-        if hours_passed >= MESSAGE_TIMEOUT_HOURS:
+        if hours_passed >= self.env['totalvoice.api.config'].get_timeout():
             self.state = 'timeout'
 
 
