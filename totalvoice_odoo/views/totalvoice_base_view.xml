@@ -105,7 +105,6 @@
                         <field name="conversation_code" />
                         <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
-                        <field name="auto_resend" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('wait_for_answer','=',False)]}" />
                         <newline/>
                         <field name="number_to_raw" attrs="{'invisible': True}" />
                         <newline/>

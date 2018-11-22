@@ -4,6 +4,7 @@ from odoo import models, fields, api, _, tools
 from datetime import datetime
 from odoo.exceptions import UserError, ValidationError
 
+import logging
 import json
 import re
 
@@ -12,6 +13,7 @@ date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
 MAXIMUM_CONVERSATION_CODES = 1000
 MESSAGE_TIMEOUT_HOURS = tools.config.get('timeout')
+log = logging.getLogger(__name__)
 
 
 class WebHook(models.Model):
@@ -214,12 +216,8 @@ class TotalVoiceBase(models.Model):
     )
 
     wait_for_answer = fields.Boolean(
-        default=False,
-    )
-
-    auto_resend = fields.Boolean(
-        string='Auto-Resend',
         default=True,
+        invisible=True,
     )
 
     @api.model
@@ -476,12 +474,9 @@ class TotalVoiceBase(models.Model):
         Sends an automatic response depending on the user's previous response
         :param message: Message to be sent
         :param wait: Should the conversation wait for new answers?
-        :return: True if send is OK, False if it's not OK
         """
-        # It only sends the response if the variable 'auto_resend' is true
-        if self.auto_resend:
-            return self.send_sms(custom_message=message, wait=wait)
-        return False
+
+        return self.send_sms(custom_message=message, wait=wait)
 
     def review_sms_answer(self, answer):
         """
@@ -505,10 +500,9 @@ class TotalVoiceBase(models.Model):
             eval("self.%s(%s)" %
                  (func, "'" + parameters + "'" if parameters else ''))
         except Exception:
-            new_message = 'Opcao selecionada invalida. Tente novamente. ' + \
+            log_message = 'Opcao selecionada invalida. Tente novamente. ' + \
                           self.message
-
-            self.resend_message(message=new_message, wait=True)
+            log.debug(log_message)
 
         finally:
             return

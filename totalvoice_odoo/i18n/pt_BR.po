@@ -76,11 +76,6 @@ msgid "Assign a Task"
 msgstr "Atribuir uma Tarefa"
 
 #. module: totalvoice_odoo
-#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_auto_resend
-msgid "Auto-Resend"
-msgstr "Reenviar Automático"
-
-#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_balance
 msgid "Balance"
 msgstr "Saldo"
