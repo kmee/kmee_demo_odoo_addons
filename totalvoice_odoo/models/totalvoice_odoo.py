@@ -29,7 +29,8 @@ class WebHook(models.Model):
         conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
 
         conversation_id = self.env['totalvoice.base'].search(
-            [('conversation_code', '=', conversation_code),
+            [('conversation_code', '=',
+              ''.join('%03d' % int(conversation_code))),
              ('state', 'in', ['waiting'])], limit=1
         )
 
@@ -303,13 +304,14 @@ class TotalVoiceBase(models.Model):
         active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
                                    ).mapped('conversation_code')
 
-        smallest_range = range(1, min(int(max(active_codes)) + 2,
-                                      MAXIMUM_CONVERSATION_CODES))
+        smallest_range = [1] if not active_codes else \
+            range(1, min(int(max(active_codes)) + 2,
+                         MAXIMUM_CONVERSATION_CODES))
 
         available_codes = [i for i in smallest_range
                            if i not in map(int, active_codes)]
 
-        if(len(available_codes) > 0):
+        if len(available_codes) > 0:
             smallest_code = self.conversation_code \
                 if self.conversation_code in available_codes \
                 else ''.join('%03d' % available_codes[0])
@@ -506,8 +508,8 @@ class TotalVoiceBase(models.Model):
             eval("self.%s(%s)" %
                  (func, "'" + parameters + "'" if parameters else ''))
         except Exception:
-            log_message = 'Opcao selecionada invalida. Tente novamente. ' + \
-                          self.message
+            log_message = _("An error was triggered processing the message. "
+                            "Please try again. ") + self.message
             log.debug(log_message)
 
         finally:
