@@ -13,5 +13,16 @@
             <field name="priority" eval="5" />
         </record>
 
+        <record id="totalvoice_timeout_cron" model="ir.cron">
+            <field name="name">Auto-TimeOut Conversations</field>
+            <field name="active" eval="True" />
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="model" eval="'totalvoice.base'" />
+            <field name="function" eval="'cron_check_message_timeout'" />
+            <field name="priority" eval="5" />
+        </record>
+
     </data>
 </odoo>

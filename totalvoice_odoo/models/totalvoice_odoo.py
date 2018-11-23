@@ -4,26 +4,86 @@ from odoo import models, fields, api, _
 from datetime import datetime
 from odoo.exceptions import UserError, ValidationError
 
+import logging
 import json
 import re
 
 date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
+MAXIMUM_CONVERSATION_CODES = 1000
+log = logging.getLogger(__name__)
+
+
 class WebHook(models.Model):
     _inherit = 'webhook'
 
     @api.one
-    def run_totalvoice_totalvoice(self):
+    def run_totalvoice_totalvoice(self, json=False):
         # You will have all request data in
         # variable: self.env.request
-        sms_id = self.env.request.jsonrequest.get('sms_id')
-        conversation_id = \
-            self.env['totalvoice.base'].search([('sms_id', '=', sms_id)])
 
-        return conversation_id.get_sms_status(
-            received_message=self.env.request.jsonrequest)
+        received_message = json or self.env.request.jsonrequest
+        message = received_message.get('resposta')
 
+        conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
+
+        conversation_id = self.env['totalvoice.base'].search(
+            [('conversation_code', '=',
+              ''.join('%03d' % int(conversation_code))),
+             ('state', 'in', ['waiting'])], limit=1
+        )
+
+        if conversation_id:
+            return conversation_id.get_sms_status(
+                received_message=received_message)
+
+        self.send_message_wrong_code(conversation_code, received_message)
+
+    def send_message_wrong_code(self, conversation_code, json):
+        """
+        This method is called if there isn't any active conversation using the
+        code specified in the SMS answer.
+        """
+
+        # First we'll find the conversation the user tried to answer
+        received_message = json
+
+        sms_id = received_message.get('sms_id')
+
+        conversation_id = self.env['totalvoice.base'].search(
+            [('sms_id', '=', sms_id)]
+        )
+
+        # There isn't a conversation_id for this user
+        if not conversation_id:
+            return
+
+        # Getting the res_partner
+        res_partner = conversation_id.partner_id
+
+        # Searching the available conversation_codes for this specific
+        # res_partner
+
+        available_conversation_codes = conversation_id.search(
+            [('partner_id', '=', res_partner.id),
+             ('state', 'in', ['waiting'])]
+        ).mapped('conversation_code')
+
+        message = _('Unavailable code received: ') + conversation_code + '. '
+        if len(available_conversation_codes):
+            message += _('Available codes are: ') + \
+                       ''.join('%03d' % int(code) + ", "
+                               for code in available_conversation_codes)
+        else:
+            message += "There isn't any code availables for you to answer to."
+
+        # Create a new conversation for sending an Code Error message
+        conversation_id = self.env['totalvoice.base'].create({
+            'partner_id': res_partner.id,
+        })
+
+        conversation_id.send_sms(custom_message=message, wait=False)
 
 
 class TotalVoiceMessage(models.Model):
@@ -78,12 +138,24 @@ class TotalVoiceBase(models.Model):
 
     STATES = [('draft', 'Draft'),
               ('waiting', 'Waiting Answer'),
+              ('timeout', 'Answer Time Out'),
               ('done', 'Done'),
               ('failed', 'Failed')]
 
     FOLDED_STATES = [
         'draft',
     ]
+
+    def _get_conversation_code(self):
+        return self.get_conversation_code()
+
+    conversation_code = fields.Char(
+        string=_("Conversation Code"),
+        help=_("This code will be used as an ID for identifying answers."),
+        readonly=True,
+        default=_get_conversation_code,
+        size=3,
+    )
 
     partner_id = fields.Many2one(
         comodel_name='res.partner',
@@ -147,11 +219,6 @@ class TotalVoiceBase(models.Model):
     )
 
     wait_for_answer = fields.Boolean(
-        default=False,
-    )
-
-    auto_resend = fields.Boolean(
-        string='Auto-Resend',
         default=True,
     )
 
@@ -182,6 +249,78 @@ class TotalVoiceBase(models.Model):
             record.number_to_raw = re.sub('\D', '', record.number_to or ''
                                           ).lstrip('0')
 
+    @api.model
+    def cron_check_message_timeout(self):
+        """
+        Iterates over all the "Waiting for Answer" messages, updating their
+        states to "Time Out" if necessary
+        """
+        waiting_conversations = self.search([('state', '=', 'waiting')])
+
+        for conversation in waiting_conversations:
+            conversation.update_timeout_state()
+
+    def update_timeout_state(self):
+        """
+        This method updates the conversation state based on the time spent from
+        the message sent to the method call.
+        If this time is greater or equal "MESSAGE_TIMEOUT_HOURS", the new state
+        will be 'waiting'.
+        If the conversation has no active_message, the state will be 'done'
+        :return: Nothing if the conversation has no active_message
+        """
+
+        active_message = self.active_sms_id
+
+        if not active_message:
+            self.state = 'done'
+            return
+
+        now_date = datetime.now()
+        active_message_id = self.message_ids.filtered(
+            lambda m: m.sms_id == active_message
+        )
+        message_date = fields.Datetime.from_string(
+            active_message_id.message_date)
+
+        delta = (now_date - message_date)
+        hours_passed = delta.total_seconds() // 3600
+
+        # if the message is older than MESSAGE_TIMEOUT_HOURS
+        if hours_passed >= self.env['totalvoice.api.config'].get_timeout():
+            self.state = 'timeout'
+
+
+    def get_conversation_code(self):
+        """
+        Get the smallest conversation code available based on the existing
+        active conversations.
+        This method also sets the self.conversation_code to the code found
+        :return: the smallest available conversation code
+        """
+
+        smallest_code = False
+
+        active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
+                                   ).mapped('conversation_code')
+
+        smallest_range = [1] if not active_codes else \
+            range(1, min(int(max(active_codes)) + 2,
+                         MAXIMUM_CONVERSATION_CODES))
+
+        available_codes = [i for i in smallest_range
+                           if i not in map(int, active_codes)]
+
+        if len(available_codes) > 0:
+            smallest_code = self.conversation_code \
+                if self.conversation_code in available_codes \
+                else ''.join('%03d' % available_codes[0])
+
+            if self.id:
+                self.conversation_code = smallest_code
+
+        return smallest_code
+
     @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None, multi_sms=True):
         """
@@ -202,11 +341,34 @@ class TotalVoiceBase(models.Model):
             wait_for_answer = record.wait_for_answer if wait is None else wait
             record.wait_for_answer = wait_for_answer
 
+            if(record.state not in ['draft', 'waiting']):
+                # Get a new conversation code to this conversation
+                if not self.get_conversation_code():
+                    record.state = 'failed'
+
+                    new_message = {
+                        'message_date': fields.Datetime.now(),
+                        'message': send_message,
+                        'coversation_id': record.id,
+                        'message_origin': 'error',
+                    }
+
+                    new_message['server_message'] = \
+                        _("There's not free conversation_code left for "
+                          "sending this message")
+
+                    self.env['totalvoice.message'].create(new_message)
+
+                    self.cr.commit()
+
+                    raise StandardError(_("There's not free conversation_code "
+                                          "left for sending this message"))
+
             # Sends the SMS
             response = \
                 self.env['totalvoice.api.config'].get_client().sms.enviar(
                     record.number_to_raw, send_message,
-                    resposta_usuario=wait_for_answer,
+                    resposta_usuario=True,
                     multi_sms=multi_sms
             )
 
@@ -285,17 +447,25 @@ class TotalVoiceBase(models.Model):
                           get('dados').get('respostas')
 
             if answers:
-                for answer in \
-                        [a for a in answers
-                         if a['id']
-                            not in record.message_ids.mapped('sms_id')]:
+
+                new_answers = [a for a in answers if a['id']
+                               not in record.message_ids.mapped('sms_id')]
+
+                # Set the state to DONE:
+                if new_answers:
+                    record.state = 'done'
+
+                for answer in new_answers:
 
                     try:
                         message_date = datetime.strptime(
-                            answer['data_resposta'],date_format_webhook)
+                            answer['data_resposta'], date_format_webhook)
                     except:
-                        message_date = datetime.strptime(
-                            answer['data_resposta'],date_format)
+                        try:
+                            message_date = datetime.strptime(
+                                answer['data_resposta'], date_format)
+                        except:
+                            message_date = answer['data_resposta']
 
                     new_answer = {
                         'message_date': message_date,
@@ -312,12 +482,9 @@ class TotalVoiceBase(models.Model):
         Sends an automatic response depending on the user's previous response
         :param message: Message to be sent
         :param wait: Should the conversation wait for new answers?
-        :return: True if send is OK, False if it's not OK
         """
-        # It only sends the response if the variable 'auto_resend' is true
-        if self.auto_resend:
-            return self.send_sms(custom_message=message, wait=wait)
-        return False
+
+        return self.send_sms(custom_message=message, wait=wait)
 
     def review_sms_answer(self, answer):
         """
@@ -326,17 +493,24 @@ class TotalVoiceBase(models.Model):
         """
         if not answer.message:
             return
+
+        # Building the function that will be called to handle this message
         func_name = re.split(r'[^a-zA-Z\d:]', answer.message)[0]
-        func = self.subject + '_' + func_name
+        # func = self.subject + '_' + func_name
         parameters = answer.message.replace(func_name, '').strip()
+
+        # If there isn't an subject, the message won't be reviewed
+        func = self.subject
+        if not func:
+            return
+
         try:
             eval("self.%s(%s)" %
                  (func, "'" + parameters + "'" if parameters else ''))
         except Exception:
-            new_message = 'Opcao selecionada invalida. Tente novamente. ' + \
-                          self.message
-
-            self.resend_message(message=new_message, wait=True)
+            log_message = _("An error was triggered processing the message. "
+                            "Please try again. ") + self.message
+            log.debug(log_message)
 
         finally:
             return

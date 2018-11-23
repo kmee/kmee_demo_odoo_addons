@@ -21,6 +21,12 @@ class ApiConfig(models.TransientModel):
         readonly=True,
     )
 
+    timeout = fields.Integer(
+        string='Conversation Time Out (hours)',
+        help='The conversation time out for waiting answers (in Hours) !!!',
+        default=8,
+    )
+
     api_registered_partner_ids = fields.Many2many(
         comodel_name='res.partner',
         string='Registered Contacts (Partners)',
@@ -51,6 +57,21 @@ class ApiConfig(models.TransientModel):
         string='Server Message',
         default='',
         readonly=True,
+    )
+
+    api_test_webhook_message = fields.Char(
+        string='Webhook Test Message',
+        default='010 - Test Message',
+    )
+
+    api_test_webhook_id = fields.Char(
+        string='Webhook Test ID',
+        default='16347',
+    )
+
+    api_test_webhook_sms_id = fields.Char(
+        string='Webhook Test SMS ID',
+        default='133830',
     )
 
     @api.model
@@ -105,6 +126,7 @@ class ApiConfig(models.TransientModel):
             'api_key': conf.get_param('api_key'),
             'api_url': conf.get_param('api_url'),
             'api_server_message': conf.get_param('api_server_message'),
+            'timeout': int(conf.get_param('timeout')),
             'api_balance': float(conf.get_param('api_balance')),
             'api_username': conf.get_param('api_username'),
             'api_login': conf.get_param('api_login'),
@@ -130,6 +152,15 @@ class ApiConfig(models.TransientModel):
         conf.set_param('api_phone', str(self.api_phone))
         conf.set_param('api_registered_partner_ids',
                        str(self.api_registered_partner_ids.ids))
+
+    def get_timeout(self):
+        """
+        Get the timeout config field
+        :return: the int timeout
+        """
+
+        time_out = self.env['ir.config_parameter'].get_param('timeout')
+        return int(time_out)
 
     def get_client(self, _raise=True):
         """
@@ -262,13 +293,17 @@ class ApiConfig(models.TransientModel):
         :return: True if the number is already registered. Else if it's not
         """
 
-        bina_report = json.loads(self.get_client().bina.get_relatorio())
+        try:
+            bina_report = json.loads(self.get_client().bina.get_relatorio())
 
-        already_registered = \
-            any(number == bina.get('numero_telefone')
-                for bina in bina_report.get('dados').get('relatorio'))
+            already_registered = \
+                any(number == bina.get('numero_telefone')
+                    for bina in bina_report.get('dados').get('relatorio'))
 
-        return True if already_registered else False
+            return True if already_registered else False
+
+        except:
+            return True
 
     def register_partner(self, partner, number):
         """
@@ -323,3 +358,16 @@ class ApiConfig(models.TransientModel):
         }
 
         return action
+
+    def action_test_webhook_message(self):
+        totalvoice_webhook = \
+            self.env['webhook'].search([('name', '=', 'totalvoice')], limit=1)
+
+        json = {
+            "id": self.api_test_webhook_id,
+            "sms_id": self.api_test_webhook_sms_id,
+            "resposta": self.api_test_webhook_message,
+            "data_resposta": fields.Datetime.now(),
+        }
+
+        totalvoice_webhook.run_totalvoice_totalvoice(json=json)
