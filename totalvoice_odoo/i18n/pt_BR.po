@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-14 12:58+0000\n"
-"PO-Revision-Date: 2018-11-14 12:58+0000\n"
+"POT-Creation-Date: 2018-11-23 12:49+0000\n"
+"PO-Revision-Date: 2018-11-23 12:49+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgid "API-KEY"
 msgstr "API-KEY"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:86
+#: code:addons/totalvoice_odoo/models/api_config.py:175
 #, python-format
 msgid "API-KEY and API-URL not configured"
 msgstr "API-KEY ou API-URL não configurado"
@@ -48,12 +48,18 @@ msgid "Activation Code must be filled"
 msgstr "O Código de Ativação deve ser preenchido"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:85
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:102
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_active_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_active_sms_id
 #, python-format
 msgid "Active SMS ID waiting for answers"
 msgstr "ID de SMS ativo esperando por respostas"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:511
+#, python-format
+msgid "An error was triggered processing the message. Please try again. "
+msgstr "Um erro foi encontrado ao processar a mensagem. Por favor, tente novamente. "
 
 #. module: totalvoice_odoo
 #: selection:totalvoice.base,state:0
@@ -63,7 +69,7 @@ msgstr "Tempo de Resposta Excedido"
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
 msgid "Are you sure want to Resend the last SMS"
-msgstr "Tem certeza que quer Reenviar o último SMS"
+msgstr "Tem certeza que quer Reenviar o último SMS?"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -74,6 +80,12 @@ msgstr "Você tem certeza de que deseja enviar um SMS?"
 #: selection:totalvoice.base,subject:0
 msgid "Assign a Task"
 msgstr "Atribuir uma Tarefa"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:75
+#, python-format
+msgid "Available codes are: "
+msgstr "Codigos Disponiveis sao: "
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_balance
@@ -110,6 +122,7 @@ msgstr "Configuração"
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_partner_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_partner_id
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_partner_id
 msgid "Contact"
 msgstr "Contato"
 
@@ -124,7 +137,7 @@ msgid "Contact Name:"
 msgstr "Nome do Contato:"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:196
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:213
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_number_to
 #, python-format
 msgid "Contact's Totalvoice Registered Number"
@@ -136,7 +149,7 @@ msgid "Contacts"
 msgstr "Contatos"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:136
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:153
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_conversation_code
 #, python-format
 msgid "Conversation Code"
@@ -154,8 +167,8 @@ msgstr "Configurações da Conversa"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_timeout
-msgid "Conversation Time Out"
-msgstr "Tempo de Conversa Excedido"
+msgid "Conversation Time Out (hours)"
+msgstr "Tempo para Expirar uma Conversa (horas)"
 
 #. module: totalvoice_odoo
 #: model:ir.actions.act_window,name:totalvoice_odoo.action_totalvoice_base_view
@@ -167,6 +180,7 @@ msgstr "Conversas"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_create_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_create_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_create_uid
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_create_uid
 msgid "Created by"
 msgstr "Criado por"
 
@@ -175,19 +189,21 @@ msgstr "Criado por"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_create_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_create_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_create_date
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_create_date
 msgid "Created on"
 msgstr "Criado em"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_kanban
 msgid "Date Time"
-msgstr "Data da Mensagem"
+msgstr "Data da Conversa"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_display_name
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_display_name
 msgid "Display Name"
 msgstr "Nome para Exibição"
 
@@ -202,6 +218,11 @@ msgstr "Confirmado"
 #: selection:totalvoice.base,state:0
 msgid "Draft"
 msgstr "Provisório"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_login
+msgid "Email"
+msgstr "E-mail"
 
 #. module: totalvoice_odoo
 #: selection:totalvoice.message,message_origin:0
@@ -224,13 +245,14 @@ msgstr "Falhou"
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
 msgid "Group By"
-msgstr "Agrupar Por"
+msgstr "Agrupar por"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_id
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_id
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_id
 msgid "ID"
 msgstr "ID"
 
@@ -239,6 +261,7 @@ msgstr "ID"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base___last_update
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message___last_update
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number___last_update
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number___last_update
 msgid "Last Modified on"
 msgstr "Última Modificação em"
 
@@ -247,6 +270,7 @@ msgstr "Última Modificação em"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_write_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_write_uid
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_write_uid
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_write_uid
 msgid "Last Updated by"
 msgstr "Última atualização por"
 
@@ -255,6 +279,7 @@ msgstr "Última atualização por"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_write_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_write_date
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_write_date
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_write_date
 msgid "Last Updated on"
 msgstr "Última atualização em"
 
@@ -294,9 +319,15 @@ msgid "Mobile: "
 msgstr "Celular: "
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_username
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_registered_partner_tree
 msgid "Name"
 msgstr "Nome"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_partner_form
+msgid "Next"
+msgstr "Próximo"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_number
@@ -316,7 +347,7 @@ msgid "Number already registered"
 msgstr "Número já cadastrado"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:385
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:401
 #, python-format
 msgid "Number not registered on TotalVoice"
 msgstr "Número não cadastrado no TotalVoice"
@@ -346,10 +377,21 @@ msgid "Partner"
 msgstr "Parceiro"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_phone
+msgid "Phone"
+msgstr "Telefone"
+
+#. module: totalvoice_odoo
 #: code:addons/totalvoice_odoo/models/wizard_register_number.py:32
 #, python-format
 msgid "Phone: "
 msgstr "Telefone: "
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/api_config.py:226
+#, python-format
+msgid "Problem when connecting to the TotalVoice Server"
+msgstr "Erro ao conectar no servidor da TotalVoice"
 
 #. module: totalvoice_odoo
 #: selection:totalvoice.message,message_origin:0
@@ -362,12 +404,14 @@ msgid "Register Contact's Number"
 msgstr "Registrar Número do Contato"
 
 #. module: totalvoice_odoo
-#: model:ir.actions.act_window,name:totalvoice_odoo.action_ view_wizard_register_number
+#: model:ir.actions.act_window,name:totalvoice_odoo.action_view_wizard_register_number
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
 msgid "Register Number"
-msgstr "Registrar Número"
+msgstr "Register Number"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:493
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:520
+#: code:addons/totalvoice_odoo/models/wizard_register_partner_number.py:18
 #, python-format
 msgid "Register a New TotalVoice Number"
 msgstr "Cadastrar um novo número TotalVoice"
@@ -380,7 +424,9 @@ msgstr "Contatos Cadastrados (Parceiros)"
 
 #. module: totalvoice_odoo
 #: code:addons/totalvoice_odoo/models/wizard_register_number.py:12
+#: code:addons/totalvoice_odoo/models/wizard_register_partner_number.py:8
 #: model:ir.model,name:totalvoice_odoo.model_wizard_register_number
+#: model:ir.model,name:totalvoice_odoo.model_wizard_register_partner_number
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
 #, python-format
 msgid "Registering a new TotalVoice Number"
@@ -400,7 +446,7 @@ msgid "SMS ID"
 msgstr "SMS ID"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:78
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:95
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_sms_id
 #, python-format
@@ -423,6 +469,13 @@ msgid "Select a Number"
 msgstr "Selecione um Número"
 
 #. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/api_config.py:350
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_partner_form
+#, python-format
+msgid "Select contact"
+msgstr "Selecionar Contato"
+
+#. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
 msgid "Send Activation Code"
 msgstr "Enviar Código de Ativação"
@@ -438,6 +491,7 @@ msgid "Sent"
 msgstr "Enviado"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_server_message
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_server_message
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_message_server_message
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_server_message
@@ -476,7 +530,12 @@ msgid "Subject"
 msgstr "Assunto"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:319
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "Test Webhook Message"
+msgstr "Testar Webhook de SMS"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:335
 #, python-format
 msgid "The contact you want to send a message to needs to have a totalvoice registered phone number"
 msgstr "O contato que você está tentando enviar uma mensagem precisar ter um número de telefone cadastrado no servidor TotalVoice"
@@ -493,8 +552,8 @@ msgid "The number could not be registered. Probably due a invalid verification c
 msgstr "O número não pôde ser cadastrado. Provavelmente devido a um código de verificação inválido"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:341
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:348
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:357
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:364
 #, python-format
 msgid "There's not free conversation_code left for sending this message"
 msgstr "Não existe nenhum código de conversa livre para enviar esta mensagem"
@@ -515,7 +574,7 @@ msgid "This button will send an SMS"
 msgstr "Este botão enviará um SMS"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:137
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:154
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_conversation_code
 #, python-format
 msgid "This code will be used as an ID for identifying answers."
@@ -576,12 +635,28 @@ msgid "TotalVoice_Tree"
 msgstr "TotalVoice_Tree"
 
 #. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "Totalvoice Test Webhook"
+msgstr "Teste de Webhook Totalvoice"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:73
+#, python-format
+msgid "Unavailable code received: "
+msgstr "Codigo indisponivel recebido: "
+
+#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_pontomedical_healthoperator_union_entity_code
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_pontomedical_healthprofessional_union_entity_code
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_pontomedical_patient_union_entity_code
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_res_users_union_entity_code
 msgid "Union entity code"
 msgstr "Union entity code"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
+msgid "Update Registered Numbers"
+msgstr "Atualizar Números Registrados"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
@@ -604,7 +679,22 @@ msgid "Waiting Answer"
 msgstr "Esperando Resposta"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:227
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_test_webhook_id
+msgid "Webhook Test ID"
+msgstr "ID de teste Webhook ID"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_test_webhook_message
+msgid "Webhook Test Message"
+msgstr "Mensagem de Teste Webhook"
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_test_webhook_sms_id
+msgid "Webhook Test SMS ID"
+msgstr "SMS ID de Teste Webhook"
+
+#. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:239
 #, python-format
 msgid "You can't move this card"
 msgstr "Você não pode mover este card"

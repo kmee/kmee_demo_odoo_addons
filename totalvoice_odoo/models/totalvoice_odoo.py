@@ -70,9 +70,9 @@ class WebHook(models.Model):
              ('state', 'in', ['waiting'])]
         ).mapped('conversation_code')
 
-        message = 'Unavailable code received: ' + conversation_code + '. '
+        message = _('Unavailable code received: ') + conversation_code + '. '
         if len(available_conversation_codes):
-            message += 'Available codes are: ' + \
+            message += _('Available codes are: ') + \
                        ''.join('%03d' % int(code) + ", "
                                for code in available_conversation_codes)
         else:

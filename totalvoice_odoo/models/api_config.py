@@ -22,7 +22,7 @@ class ApiConfig(models.TransientModel):
     )
 
     timeout = fields.Integer(
-        string='Conversation Time Out',
+        string='Conversation Time Out (hours)',
         help='The conversation time out for waiting answers (in Hours) !!!',
         default=8,
     )
