@@ -14,6 +14,11 @@ date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 MAXIMUM_CONVERSATION_CODES = 1000
 log = logging.getLogger(__name__)
 
+PHONE_SELECTION = [
+    ('phone', _('Phone')),
+    ('mobile', _('Mobile')),
+]
+
 
 class WebHook(models.Model):
     _inherit = 'webhook'
@@ -206,11 +211,21 @@ class TotalVoiceBase(models.Model):
         selection=[],
     )
 
-    number_to = fields.Char(
-        string='TotalVoice Number',
-        related='partner_id.totalvoice_number',
-        readonly=True,
-        help=_("Contact's Totalvoice Registered Number"),
+    number_to = fields.Selection(
+        selection=PHONE_SELECTION,
+        string='Phone Selected',
+        required=True,
+        default='mobile'
+    )
+
+    number_to_phone = fields.Char(
+        string="Phone",
+        related='partner_id.phone',
+    )
+
+    number_to_mobile = fields.Char(
+        string="Mobile",
+        related='partner_id.mobile',
     )
 
     number_to_raw = fields.Char(
@@ -240,14 +255,32 @@ class TotalVoiceBase(models.Model):
 
         return super(TotalVoiceBase, self).write(vals)
 
+    @api.onchange('partner_id')
+    def onchange_update_default_number_to(self):
+        """
+        Updates the default number_to value each time the partner_id changes.
+        Set the number_to selection value, evaluating which one of the
+        mobile\phone field is available
+        """
+        if self.number_to_phone and not self.number_to_mobile:
+            self.number_to = 'phone'
+        else:
+            self.number_to = 'mobile'
+
     @api.depends('number_to')
     def _number_to_raw(self):
         """
         Remove any characters other then numbers from partner's phone number
         """
         for record in self:
-            record.number_to_raw = re.sub('\D', '', record.number_to or ''
-                                          ).lstrip('0')
+            number = ''
+
+            if record.number_to == 'phone':
+                number = record.number_to_phone
+            elif record.number_to == 'mobile':
+                number = record.number_to_mobile
+
+            record.number_to_raw = re.sub('\D', '', number or '').lstrip('0')
 
     @api.model
     def cron_check_message_timeout(self):
@@ -331,12 +364,18 @@ class TotalVoiceBase(models.Model):
         :return: True if send is OK, False if it's not OK
         """
         for record in self:
-            if not record.number_to:
+            if (record.number_to == 'phone' and not record.number_to_phone) or\
+                    (record.number_to == 'mobile' and
+                     not record.number_to_mobile):
                 raise ValidationError(_("The contact you want to send a "
                                         "message to needs to have a "
-                                        "totalvoice registered phone number"))
+                                        "valid selected number"))
 
             send_message = custom_message or record.message
+
+            if not send_message:
+                raise ValidationError(_("The SMS needs to have a message."))
+
             record.message = send_message
             wait_for_answer = record.wait_for_answer if wait is None else wait
             record.wait_for_answer = wait_for_answer
