@@ -97,18 +97,17 @@
                         <field name="image" widget="image" class="oe_left oe_avatar" nolabel="1"
                                options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
                         <newline/>
-                        <button string="Register Contact's Number"
-                                type="object" name="action_register_number"
-                                class="oe_highlight"
-                                attrs="{'invisible': [('number_to', '!=', False)]}"/>
-                        <newline/>
                         <field name="conversation_code" />
                         <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <newline/>
                         <field name="number_to_raw" attrs="{'invisible': True}" />
                         <newline/>
-                        <field name="number_to" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
+                        <field name="number_to" widget="radio" options="{'horizontal': true}" attrs="{'readonly': ['|', ('state','not in', ('draft', 'failed')), ('partner_id', '=', False)]}"/>
+                        <newline/>
+                        <field name="number_to_phone" readonly="1" />
+                        <newline/>
+                        <field name="number_to_mobile" readonly="1" />
                         <newline/>
                         <field name="message" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))], 'invisible':[('state','in',('done', 'waiting'))]}" />
                         <field name="subject" colspan="4" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
