@@ -246,6 +246,12 @@ class TotalVoiceBase(models.Model):
         'state': state_groups,
     }
 
+    @api.model
+    def create(self, values):
+        res = super(TotalVoiceBase, self).create(values)
+        self._cr.commit()
+        return res
+
     @api.multi
     def write(self, vals):
         params = self.env.args[2].get('params')
