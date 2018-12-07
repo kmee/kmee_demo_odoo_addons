@@ -97,7 +97,9 @@
                         <field name="image" widget="image" class="oe_left oe_avatar" nolabel="1"
                                options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
                         <newline/>
-                        <field name="conversation_code" />
+                        <field name="conversation_code" class="oe_inline"/>
+                        <button name="get_conversation_code" class="btn-primary"
+                            string="Random" type="object" />
                         <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <newline/>

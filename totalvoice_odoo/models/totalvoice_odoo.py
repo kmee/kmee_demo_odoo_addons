@@ -152,14 +152,11 @@ class TotalVoiceBase(models.Model):
         'draft',
     ]
 
-    def _get_conversation_code(self):
-        return self.get_conversation_code()
 
     conversation_code = fields.Char(
         string=_("Conversation Code"),
         help=_("This code will be used as an ID for identifying answers."),
         readonly=True,
-        default=_get_conversation_code,
         size=3,
     )
 
@@ -259,6 +256,8 @@ class TotalVoiceBase(models.Model):
 
     @api.model
     def create(self, values):
+        if not values.get('conversation_code'):
+            values['conversation_code'] = self.get_conversation_code()
         res = super(TotalVoiceBase, self).create(values)
         self._cr.commit()
         return res
