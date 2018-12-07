@@ -5,6 +5,7 @@ from datetime import datetime
 from odoo.exceptions import UserError, ValidationError
 
 import logging
+import random
 import json
 import re
 
@@ -332,33 +333,29 @@ class TotalVoiceBase(models.Model):
 
     def get_conversation_code(self):
         """
-        Get the smallest conversation code available based on the existing
+        Get a random conversation code available based on the existing
         active conversations.
         This method also sets the self.conversation_code to the code found
         :return: the smallest available conversation code
         """
 
-        smallest_code = False
+        random_code = False
 
         active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
                                    ).mapped('conversation_code')
 
-        smallest_range = [1] if not active_codes else \
-            range(1, min(int(max(active_codes)) + 2,
-                         MAXIMUM_CONVERSATION_CODES))
-
-        available_codes = [i for i in smallest_range
-                           if i not in map(int, active_codes)]
+        available_codes = list(set(range(1, MAXIMUM_CONVERSATION_CODES)) -
+                               set(map(int, active_codes)))
 
         if len(available_codes) > 0:
-            smallest_code = self.conversation_code \
+            random_code = self.conversation_code \
                 if self.conversation_code in available_codes \
-                else ''.join('%03d' % available_codes[0])
+                else ''.join('%03d' % random.choice(available_codes))
 
             if self.id:
-                self.conversation_code = smallest_code
+                self.conversation_code = random_code
 
-        return smallest_code
+        return random_code
 
     @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None, multi_sms=True):
