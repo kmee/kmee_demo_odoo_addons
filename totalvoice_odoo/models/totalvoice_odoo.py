@@ -254,10 +254,10 @@ class TotalVoiceBase(models.Model):
 
     @api.multi
     def write(self, vals):
-        params = self.env.args[2].get('params')
-        if params and params.get('view_type') == 'kanban' and \
-                'state' in vals:
-            raise UserError(_("You can't move this card"))
+        # params = self.env.args[2].get('params')
+        # if params and params.get('view_type') == 'kanban' and \
+        #         'state' in vals:
+        #     raise UserError(_("You can't move this card"))
 
         return super(TotalVoiceBase, self).write(vals)
 
