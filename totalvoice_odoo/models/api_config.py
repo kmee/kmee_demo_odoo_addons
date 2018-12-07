@@ -27,6 +27,12 @@ class ApiConfig(models.TransientModel):
         default=8,
     )
 
+    archive_timeout = fields.Integer(
+        string=_('Conversation archive Time Out (hours)'),
+        help=_('The Time Out for archiving DOne Conversations (hours) !!!'),
+        default=24,
+    )
+
     api_registered_partner_ids = fields.Many2many(
         comodel_name='res.partner',
         string='Registered Contacts (Partners)',
@@ -127,6 +133,7 @@ class ApiConfig(models.TransientModel):
             'api_url': conf.get_param('api_url'),
             'api_server_message': conf.get_param('api_server_message'),
             'timeout': int(conf.get_param('timeout')),
+            'archive_timeout': int(conf.get_param('archive_timeout')),
             'api_balance': float(conf.get_param('api_balance')),
             'api_username': conf.get_param('api_username'),
             'api_login': conf.get_param('api_login'),
@@ -145,6 +152,8 @@ class ApiConfig(models.TransientModel):
                                   unicode(self.api_server_message or '')).
                         encode('ASCII', 'ignore')))
         conf.set_param('api_balance', str(self.api_balance))
+        conf.set_param('timeout', str(self.timeout))
+        conf.set_param('archive_timeout', str(self.archive_timeout))
         conf.set_param('api_username',
                        (normalize('NFKD', unicode(self.api_username or '')).
                         encode('ASCII', 'ignore')))
@@ -161,6 +170,15 @@ class ApiConfig(models.TransientModel):
 
         time_out = self.env['ir.config_parameter'].get_param('timeout')
         return int(time_out)
+
+    def get_archive_timeout(self):
+        """
+        Get the archive_timeout config field
+        :return: the int archive_timeout
+        """
+
+        archive_time_out = self.env['ir.config_parameter'].get_param('archive_timeout')
+        return int(archive_time_out)
 
     def get_client(self, _raise=True):
         """

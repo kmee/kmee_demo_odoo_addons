@@ -28,12 +28,13 @@
                     </div>
                     <group string="TotalVoice API Settings">
                         <field name="api_server_message" />
-                        <field name="api_key" />
+                        <field name="api_key" class="oe_inline" />
                         <field name="api_url" />
                     </group>
 
                     <group string="Conversation Settings">
-                        <field name="timeout" />
+                        <field name="timeout" class="oe_inline" />
+                        <field name="archive_timeout" class="oe_inline" />
                     </group>
 
                     <group string="Account Information">

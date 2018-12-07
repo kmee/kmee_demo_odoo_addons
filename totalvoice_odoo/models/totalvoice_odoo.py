@@ -163,6 +163,11 @@ class TotalVoiceBase(models.Model):
         size=3,
     )
 
+    active = fields.Boolean(
+        string=_('Active'),
+        default=True,
+    )
+
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Contact',
@@ -238,6 +243,11 @@ class TotalVoiceBase(models.Model):
         default=True,
     )
 
+
+    conversation_done_date = fields.Datetime(
+        readonly=True,
+    )
+
     @api.model
     def state_groups(self, present_id, domain, **kwargs):
         folded = {key: (key in self.FOLDED_STATES) for key, _ in self.STATES}
@@ -261,6 +271,17 @@ class TotalVoiceBase(models.Model):
         #     raise UserError(_("You can't move this card"))
 
         return super(TotalVoiceBase, self).write(vals)
+
+    @api.one
+    @api.depends('state')
+    def _set_state_date(self):
+        """
+        If the conversation state is set to 'done', a timer will be set to
+        fields.Datetime.now()
+        """
+
+        if self.state == 'done':
+            self.conversation_done_date = fields.Datetime.now()
 
     @api.onchange('partner_id')
     def onchange_update_default_number_to(self):
@@ -295,18 +316,21 @@ class TotalVoiceBase(models.Model):
         Iterates over all the "Waiting for Answer" messages, updating their
         states to "Time Out" if necessary
         """
-        waiting_conversations = self.search([('state', '=', 'waiting')])
+        conversations = self.search([('state', 'in', ['waiting', 'done'])])
 
-        for conversation in waiting_conversations:
-            conversation.update_timeout_state()
+        for conversation in conversations:
+            conversation.update_conversation_state()
 
-    def update_timeout_state(self):
+    def update_conversation_state(self):
         """
         This method updates the conversation state based on the time spent from
         the message sent to the method call.
         If this time is greater or equal "MESSAGE_TIMEOUT_HOURS", the new state
         will be 'waiting'.
         If the conversation has no active_message, the state will be 'done'
+
+        This method also archives the conversation if it's older than
+        'archive_conversation_date', on the API Config
         :return: Nothing if the conversation has no active_message
         """
 
@@ -317,19 +341,35 @@ class TotalVoiceBase(models.Model):
             return
 
         now_date = datetime.now()
-        active_message_id = self.message_ids.filtered(
-            lambda m: m.sms_id == active_message
-        )
-        message_date = fields.Datetime.from_string(
-            active_message_id.message_date)
+        
+        if self.state == 'waiting':
+            active_message_id = self.message_ids.filtered(
+                lambda m: m.sms_id == active_message
+            )
+            message_date = fields.Datetime.from_string(
+                active_message_id.message_date)
+    
+            delta = (now_date - message_date)
+            hours_passed = delta.total_seconds() // 3600
+    
+            # if the message is older than MESSAGE_TIMEOUT_HOURS
+            if hours_passed >= self.env['totalvoice.api.config'].get_timeout():
+                self.state = 'timeout'
 
-        delta = (now_date - message_date)
-        hours_passed = delta.total_seconds() // 3600
-
-        # if the message is older than MESSAGE_TIMEOUT_HOURS
-        if hours_passed >= self.env['totalvoice.api.config'].get_timeout():
-            self.state = 'timeout'
-
+        elif self.state == 'done':
+            conversation_done_date = fields.Datetime.from_string(
+                self.conversation_done_date
+            )
+    
+            if conversation_done_date:
+                delta = now_date - conversation_done_date
+                hours_passed = delta.total_seconds() // 3600
+    
+                if hours_passed >= self.env['totalvoice.api.config'].\
+                        get_archive_timeout():
+                    self.active = False
+            else:
+                self.conversation_done_date = fields.Datetime.now()
 
     def get_conversation_code(self):
         """
