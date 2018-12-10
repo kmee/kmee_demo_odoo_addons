@@ -99,7 +99,7 @@
                         <newline/>
                         <field name="conversation_code" class="oe_inline"/>
                         <button name="get_conversation_code" class="btn-primary"
-                            string="Random" type="object" />
+                            string="Random" type="object" attrs="{'invisible': [('state','not in', ('draft'))]}" />
                         <newline/>
                         <field name="partner_id" attrs="{'readonly': [('state','not in', ('draft', 'failed'))]}" />
                         <newline/>
