@@ -152,7 +152,6 @@ class TotalVoiceBase(models.Model):
         'draft',
     ]
 
-
     conversation_code = fields.Char(
         string=_("Conversation Code"),
         help=_("This code will be used as an ID for identifying answers."),
@@ -239,7 +238,6 @@ class TotalVoiceBase(models.Model):
     wait_for_answer = fields.Boolean(
         default=True,
     )
-
 
     conversation_done_date = fields.Datetime(
         readonly=True,
