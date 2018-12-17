@@ -162,6 +162,7 @@
                 <field name="image"/>
                 <field name="state"/>
                 <field name="message_date"/>
+                <field name="subject"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_vignette oe_semantic_html_override">
@@ -197,6 +198,13 @@
                                                     Status
                                                     <strong>
                                                         <field name="state" style="background-color: #FF0000;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Subject
+                                                    <strong>
+                                                        <field name="subject" style="background-color: #FF0000;" />
                                                     </strong>
                                                 </li>
 
