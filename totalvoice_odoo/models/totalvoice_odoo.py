@@ -34,13 +34,23 @@ class WebHook(models.Model):
 
         conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
 
+        # The conversation the user is trying to answer
         conversation_id = self.env['totalvoice.base'].search(
             [('conversation_code', '=',
               ''.join('%03d' % int(conversation_code))),
              ('state', 'in', ['waiting'])], limit=1
         )
 
-        if conversation_id:
+        sms_id = received_message.get('sms_id')
+
+        # The user who sent the SMS
+        partner_id = self.env['totalvoice.base'].search(
+            [('sms_id', '=', sms_id), ], limit=1
+        ).partner_id
+
+        # The conversation exists and the partner_id trying to answer it is
+        # valid
+        if conversation_id and partner_id == conversation_id.partner_id:
             return conversation_id.get_sms_status(
                 received_message=received_message)
 
