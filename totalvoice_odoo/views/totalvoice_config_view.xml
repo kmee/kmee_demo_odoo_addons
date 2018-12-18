@@ -29,7 +29,6 @@
                     <group string="TotalVoice API Settings">
                         <field name="api_server_message" />
                         <field name="api_key" class="oe_inline" />
-                        <field name="api_url" />
                     </group>
 
                     <group string="Conversation Settings">

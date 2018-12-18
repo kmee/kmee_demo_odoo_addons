@@ -27,11 +27,6 @@ msgid "API-KEY and API-URL not configured"
 msgstr "API-KEY ou API-URL não configurado"
 
 #. module: totalvoice_odoo
-#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_url
-msgid "API-URL"
-msgstr "API-URL"
-
-#. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
 msgid "Account Information"
 msgstr "Informações da Conta"

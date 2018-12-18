@@ -8,17 +8,15 @@ from unicodedata import normalize
 import json
 import re
 
+api_url = 'api.totalvoice.com.br'
+
+
 class ApiConfig(models.TransientModel):
     _name = 'totalvoice.api.config'
     _inherit = 'res.config.settings'
 
     api_key = fields.Char(
         string='API-KEY',
-    )
-    api_url = fields.Char(
-        string='API-URL',
-        default='api.totalvoice.com.br',
-        readonly=True,
     )
 
     timeout = fields.Integer(
@@ -130,7 +128,6 @@ class ApiConfig(models.TransientModel):
         conf = self.env['ir.config_parameter']
         return {
             'api_key': conf.get_param('api_key'),
-            'api_url': conf.get_param('api_url'),
             'api_server_message': conf.get_param('api_server_message'),
             'timeout': int(conf.get_param('timeout')),
             'archive_timeout': int(conf.get_param('archive_timeout')),
@@ -146,7 +143,6 @@ class ApiConfig(models.TransientModel):
     def set_values(self):
         conf = self.env['ir.config_parameter']
         conf.set_param('api_key', str(self.api_key))
-        conf.set_param('api_url', str(self.api_url))
         conf.set_param('api_server_message',
                        (normalize('NFKD',
                                   unicode(self.api_server_message or '')).
@@ -185,9 +181,9 @@ class ApiConfig(models.TransientModel):
         :return: The Totalvoice Client Object
         """
         try:
-            client = \
-                Cliente(self.env['ir.config_parameter'].get_param('api_key'),
-                        self.env['ir.config_parameter'].get_param('api_url'),)
+            client = Cliente(
+                self.env['ir.config_parameter'].get_param('api_key'), api_url,)
+
         except Exception:
             if _raise:
                 raise UserError(_('API-KEY and API-URL not configured'))
