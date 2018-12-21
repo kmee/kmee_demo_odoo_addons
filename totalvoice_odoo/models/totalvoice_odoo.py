@@ -157,6 +157,7 @@ class TotalVoiceBase(models.Model):
     _rec_name = 'partner_id'
 
     STATES = [('draft', 'Draft'),
+              ('scheduled', 'Scheduled'),
               ('waiting', 'Waiting Answer'),
               ('timeout', 'Answer Time Out'),
               ('done', 'Done'),
@@ -164,6 +165,7 @@ class TotalVoiceBase(models.Model):
 
     FOLDED_STATES = [
         'draft',
+        'scheduled',
     ]
 
     conversation_code = fields.Char(
@@ -327,7 +329,8 @@ class TotalVoiceBase(models.Model):
         Iterates over all the "Waiting for Answer" messages, updating their
         states to "Time Out" if necessary
         """
-        conversations = self.search([('state', 'in', ['waiting', 'done'])])
+        conversations = self.search([('state', 'in',
+                                      ['scheduled', 'waiting', 'done'])])
 
         for conversation in conversations:
             conversation.update_conversation_state()
@@ -352,7 +355,14 @@ class TotalVoiceBase(models.Model):
             return
 
         now_date = datetime.now()
-        
+
+        if self.state == 'scheduled':
+            if fields.Datetime.now() >= self.message_date:
+                if not self.wait_for_answer:
+                    self.state = 'done'
+                else:
+                    self.state = 'waiting'
+
         if self.state == 'waiting':
             active_message_id = self.message_ids.filtered(
                 lambda m: m.sms_id == active_message
@@ -505,7 +515,9 @@ class TotalVoiceBase(models.Model):
                 return False
 
             # If this conversation isn't waiting for an answer
-            if not wait_for_answer:
+            if message_date:
+                record.state = 'scheduled'
+            elif not wait_for_answer:
                 record.state = 'done'
             else:
                 record.state = 'waiting'
