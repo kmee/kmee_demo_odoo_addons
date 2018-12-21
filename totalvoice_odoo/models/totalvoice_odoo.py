@@ -414,9 +414,11 @@ class TotalVoiceBase(models.Model):
         :return: True if send is OK, False if it's not OK
         """
         for record in self:
-            if (record.number_to == 'phone' and not record.number_to_phone) or\
+            if not record.number_to_raw and\
+                    ((record.number_to == 'phone'
+                     and not record.number_to_phone) or\
                     (record.number_to == 'mobile' and
-                     not record.number_to_mobile):
+                     not record.number_to_mobile)):
                 raise ValidationError(_("The contact you want to send a "
                                         "message to needs to have a "
                                         "valid selected number"))
