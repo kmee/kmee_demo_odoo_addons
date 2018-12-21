@@ -128,9 +128,13 @@ class TotalVoiceMessage(models.Model):
         size=160,
     )
 
+    schedule_message = fields.Boolean(
+        string=_('Schedule Message Sending'),
+        default=False,
+    )
+
     message_date = fields.Datetime(
         string='Message Date',
-        readonly=True,
     )
 
     message_origin = fields.Selection(

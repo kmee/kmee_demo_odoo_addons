@@ -117,9 +117,10 @@
 
                     <newline/>
 
-                    <group col="2" colspan="2" attrs="{'invisible':[('state','=','draft')]}">
-                        <field name="message_date" />
-                        <field name="sms_id" />
+                    <group col="2" colspan="2" >
+                        <field name="schedule_message" />
+                        <field name="message_date" attrs="{'invisible':[('state','=','draft'), ('schedule_message', '=', False)], 'required':[('schedule_message', '=', True)], 'readonly':[('schedule_message', '=', False)]}" />
+                        <field name="sms_id" attrs="{'invisible':[('state','=','draft')]}" />
                     </group>
 
                     <newline/>
@@ -145,6 +146,7 @@
                 <field name="number_to_raw" attrs="{'invisible': True}" />
                 <field name="message" />
                 <field name="state" />
+                <field name="schedule_message" string="Scheduled"/>
                 <field name="message_date" />
             </tree>
         </field>
@@ -161,6 +163,7 @@
                 <field name="number_to" />
                 <field name="image"/>
                 <field name="state"/>
+                <field name="schedule_message" />
                 <field name="message_date"/>
                 <field name="subject"/>
                 <templates>
@@ -205,6 +208,13 @@
                                                     Subject
                                                     <strong>
                                                         <field name="subject" style="background-color: #FF0000;" />
+                                                    </strong>
+                                                </li>
+
+                                                <li style="list-style-type: none;">
+                                                    Scheduled
+                                                    <strong>
+                                                        <field name="schedule_message" style="background-color: #000000;" />
                                                     </strong>
                                                 </li>
 
