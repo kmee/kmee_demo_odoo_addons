@@ -409,12 +409,16 @@ class TotalVoiceBase(models.Model):
         return random_code
 
     @api.multi
-    def send_sms(self, env=False, custom_message=False, wait=None, multi_sms=True):
+    def send_sms(self, env=False, custom_message=False, wait=None,
+                 multi_sms=True, message_date=None):
         """
         Send an SMS to the selected res_partner
-        :param message: If this isn't None, then the SMS sent will be added
-        in the conversation as a reply to the user's last answer
+
         :param wait: Should this message wait for new answers?
+        :param custom_message: Custom Message to be Sent
+        :param message_date: Schedule when the message will be sent
+        :param multi_sms: Breaks the SMS in more message if it is greater than
+        160 characters
         :return: True if send is OK, False if it's not OK
         """
         for record in self:
@@ -464,7 +468,8 @@ class TotalVoiceBase(models.Model):
                 self.env['totalvoice.api.config'].get_client().sms.enviar(
                     record.number_to_raw, send_message,
                     resposta_usuario=True,
-                    multi_sms=multi_sms
+                    multi_sms=multi_sms,
+                    data_criacao=message_date,
             )
 
             response = json.loads(response)
@@ -479,7 +484,7 @@ class TotalVoiceBase(models.Model):
                 record.state = 'failed'
 
                 new_message = {
-                    'message_date': fields.Datetime.now(),
+                    'message_date': message_date or fields.Datetime.now(),
                     'message': send_message,
                     'coversation_id': record.id,
                     'message_origin': 'error',
@@ -517,7 +522,7 @@ class TotalVoiceBase(models.Model):
                 else record.active_sms_id
 
             new_message = {
-                'message_date': fields.Datetime.now(),
+                'message_date': message_date or fields.Datetime.now(),
                 'sms_id': record.active_sms_id,
                 'message': send_message,
                 'coversation_id': record.id,
