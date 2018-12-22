@@ -356,17 +356,18 @@ class TotalVoiceBase(models.Model):
 
         now_date = datetime.now()
 
+        active_message_id = self.message_ids.filtered(
+            lambda m: m.sms_id == active_message
+        )
+
         if self.state == 'scheduled':
-            if fields.Datetime.now() >= self.message_date:
+            if fields.Datetime.now() >= active_message_id.message_date:
                 if not self.wait_for_answer:
                     self.state = 'done'
                 else:
                     self.state = 'waiting'
 
         if self.state == 'waiting':
-            active_message_id = self.message_ids.filtered(
-                lambda m: m.sms_id == active_message
-            )
             message_date = fields.Datetime.from_string(
                 active_message_id.message_date)
     
@@ -434,8 +435,8 @@ class TotalVoiceBase(models.Model):
         for record in self:
             if not record.number_to_raw and\
                     ((record.number_to == 'phone'
-                     and not record.number_to_phone) or\
-                    (record.number_to == 'mobile' and
+                     and not record.number_to_phone)
+                     or (record.number_to == 'mobile' and
                      not record.number_to_mobile)):
                 raise ValidationError(_("The contact you want to send a "
                                         "message to needs to have a "
