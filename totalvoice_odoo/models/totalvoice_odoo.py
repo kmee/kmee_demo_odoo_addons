@@ -456,7 +456,7 @@ class TotalVoiceBase(models.Model):
 
             if(record.state not in ['draft', 'waiting']):
                 # Get a new conversation code to this conversation
-                if not self.get_conversation_code():
+                if not record.get_conversation_code():
                     record.state = 'failed'
 
                     new_message = {
@@ -477,9 +477,15 @@ class TotalVoiceBase(models.Model):
                     raise StandardError(_("There's not free conversation_code "
                                           "left for sending this message"))
 
+            if record.schedule_message:
+                message_date = message_date or record.message_date
+                message_date_string = fields.Datetime.from_string(message_date)
+                message_date = fields.Datetime.context_timestamp(
+                    record, message_date_string).isoformat('T')
+
             # Sends the SMS
             response = \
-                self.env['totalvoice.api.config'].get_client().sms.enviar(
+                record.env['totalvoice.api.config'].get_client().sms.enviar(
                     record.number_to_raw, send_message,
                     resposta_usuario=True,
                     multi_sms=multi_sms,
@@ -509,12 +515,12 @@ class TotalVoiceBase(models.Model):
                 # Totalvoice Configuration. So we need to remove the
                 # partner from the api_registered_partner_ids
                 if response.get('motivo') == 8:
-                    self.env['totalvoice.api.config'].\
-                        remove_partner(self.partner_id)
+                    record.env['totalvoice.api.config'].\
+                        remove_partner(record.partner_id)
                     new_message['server_message'] = \
                         _('Number not registered on TotalVoice')
 
-                self.env['totalvoice.message'].create(new_message)
+                record.env['totalvoice.message'].create(new_message)
 
                 return False
 
@@ -546,7 +552,7 @@ class TotalVoiceBase(models.Model):
                 'server_message': server_message
             }
 
-            self.env['totalvoice.message'].create(new_message)
+            record.env['totalvoice.message'].create(new_message)
             return True
 
     @api.multi
