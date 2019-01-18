@@ -433,6 +433,9 @@ class TotalVoiceBase(models.Model):
         :return: True if send is OK, False if it's not OK
         """
         for record in self:
+            if not record.number_to_raw:
+                record.onchange_update_default_number_to()
+
             if not record.number_to_raw and\
                     ((record.number_to == 'phone'
                      and not record.number_to_phone)
