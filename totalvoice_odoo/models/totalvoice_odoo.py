@@ -52,7 +52,7 @@ class WebHook(models.Model):
         # valid
         if conversation_id and partner_id == conversation_id.partner_id:
             return conversation_id.get_sms_status(
-                received_message=received_message)
+                received_message=received_message, review=True)
 
         self.send_message_wrong_code(conversation_code, received_message)
 
@@ -556,7 +556,7 @@ class TotalVoiceBase(models.Model):
             return True
 
     @api.multi
-    def get_sms_status(self, env=False, received_message=False):
+    def get_sms_status(self, env=False, received_message=False, review=False):
         """
         :param received_message: Message received by the Webhook
         """
@@ -597,7 +597,8 @@ class TotalVoiceBase(models.Model):
                     }
                     answer_id = \
                         self.env['totalvoice.message'].create(new_answer)
-                    record.review_sms_answer(answer_id)
+                    if review:
+                        record.review_sms_answer(answer_id)
 
     def resend_message(self, message=False, wait=False):
         """
