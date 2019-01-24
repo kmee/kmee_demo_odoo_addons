@@ -477,10 +477,11 @@ class TotalVoiceBase(models.Model):
                     raise StandardError(_("There's not free conversation_code "
                                           "left for sending this message"))
 
+            message_date_utc = False
             if record.schedule_message:
                 message_date = message_date or record.message_date
                 message_date_string = fields.Datetime.from_string(message_date)
-                message_date = fields.Datetime.context_timestamp(
+                message_date_utc = fields.Datetime.context_timestamp(
                     record, message_date_string).isoformat('T')
 
             # Sends the SMS
@@ -489,7 +490,7 @@ class TotalVoiceBase(models.Model):
                     record.number_to_raw, send_message,
                     resposta_usuario=True,
                     multi_sms=multi_sms,
-                    data_criacao=message_date,
+                    data_criacao=message_date_utc,
             )
 
             response = json.loads(response)
