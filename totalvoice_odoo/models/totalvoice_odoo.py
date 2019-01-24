@@ -478,7 +478,7 @@ class TotalVoiceBase(models.Model):
                                           "left for sending this message"))
 
             message_date_utc = False
-            if record.schedule_message:
+            if record.schedule_message or message_date:
                 message_date = message_date or record.message_date
                 message_date_string = fields.Datetime.from_string(message_date)
                 message_date_utc = fields.Datetime.context_timestamp(
