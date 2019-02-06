@@ -10,6 +10,8 @@
     'application': False,
     'depends': ['base', 'webhook'],
     'data': [
+         'data/ir_config_parameter.xml',
+
          'views/totalvoice_base_view.xml',
          'views/totalvoice_webhook.xml',
          'views/totalvoice_config_view.xml',
