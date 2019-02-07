@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from datetime import datetime
+from datetime import datetime, timedelta
 from odoo.exceptions import UserError, ValidationError
 
 import logging
@@ -19,6 +19,8 @@ PHONE_SELECTION = [
     ('phone', _('Phone')),
     ('mobile', _('Mobile')),
 ]
+# Sms timeout tolerance in minutes
+TIMEOUT_TOLERANCE = 5
 
 
 class WebHook(models.Model):
@@ -361,7 +363,20 @@ class TotalVoiceBase(models.Model):
         )
 
         if self.state == 'scheduled':
-            if fields.Datetime.now() >= active_message_id.message_date:
+            if str(datetime.now() - timedelta(minutes=TIMEOUT_TOLERANCE)) >= \
+                    active_message_id.message_date:
+
+                totalvoice_api = self.env['totalvoice.api.config']
+                sms_api = json.loads(totalvoice_api.get_client()
+                                     .sms.get_by_id(str(self.sms_id)))
+
+                if sms_api.get('dados') and \
+                        sms_api.get('dados').get('status_envio') != 'entregue':
+                    self.state = 'failed'
+                    active_message_id.server_message = _(
+                        "The Totalvoice Server couldn't send the SMS.")
+                    return
+
                 if not self.wait_for_answer:
                     self.state = 'done'
                 else:

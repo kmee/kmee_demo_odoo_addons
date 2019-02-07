@@ -606,6 +606,12 @@ msgid "The Time Out for archiving DOne Conversations (hours) !!!"
 msgstr "O tempo para que conversars finalizadas sejam arquivadas (horas) !!!"
 
 #. module: totalvoice_odoo
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:376
+#, python-format
+msgid "The Totalvoice Server couldn't send the SMS."
+msgstr "O Servidor Totalvoice não pôde enviar o SMS."
+
+#. module: totalvoice_odoo
 #: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:440
 #, python-format
 msgid "The contact you want to send a message to needs to have a valid selected number"
