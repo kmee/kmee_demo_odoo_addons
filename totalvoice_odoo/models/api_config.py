@@ -181,12 +181,18 @@ class ApiConfig(models.TransientModel):
         :return: The Totalvoice Client Object
         """
         try:
-            client = Cliente(
-                self.env['ir.config_parameter'].get_param('api_key'), api_url,)
+            api_key = self.env['ir.config_parameter'].get_param('api_key')
+
+            if not api_key:
+                raise UserError(_('API-KEY not configured. Check the '
+                                  'Totalvoice Configuration section'))
+
+            client = Cliente(api_key, api_url,)
 
         except Exception:
             if _raise:
-                raise UserError(_('API-KEY and API-URL not configured'))
+                raise UserError(_('API-KEY and API-URL not configured. Check '
+                                  'the Totalvoice Configuration section'))
 
         return client
 
