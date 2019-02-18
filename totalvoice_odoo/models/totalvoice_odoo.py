@@ -27,7 +27,7 @@ class WebHook(models.Model):
     _inherit = 'webhook'
 
     @api.one
-    def run_totalvoice_totalvoice(self, json=False):
+    def run_totalvoice_totalvoice(self, json=False, partner=False):
         # You will have all request data in
         # variable: self.env.request
 
@@ -46,7 +46,7 @@ class WebHook(models.Model):
         sms_id = received_message.get('sms_id')
 
         # The user who sent the SMS
-        partner_id = self.env['totalvoice.base'].search(
+        partner_id = partner or self.env['totalvoice.base'].search(
             [('sms_id', '=', sms_id), ], limit=1
         ).partner_id
 

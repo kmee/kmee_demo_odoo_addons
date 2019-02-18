@@ -78,6 +78,11 @@ class ApiConfig(models.TransientModel):
         default='133830',
     )
 
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Partner",
+    )
+
     @api.model
     def default_get(self, fields):
         res = super(ApiConfig, self).default_get(fields)
@@ -390,4 +395,5 @@ class ApiConfig(models.TransientModel):
             "data_resposta": fields.Datetime.now(),
         }
 
-        totalvoice_webhook.run_totalvoice_totalvoice(json=json)
+        totalvoice_webhook.run_totalvoice_totalvoice(json=json,
+                                                     partner=self.partner_id)
