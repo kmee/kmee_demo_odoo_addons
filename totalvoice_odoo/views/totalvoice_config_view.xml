@@ -55,9 +55,7 @@
                     </group>
 
                     <group string="Totalvoice Test Webhook" groups="base.group_no_one">
-                        <field name="api_test_webhook_id" />
                         <field name="partner_id" />
-                        <field name="api_test_webhook_sms_id" />
                         <field name="api_test_webhook_message" />
                         <button name="action_test_webhook_message" class="btn-primary" string="Test Webhook Message" type="object" />
                     </group>
