@@ -9,6 +9,8 @@ import random
 import json
 import re
 
+from unicodedata import normalize
+
 date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
@@ -464,6 +466,12 @@ class TotalVoiceBase(models.Model):
 
             if not send_message:
                 raise ValidationError(_("The SMS needs to have a message."))
+
+            try:
+                send_message = normalize(
+                    'NFKD', unicode(send_message)).encode('ASCII', 'ignore')
+            except Exception as e:
+                print e
 
             record.message = send_message
             wait_for_answer = record.wait_for_answer if wait is None else wait
