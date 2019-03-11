@@ -436,6 +436,10 @@ class TotalVoiceBase(models.Model):
 
         return random_code
 
+    def _raise_error_rollback(self, message):
+        self._cr.commit()
+        raise ValidationError(message)
+
     @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None,
                  multi_sms=True, message_date=None):
@@ -458,14 +462,17 @@ class TotalVoiceBase(models.Model):
                      and not record.number_to_phone)
                      or (record.number_to == 'mobile' and
                      not record.number_to_mobile)):
-                raise ValidationError(_("The contact you want to send a "
-                                        "message to needs to have a "
-                                        "valid selected number"))
+                self._raise_error_rollback(
+                    _("The contact you want to send a message to needs to "
+                      "have a valid selected number")
+                )
 
             send_message = custom_message or record.message
 
             if not send_message:
-                raise ValidationError(_("The SMS needs to have a message."))
+                self._raise_error_rollback(
+                    _("The SMS needs to have a message.")
+                )
 
             try:
                 send_message = normalize(
@@ -497,8 +504,10 @@ class TotalVoiceBase(models.Model):
 
                     self.cr.commit()
 
-                    raise StandardError(_("There's not free conversation_code "
-                                          "left for sending this message"))
+                    self._raise_error_rollback(
+                        _("There's not free conversation_code "
+                          "left for sending this message")
+                    )
 
             message_date_utc = False
             if record.schedule_message or message_date:
