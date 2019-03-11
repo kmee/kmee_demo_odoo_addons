@@ -500,7 +500,8 @@ class TotalVoiceBase(models.Model):
                         _("There's not free conversation_code left for "
                           "sending this message")
 
-                    self.env['totalvoice.message'].create(new_message)
+                    record.active_sms_id = \
+                        self.env['totalvoice.message'].create(new_message)
 
                     self.cr.commit()
 
@@ -534,7 +535,6 @@ class TotalVoiceBase(models.Model):
 
             # If the message couldn't be sent
             if not response.get('sucesso'):
-                record.state = 'failed'
 
                 new_message = {
                     'message_date': message_date or fields.Datetime.now(),
@@ -553,8 +553,9 @@ class TotalVoiceBase(models.Model):
                     new_message['server_message'] = \
                         _('Number not registered on TotalVoice')
 
-                record.env['totalvoice.message'].create(new_message)
-
+                record.active_sms_id = \
+                    record.env['totalvoice.message'].create(new_message)
+                record.state = 'failed'
                 return False
 
             # If this conversation isn't waiting for an answer
@@ -585,7 +586,8 @@ class TotalVoiceBase(models.Model):
                 'server_message': server_message
             }
 
-            record.env['totalvoice.message'].create(new_message)
+            self.active_sms_id = \
+                record.env['totalvoice.message'].create(new_message)
             return True
 
     @api.multi
