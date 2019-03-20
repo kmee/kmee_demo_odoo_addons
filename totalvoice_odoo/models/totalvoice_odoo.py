@@ -361,7 +361,7 @@ class TotalVoiceBase(models.Model):
         now_date = datetime.now()
 
         active_message_id = self.message_ids.filtered(
-            lambda m: m.sms_id == active_message
+            lambda m: m.id == active_message
         )
 
         if self.state == 'scheduled':
