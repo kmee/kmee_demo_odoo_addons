@@ -77,7 +77,7 @@
                         attrs="{'invisible':[('state','in',('waiting', 'timeout', 'done', 'failed'))]}"
                         help="This button will send an SMS " />
 
-                <button name="send_sms" type="object" String="Resend last SMS"
+                <button name="resend_sms" type="object" String="Resend last SMS"
                         class="oe_highlight" style="background-color:red; text-color:white;" icon="fa-commenting-o" confirm="Are you sure want to Resend the last SMS"
                         attrs="{'invisible':[('state','in',('draft', 'waiting', 'done'))]}"
                         help="This button will Resend the Last SMS in the conversation" />

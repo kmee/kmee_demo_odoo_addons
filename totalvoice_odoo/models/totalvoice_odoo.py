@@ -154,6 +154,11 @@ class TotalVoiceMessage(models.Model):
         size=160,
     )
 
+    resent_message = fields.Boolean(
+        string=_('Resent Message'),
+        default=False,
+    )
+
 
 class TotalVoiceBase(models.Model):
     _name = 'totalvoice.base'
@@ -441,8 +446,28 @@ class TotalVoiceBase(models.Model):
         raise ValidationError(message)
 
     @api.multi
+    def resend_sms(self, env=False):
+        """
+        Sends an automatic response depending on the user's previous response
+        :param message: Message to be sent
+        :param wait: Should the conversation wait for new answers?
+        """
+        for record in self:
+            active_message_id = record.message_ids.filtered(
+                lambda m: m.id == record.active_sms_id
+            )
+
+            message_date = None
+            if record.message_date > fields.Datetime.now():
+                message_date = record.message_date
+
+            record.send_sms(
+                env=env, custom_message=active_message_id.message, resend=True,
+                wait=record.wait_for_answer, message_date=message_date)
+
+    @api.multi
     def send_sms(self, env=False, custom_message=False, wait=None,
-                 multi_sms=True, message_date=None):
+                 multi_sms=True, message_date=None, resend=False):
         """
         Send an SMS to the selected res_partner
 
@@ -494,6 +519,7 @@ class TotalVoiceBase(models.Model):
                         'message': send_message,
                         'coversation_id': record.id,
                         'message_origin': 'error',
+                        'resent_message': resend,
                     }
 
                     new_message['server_message'] = \
@@ -541,7 +567,8 @@ class TotalVoiceBase(models.Model):
                     'message': send_message,
                     'coversation_id': record.id,
                     'message_origin': 'error',
-                    'server_message': server_message
+                    'server_message': server_message,
+                    'resent_message': resend,
                 }
 
                 # 'Motivo=8' means the number isn't registered at
@@ -583,7 +610,8 @@ class TotalVoiceBase(models.Model):
                 'message': send_message,
                 'coversation_id': record.id,
                 'message_origin': 'sent',
-                'server_message': server_message
+                'server_message': server_message,
+                'resent_message': resend,
             }
 
             self.active_sms_id = \
@@ -634,15 +662,6 @@ class TotalVoiceBase(models.Model):
                         self.env['totalvoice.message'].create(new_answer)
                     if review:
                         record.review_sms_answer(answer_id)
-
-    def resend_message(self, message=False, wait=False):
-        """
-        Sends an automatic response depending on the user's previous response
-        :param message: Message to be sent
-        :param wait: Should the conversation wait for new answers?
-        """
-
-        return self.send_sms(custom_message=message, wait=wait)
 
     def review_sms_answer(self, answer):
         """
