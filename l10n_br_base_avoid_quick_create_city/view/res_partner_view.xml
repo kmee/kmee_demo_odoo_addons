@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+	    <record model="ir.ui.view" id="view_5acts_partner_form">
+	        <field name="name">5_acts.partner.form</field>
+	        <field name="model">res.partner</field>
+	        <field name="inherit_id" ref="base.view_partner_form" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">        
+				<xpath expr="//field[@name='state_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+				<xpath expr="//field[@name='country_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+	        </field>
+	    </record>
+	    
+    	<record model="ir.ui.view" id="view_5acts_city_form">
+	        <field name="name">5_acts.city.form</field>
+			<field name="model">res.partner</field>
+	        <field name="inherit_id" ref="l10n_br_base.view_l10n_br_base_partner_form" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">        
+				<xpath expr="//field[@name='l10n_br_city_id']" position="attributes">
+					<attribute name="options">{'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+	        </field>
+	    </record>     
+    </data>
+</openerp>
