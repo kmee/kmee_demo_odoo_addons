@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="l10n_br_romaneio_view_form" model="ir.ui.view">
+            <field name="name">l10n_br_romaneio.form</field>
+            <field name="model">stock.romaneio</field>
+            <field name="arch" type="xml">
+                <form string="Romaneio">
+                    <h1>Romaneio</h1>
+                    <button class="oe_inline oe_stat_button"
+                            name="%(action_view_stock_romaneio_from_invoice_lines)d"
+                            string="Import Invoice" type="action"
+                            widget="statinfo" icon="fa-pencil-square-o" position="right"/>
+                    <group>
+                        <field name="carrier_id"/>
+                        <field name="data_criacao"/>
+                    </group>
+                    <notebook>
+                        <page string="Notas fiscas separadas">
+                            <field name="stock_romaneio_lines">
+                                <tree editable="bottom" string="Linhas do romaneio">
+                                    <field name="invoice_number"/>
+                                    <field name="cidade_destino"/>
+                                    <field name="valor_declarado"/>
+                                    <field name="qtd_volumes"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="invoices_total">
+                        <div class="oe_subtotal_footer_separator oe_inline">
+                            <label for="total_value" />
+                        </div>
+                        <field name="total_value" nolabel="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="volumes_total">
+                        <div class="oe_subtotal_footer_separator oe_inline">
+                            <label for="total_volumes" />
+                        </div>
+                        <field name="total_volumes" nolabel="1" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <div class="oe_clear"/>
+                </form>
+            </field>
+        </record>
+
+        <record	id="view_tree_10n_br_romaneio" model="ir.ui.view">
+            <field	name="name">10n_br_romaneio.tree</field>
+            <field	name="model">stock.romaneio</field>
+            <field	name="arch"	type="xml">
+                <tree>
+                    <field name="name" string="Romaneio"/>
+                    <field name="create_uid" string="Criado Por"/>
+                    <field name="carrier_id" string="Transportadora"/>
+                    <field name="data_criacao" string="Criado em"/>
+                    <field name="total_value" string="Valor Total"/>
+                    <field name="total_volumes" string="Total de volumes"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_add_romaneio"
+                model="ir.actions.act_window">
+            <field name="name">Romaneio</field>
+            <field name="res_model">stock.romaneio</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_add_romaneio"
+                  name="Romaneio"
+                  parent="stock.menu_stock_warehouse_mgmt"
+                  action="action_add_romaneio"/>
+
+    </data>
+</openerp>

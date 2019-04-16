@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_stock_romaneio_from_invoice_lines" model="ir.ui.view">
+            <field name="name">stock.romaneio.from.invoice.lines.form</field>
+            <field name="model">stock.romaneio.from.invoice.lines</field>
+            <field name="arch" type="xml">
+                <form string="Importar entradas">
+                    <separator string="Invoices"/>
+                    <field height="300" witdh="700"
+                        name="line_ids"
+                        context="{'currency':True}" />
+                    <footer>
+                        <button string="Ok" name="populate_romaneio" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_view_stock_romaneio_from_invoice_lines" model="ir.actions.act_window">
+            <field name="name">Import Entries</field>
+            <field name="res_model">stock.romaneio.from.invoice.lines</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_stock_romaneio_from_invoice_lines"/>
+            <field name="target">new</field>
+            <field name="context">{'statement_id': active_id}</field>
+        </record>
+    </data>
+</openerp>
