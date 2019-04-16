@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+	    <record model="ir.ui.view" id="view_5acts_crmlead_form1">
+	        <field name="name">5_acts.crmlead.form1</field>
+	        <field name="model">crm.lead</field>
+	        <field name="inherit_id" ref="crm.crm_case_form_view_oppor" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">        
+				<xpath expr="//field[@name='country_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+	        </field>
+	    </record>
+	    <record model="ir.ui.view" id="view_5acts_crmlead_form4">
+	        <field name="name">5_acts.crmlead.form4</field>
+	        <field name="model">crm.lead</field>
+	        <field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">       
+				<xpath expr="//field[@name='country_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+	        </field>
+	    </record>
+	    <record model="ir.ui.view" id="view_5acts_crmlead_form2">
+	        <field name="name">5_acts.crmlead.form2</field>
+	        <field name="model">crm.lead</field>
+	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_leads_form" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">       
+				<xpath expr="//field[@name='state_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+				<xpath expr="//field[@name='l10n_br_city_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath> 
+	        </field>
+	    </record> 
+	   <record model="ir.ui.view" id="view_5acts_crmlead_form3">
+	        <field name="name">5_acts.crmlead.form3</field>
+	        <field name="model">crm.lead</field>
+	        <field name="inherit_id" ref="l10n_br_crm.l10n_br_crm_opportunities_form" />
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">       
+				<xpath expr="//field[@name='state_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+				<xpath expr="//field[@name='l10n_br_city_id']" position="attributes">
+					<attribute name="options">{'limit': 10, 'create': false, 'create_edit': false}</attribute>				
+				</xpath>
+	        </field>
+	    </record>
+    </data>
+</openerp>
