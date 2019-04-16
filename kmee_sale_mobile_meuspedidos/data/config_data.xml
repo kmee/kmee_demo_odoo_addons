@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="meus_pedidos_apptoken" model="ir.config_parameter">
+			<field name="key">meus_pedidos.apptoken</field>
+			<field name="value">c2e6b6b5-3128-4771-9c14-b8caf125f735</field>
+		</record>
+		<record id="meus_pedidos_senha" model="ir.config_parameter">
+			<field name="key">meus_pedidos.comptoken</field>
+            <field name="value">98a0f506-e201-4a66-9589-a79b223b180f</field>
+		</record>
+		
+
+		<record id="meus_pedidos_url" model="ir.config_parameter">
+			<field name="key">meus_pedidos.url</field>
+			<field name="value">http://69.164.203.63:8080/</field>
+		</record>
+	</data>
+</openerp>
+
+
+    
