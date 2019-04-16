@@ -1,0 +1,2 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_sale_mobile_task_user","sale.mobile.task.user","model_sale_mobile_process","group_sale_mobile_admin",1,1,1,1
