@@ -20,12 +20,16 @@
 from openerp import pooler
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
-from pyapogeus.apogeus import Apogeus
+
 from unicodedata import normalize
 import re
 from string import punctuation
 from datetime import datetime
 import time
+try:
+    from pyapogeus.apogeus import Apogeus
+except ImportError:
+    _logger.info('Cannot import pyapogeus')
 
 
 class sale_mobile_object(osv.osv):
