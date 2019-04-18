@@ -29,6 +29,8 @@ import time
 try:
     from pyapogeus.apogeus import Apogeus
 except ImportError:
+    import logging
+    _logger = logging.getLogger(__name__)
     _logger.info('Cannot import pyapogeus')
 
 
