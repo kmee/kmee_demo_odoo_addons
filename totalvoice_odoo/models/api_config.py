@@ -2,7 +2,10 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from totalvoice.cliente import Cliente
+try:
+    from totalvoice.cliente import Cliente
+except:
+    pass
 
 from unicodedata import normalize
 import json
