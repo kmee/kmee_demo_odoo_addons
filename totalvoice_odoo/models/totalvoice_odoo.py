@@ -628,7 +628,7 @@ class TotalVoiceBase(models.Model):
             answers = (received_message and [received_message]) or \
                       json.loads(self.env['totalvoice.api.config'].
                                  get_client().
-                                 sms.get_by_id(str(record.active_sms_id))).\
+                                 sms.get_by_id(str(record.sms_id))).\
                           get('dados').get('respostas')
 
             if answers:
