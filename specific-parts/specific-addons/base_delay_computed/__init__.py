@@ -38,6 +38,8 @@ class patch_into(object):
         return method
 
 
+# by LeoRochael - torna assíncrona computação de campos related store=True
+# de acordo com delay_map - usado por stock_pycking.py em ybp_overrides
 @patch_into(models.BaseModel)
 @contextlib.contextmanager
 def delay_store_compute(self, delay_map):
