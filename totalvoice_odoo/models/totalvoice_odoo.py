@@ -90,13 +90,14 @@ class WebHook(models.Model):
              ('state', 'in', ['waiting'])]
         ).mapped('conversation_code')
 
-        message = _('Unavailable code received: ') + conversation_code + '. '
+        message = _('Codigo Invalido: ') + conversation_code + '. '
         if len(available_conversation_codes):
-            message += _('Available codes are: ') + \
+            message += _('Codigos disponiveis: ') + \
                        ''.join('%03d' % int(code) + ", "
                                for code in available_conversation_codes)
         else:
-            message += "There isn't any code availables for you to answer to."
+            message += _("Voce nao possui nenhuma mensagem pendente "
+                         "a ser respondida.")
 
         # Create a new conversation for sending an Code Error message
         conversation_id = self.env['totalvoice.base'].create({
