@@ -77,6 +77,7 @@
         id="menu_totalvoice_configuration"
         name="Configuration"
         parent="totalvoice_odoo.TotalVoice_Menu"
+        groups="group_totalvoice_manager"
         action="action_totalvoice_configuration"
     />
 

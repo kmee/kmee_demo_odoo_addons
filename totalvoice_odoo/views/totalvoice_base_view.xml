@@ -269,8 +269,18 @@
         <field name="res_model">totalvoice.base</field>
     </record>
 
-    <menuitem name="TotalVoice" icon="terp-project" id="TotalVoice_Menu" web_icon="totalvoice_odoo,static/description/icon.png"/>
-    <menuitem name="Services" parent="TotalVoice_Menu" id="TotalVoice_Services" />
-    <menuitem name="SMS" parent="TotalVoice_Services" id="TotalVoice_SMS"
-            action="action_totalvoice_base_view" />
+    <menuitem name="TotalVoice"
+              icon="terp-project"
+              id="TotalVoice_Menu"
+              groups="group_totalvoice_user"
+              web_icon="totalvoice_odoo,static/description/icon.png"/>
+    <menuitem name="Services"
+              parent="TotalVoice_Menu"
+              groups="group_totalvoice_user"
+              id="TotalVoice_Services" />
+    <menuitem name="SMS"
+              parent="TotalVoice_Services"
+              id="TotalVoice_SMS"
+              groups="group_totalvoice_user"
+              action="action_totalvoice_base_view" />
  </odoo>
