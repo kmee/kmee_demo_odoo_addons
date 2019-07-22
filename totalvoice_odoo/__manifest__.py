@@ -10,14 +10,15 @@
     'application': False,
     'depends': ['base', 'webhook'],
     'data': [
-         'data/ir_config_parameter.xml',
+        'security/totalvoice_security.xml',
+        'security/ir.model.access.csv',
+
+        'data/ir_config_parameter.xml',
 
          'views/totalvoice_base_view.xml',
          'views/totalvoice_webhook.xml',
          'views/totalvoice_config_view.xml',
          'views/totalvoice_cron.xml',
-         'security/ir.model.access.csv',
-         'security/totalvoice_security.xml',
          'views/totalvoice_addnumber_view.xml',
     ],
 }
