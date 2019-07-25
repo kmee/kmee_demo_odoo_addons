@@ -82,6 +82,11 @@
                         attrs="{'invisible':[('state','in',('draft', 'waiting', 'done'))]}"
                         help="This button will Resend the Last SMS in the conversation" />
 
+                <button name="resend_conversation_sms" type="object" String="Resend Message"
+                        class="oe_highlight" style="background-color:red; text-color:white;" icon="fa-commenting-o" confirm="Are you sure want to Resend SMS"
+                        attrs="{'invisible':[('state','in',('draft', 'waiting', 'done'))]}"
+                        help="This button will Resend the main conversation message" />
+
                 <button name="get_sms_status" type="object" String="Get SMS Status"
                         class="oe_highlight" icon="fa-commenting-o"
                         attrs="{'invisible':[('state','not in',('done', 'waiting'))]}"

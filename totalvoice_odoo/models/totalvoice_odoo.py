@@ -447,11 +447,24 @@ class TotalVoiceBase(models.Model):
         raise ValidationError(message)
 
     @api.multi
+    def resend_conversation_sms(self, env=False):
+        """
+        Resend the conversation main message
+        """
+        for record in self:
+
+            message_date = None
+            if record.message_date > fields.Datetime.now():
+                message_date = record.message_date
+
+            record.send_sms(
+                env=env, custom_message=record.message, resend=True,
+                wait=record.wait_for_answer, message_date=message_date)
+
+    @api.multi
     def resend_sms(self, env=False):
         """
-        Sends an automatic response depending on the user's previous response
-        :param message: Message to be sent
-        :param wait: Should the conversation wait for new answers?
+        Resend last SMS message (active message)
         """
         for record in self:
             active_message_id = record.message_ids.filtered(
