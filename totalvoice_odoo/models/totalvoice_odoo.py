@@ -15,6 +15,7 @@ date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 date_format_webhook = '%Y-%m-%dT%H:%M:%S-%f:00'
 
 MAXIMUM_CONVERSATION_CODES = 1000
+MAXIMUM_SINGLE_SMS_SIZE = 160
 log = logging.getLogger(__name__)
 
 PHONE_SELECTION = [
@@ -130,7 +131,6 @@ class TotalVoiceMessage(models.Model):
 
     message = fields.Text(
         string='Message',
-        size=160,
     )
 
     schedule_message = fields.Boolean(
@@ -446,6 +446,41 @@ class TotalVoiceBase(models.Model):
         self._cr.commit()
         raise ValidationError(message)
 
+    def _generate_composite_messages(self, message):
+        send_messages = []
+
+        sms_format = \
+            self.env['totalvoice.api.config'].get_sms_composite_sms_format()
+        split_messages = message.split('\\n')
+
+        if sms_format == 'single':
+            send_messages.append(
+                ''.join(split_messages)[:MAXIMUM_SINGLE_SMS_SIZE])
+        elif sms_format == 'multi':
+            send_messages.append(''.join(split_messages))
+        elif sms_format == 'smart_multi':
+
+            split_messages_len = len(split_messages)
+            idx = 0
+            while idx < split_messages_len:
+                msg_add = False
+                for f_idx in range(split_messages_len, idx, -1):
+                    msg = ''.join(split_messages[idx:f_idx])
+                    if len(msg) <= MAXIMUM_SINGLE_SMS_SIZE:
+                        send_messages.append(msg)
+                        idx = f_idx
+                        msg_add = True
+                        break
+
+                if not msg_add:
+                    send_messages.append(split_messages[idx])
+                    idx += 1
+        else:
+            send_messages.append(
+                ''.join(split_messages)[:MAXIMUM_SINGLE_SMS_SIZE])
+
+        return send_messages
+
     @api.multi
     def resend_conversation_sms(self, env=False):
         """
@@ -524,7 +559,7 @@ class TotalVoiceBase(models.Model):
             record.wait_for_answer = wait_for_answer
 
             if(record.state not in ['draft', 'waiting']):
-                # Get a new conversation code to this conversation
+                # Get a new conversation code for this conversation
                 if not record.get_conversation_code():
                     record.state = 'failed'
 
@@ -557,80 +592,85 @@ class TotalVoiceBase(models.Model):
                 message_date_utc = fields.Datetime.context_timestamp(
                     record, message_date_string).isoformat('T')
 
-            # Sends the SMS
-            response = \
-                record.env['totalvoice.api.config'].get_client().sms.enviar(
-                    record.number_to_raw, send_message,
-                    resposta_usuario=True,
-                    multi_sms=multi_sms,
-                    data_criacao=message_date_utc,
-            )
+            send_messages = record._generate_composite_messages(send_message)
+            for message in send_messages:
+                # Sends the SMS
+                response = \
+                    record.env['totalvoice.api.config'].get_client().sms.enviar(
+                        record.number_to_raw,
+                        message,
+                        resposta_usuario=True,
+                        multi_sms=multi_sms,
+                        data_criacao=message_date_utc,
+                    )
 
-            response = json.loads(response)
+                response = json.loads(response)
 
-            server_message = 'Motivo: ' + str(response.get('motivo')) \
-                             + ' - ' + response.get('mensagem')
+                server_message = 'Motivo: ' + str(response.get('motivo')) \
+                                 + ' - ' + response.get('mensagem')
 
-            record.message_date = fields.Datetime.now()
+                record.message_date = fields.Datetime.now()
 
-            # If the message couldn't be sent
-            if not response.get('sucesso'):
+                # If the message couldn't be sent
+                if not response.get('sucesso'):
+
+                    new_message = {
+                        'message_date': message_date or fields.Datetime.now(),
+                        'message': message,
+                        'coversation_id': record.id,
+                        'message_origin': 'error',
+                        'server_message': server_message,
+                        'resent_message': resend,
+                    }
+
+                    # 'Motivo=8' means the number isn't registered at
+                    # Totalvoice Configuration. So we need to remove the
+                    # partner from the api_registered_partner_ids
+                    if response.get('motivo') == 8:
+                        record.env['totalvoice.api.config'].\
+                            remove_partner(record.partner_id)
+                        new_message['server_message'] = \
+                            _('Number not registered on TotalVoice')
+
+                    record.active_sms_id = \
+                        record.env['totalvoice.message'].create(new_message)
+                    record.state = 'failed'
+                    # return False
+
+                data = response.get('dados')
+                if not data:
+                    continue
+
+                # If this conversation isn't waiting for an answer
+                if message_date:
+                    record.state = 'scheduled'
+                elif not wait_for_answer:
+                    record.state = 'done'
+                else:
+                    record.state = 'waiting'
+
+                sms_ids = data.get('id')
+                record.active_sms_id = sms_ids \
+                    if type(sms_ids) is int \
+                    else sms_ids[-1]
+
+                record.sms_id = record.sms_id \
+                    if record.sms_id \
+                    else record.active_sms_id
 
                 new_message = {
                     'message_date': message_date or fields.Datetime.now(),
-                    'message': send_message,
+                    'sms_id': record.active_sms_id,
+                    'message': message,
                     'coversation_id': record.id,
-                    'message_origin': 'error',
+                    'message_origin': 'sent',
                     'server_message': server_message,
                     'resent_message': resend,
                 }
 
-                # 'Motivo=8' means the number isn't registered at
-                # Totalvoice Configuration. So we need to remove the
-                # partner from the api_registered_partner_ids
-                if response.get('motivo') == 8:
-                    record.env['totalvoice.api.config'].\
-                        remove_partner(record.partner_id)
-                    new_message['server_message'] = \
-                        _('Number not registered on TotalVoice')
-
                 record.active_sms_id = \
                     record.env['totalvoice.message'].create(new_message)
-                record.state = 'failed'
-                return False
-
-            # If this conversation isn't waiting for an answer
-            if message_date:
-                record.state = 'scheduled'
-            elif not wait_for_answer:
-                record.state = 'done'
-            else:
-                record.state = 'waiting'
-
-            data = response.get('dados')
-
-            sms_ids = data.get('id')
-            record.active_sms_id = sms_ids \
-                if type(sms_ids) is int \
-                else sms_ids[-1]
-
-            record.sms_id = record.sms_id \
-                if record.sms_id \
-                else record.active_sms_id
-
-            new_message = {
-                'message_date': message_date or fields.Datetime.now(),
-                'sms_id': record.active_sms_id,
-                'message': send_message,
-                'coversation_id': record.id,
-                'message_origin': 'sent',
-                'server_message': server_message,
-                'resent_message': resend,
-            }
-
-            self.active_sms_id = \
-                record.env['totalvoice.message'].create(new_message)
-            return True
+        return True
 
     @api.multi
     def get_sms_status(self, env=False, received_message=False, review=False):

@@ -32,6 +32,7 @@
                     </group>
 
                     <group string="Conversation Settings">
+                        <field name="composite_sms_format" widget="radio" class="oe_inline" />
                         <field name="timeout" class="oe_inline" />
                         <field name="archive_timeout" class="oe_inline" />
                     </group>

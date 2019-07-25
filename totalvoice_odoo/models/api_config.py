@@ -13,6 +13,12 @@ import re
 
 api_url = 'api.totalvoice.com.br'
 
+SMS_FORMAT_SELECTION = [
+    ('single', 'Single'),
+    ('multi', 'Multi'),
+    ('smart_multi', 'Smart Multi')
+]
+
 
 class ApiConfig(models.TransientModel):
     _name = 'totalvoice.api.config'
@@ -86,6 +92,19 @@ class ApiConfig(models.TransientModel):
         string="Partner",
     )
 
+    composite_sms_format = fields.Selection(
+        selection=SMS_FORMAT_SELECTION,
+        default='smart_multi',
+        help='The format in which the message will be sent. '
+             'Single -> Indicates that the message will be sent at one time, '
+             'limiting it to 160 characters. Multi -> Indicates that SMS will '
+             'be sent in one or more messages, cut every 160 characters. '
+             
+             'Smart-Merge -> Indicates that the message will be cut into one '
+             'or more messages, cut (if necessary) at the points in the '
+             'message where the expression \\n is found.'
+    )
+
     @api.model
     def default_get(self, fields):
         res = super(ApiConfig, self).default_get(fields)
@@ -105,6 +124,8 @@ class ApiConfig(models.TransientModel):
             res['api_balance'] = 0
             res['api_login'] = ''
             res['api_phone'] = ''
+
+        conf = self.env['ir.config_parameter']
 
         self.env['ir.config_parameter'].\
             set_param('api_username',
@@ -138,6 +159,7 @@ class ApiConfig(models.TransientModel):
             'api_key': conf.get_param('api_key'),
             'api_server_message': conf.get_param('api_server_message'),
             'timeout': int(conf.get_param('timeout')),
+            'composite_sms_format': conf.get_param('composite_sms_format'),
             'archive_timeout': int(conf.get_param('archive_timeout')),
             'api_balance': float(conf.get_param('api_balance')),
             'api_username': conf.get_param('api_username'),
@@ -157,6 +179,7 @@ class ApiConfig(models.TransientModel):
                         encode('ASCII', 'ignore')))
         conf.set_param('api_balance', str(self.api_balance))
         conf.set_param('timeout', str(self.timeout))
+        conf.set_param('composite_sms_format', self.composite_sms_format)
         conf.set_param('archive_timeout', str(self.archive_timeout))
         conf.set_param('api_username',
                        (normalize('NFKD', unicode(self.api_username or '')).
@@ -174,6 +197,15 @@ class ApiConfig(models.TransientModel):
 
         time_out = self.env['ir.config_parameter'].get_param('timeout')
         return int(time_out)
+
+    def get_sms_composite_sms_format(self):
+        """
+        Get the composite_sms_format config field
+        :return: the composite_sms_format
+        """
+
+        return \
+            self.env['ir.config_parameter'].get_param('composite_sms_format')
 
     def get_archive_timeout(self):
         """
@@ -356,7 +388,6 @@ class ApiConfig(models.TransientModel):
                     'api_registered_partner_ids', str(registered_partners.ids))
             if self:
                 self.api_registered_partner_ids = registered_partners
-
 
     def remove_partner(self, partner):
         """
