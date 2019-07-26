@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-29 21:43+0000\n"
-"PO-Revision-Date: 2019-05-29 21:43+0000\n"
+"POT-Creation-Date: 2019-07-26 16:29+0000\n"
+"PO-Revision-Date: 2019-07-26 16:29+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,13 +21,13 @@ msgid "API-KEY"
 msgstr "API-KEY"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:202
+#: code:addons/totalvoice_odoo/models/api_config.py:234
 #, python-format
 msgid "API-KEY and API-URL not configured. Check the Totalvoice Configuration section"
 msgstr "API-KEY e API-URL não configurados. Verifique a seção de Configuração Totalvoice"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:195
+#: code:addons/totalvoice_odoo/models/api_config.py:227
 #, python-format
 msgid "API-KEY not configured. Check the Totalvoice Configuration section"
 msgstr "API-KEY não configurada. Verifique a seção de Configuração Totalvoice"
@@ -56,7 +56,7 @@ msgid "Active"
 msgstr "Ativo"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:123
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:124
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_active_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_active_sms_id
 #, python-format
@@ -64,7 +64,7 @@ msgid "Active SMS ID waiting for answers"
 msgstr "ID de SMS ativo esperando por respostas"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:689
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:742
 #, python-format
 msgid "An error was triggered processing the message. Please try again. "
 msgstr "Um erro foi encontrado ao processar a mensagem. Por favor, tente novamente. "
@@ -88,6 +88,11 @@ msgstr "Notificaçao de Reconfirmação de Atendimento"
 #: selection:totalvoice.base,subject:0
 msgid "Appointment Reconfirm Timeout Notification"
 msgstr "Notificação de Tempo Excedido na Reconfirmação de Atendimento"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
+msgid "Are you sure want to Resend SMS"
+msgstr "Tem certeza que deseja reenviar o SMS?"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -132,16 +137,21 @@ msgid "Code:"
 msgstr "Código:"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:93
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:94
 #, python-format
 msgid "Codigo Invalido: "
 msgstr "Codigo Invalido: "
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:95
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:96
 #, python-format
 msgid "Codigos disponiveis: "
 msgstr "Codigos disponiveis: "
+
+#. module: totalvoice_odoo
+#: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_composite_sms_format
+msgid "Composite sms format"
+msgstr "Formato de envio do SMS"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.menu,name:totalvoice_odoo.menu_totalvoice_configuration
@@ -193,7 +203,7 @@ msgid "Conversation Time Out (hours)"
 msgstr "Tempo para expirar a conversa (horas)"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:32
+#: code:addons/totalvoice_odoo/models/api_config.py:38
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_archive_timeout
 #, python-format
 msgid "Conversation archive Time Out (hours)"
@@ -244,7 +254,7 @@ msgstr "Data da Mensagem"
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_number_display_name
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_wizard_register_partner_number_display_name
 msgid "Display Name"
-msgstr "Nome para Exibição"
+msgstr "Nome de Exibição"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_search
@@ -353,6 +363,11 @@ msgid "Last Updated on"
 msgstr "Última atualização em"
 
 #. module: totalvoice_odoo
+#: model:res.groups,name:totalvoice_odoo.group_totalvoice_manager
+msgid "Manager"
+msgstr "Gerente"
+
+#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_image_medium
 msgid "Medium-sized image"
 msgstr "Imagem de tamanho Médio"
@@ -382,7 +397,7 @@ msgid "Message origin"
 msgstr "Origem da Mensagem"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:22
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:23
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_number_to_mobile
 #: selection:totalvoice.base,number_to:0
 #, python-format
@@ -394,6 +409,11 @@ msgstr "Celular"
 #, python-format
 msgid "Mobile: "
 msgstr "Celular: "
+
+#. module: totalvoice_odoo
+#: selection:totalvoice.api.config,composite_sms_format:0
+msgid "Multi"
+msgstr "Múltiplo"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_username
@@ -424,7 +444,7 @@ msgid "Number already registered"
 msgstr "Número já cadastrado"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:582
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:633
 #, python-format
 msgid "Number not registered on TotalVoice"
 msgstr "Número não cadastrado no TotalVoice"
@@ -452,7 +472,7 @@ msgid "Patient Discharged"
 msgstr "Paciente Liberado"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:21
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:22
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_api_config_api_phone
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_number_to_phone
 #: selection:totalvoice.base,number_to:0
@@ -477,7 +497,7 @@ msgid "Prescription Notification"
 msgstr "Notificação de Prescrição"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:254
+#: code:addons/totalvoice_odoo/models/api_config.py:286
 #, python-format
 msgid "Problem when connecting to the TotalVoice Server"
 msgstr "Erro ao conectar no servidor da TotalVoice"
@@ -499,7 +519,7 @@ msgid "Register Number"
 msgstr "Registrar Número"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:698
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:751
 #: code:addons/totalvoice_odoo/models/wizard_register_partner_number.py:18
 #, python-format
 msgid "Register a New TotalVoice Number"
@@ -543,7 +563,7 @@ msgid "SMS ID"
 msgstr "SMS ID"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:116
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:117
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_sms_id
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_message_sms_id
 #, python-format
@@ -581,7 +601,7 @@ msgid "Select a Number"
 msgstr "Selecione um Número"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:378
+#: code:addons/totalvoice_odoo/models/api_config.py:409
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_partner_form
 #, python-format
 msgid "Select contact"
@@ -616,6 +636,11 @@ msgid "Services"
 msgstr "Serviços"
 
 #. module: totalvoice_odoo
+#: selection:totalvoice.api.config,composite_sms_format:0
+msgid "Single"
+msgstr "Simples"
+
+#. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_image_small
 msgid "Small-sized image"
 msgstr "Imagem pequena"
@@ -624,6 +649,11 @@ msgstr "Imagem pequena"
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_base_image_small
 msgid "Small-sized image of this contact. It is automatically resized as a 64x64px image, with aspect ratio preserved. Use this field anywhere a small image is required."
 msgstr "Imagem em tamannho reduzido do contato. O tamanho da imagem será automaticamente ajustado para 64x64px, mantendo-se as proporções da imagem original. Utilize esse campo em lugares onde uma pequena imagem for necessária."
+
+#. module: totalvoice_odoo
+#: selection:totalvoice.api.config,composite_sms_format:0
+msgid "Smart Multi"
+msgstr "Múltiplo Inteligente"
 
 #. module: totalvoice_odoo
 #: model:ir.model.fields,field_description:totalvoice_odoo.field_totalvoice_base_state
@@ -653,13 +683,13 @@ msgid "Text Message Phone"
 msgstr "Telefone para Mensagens"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:500
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:548
 #, python-format
 msgid "The SMS needs to have a message."
 msgstr "O SMS precisa ter uma mensagem."
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/api_config.py:33
+#: code:addons/totalvoice_odoo/models/api_config.py:39
 #: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_api_config_archive_timeout
 #, python-format
 msgid "The Time Out for archiving DOne Conversations (hours) !!!"
@@ -672,7 +702,7 @@ msgid "The Totalvoice Server couldn't send the SMS."
 msgstr "O Servidor Totalvoice não pôde enviar o SMS."
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:492
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:540
 #, python-format
 msgid "The contact you want to send a message to needs to have a valid selected number"
 msgstr "O contato que você quer enviar uma mensagem precisa ter um número válido selecionado"
@@ -683,14 +713,20 @@ msgid "The conversation time out for waiting answers (in Hours) !!!"
 msgstr "O tempo para expirar a espera por respostas de uma conversa (em Horas) !!!"
 
 #. module: totalvoice_odoo
+#: model:ir.model.fields,help:totalvoice_odoo.field_totalvoice_api_config_composite_sms_format
+msgid "The format in which the message will be sent. Single -> Indicates that the message will be sent at one time, limiting it to 160 characters. Multi -> Indicates that SMS will be sent in one or more messages, cut every 160 characters. Smart-Merge -> Indicates that the message will be cut into one or more messages, cut (if necessary) at the points in the message where the expression \"\n"
+"\" is found."
+msgstr "O formato o qual a mensagem será enviada. Simples -> Indica que a mensagem será enviada de uma vez, se limitando em 160 caracteres. Múltiplo -> Indica uqe o SMS será enviado em uma ou mais mensagens, cortadas a cada 160 caracteres. Múltiplo-Inteligente -> Indica que a mensagem será cortada em uma ou mais mensagens, o corte (caso necessário) será feito em pontos da mensagem onde a expressão \"\n\" for encontrada."
+
+#. module: totalvoice_odoo
 #: code:addons/totalvoice_odoo/models/wizard_register_number.py:113
 #, python-format
 msgid "The number could not be registered. Probably due a invalid verification code"
 msgstr "O número não pôde ser cadastrado. Provavelmente devido a um código de verificação inválido"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:527
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:536
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:575
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:584
 #, python-format
 msgid "There's not free conversation_code left for sending this message"
 msgstr "Não existe nenhum código de conversa livre para enviar esta mensagem"
@@ -699,6 +735,11 @@ msgstr "Não existe nenhum código de conversa livre para enviar esta mensagem"
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
 msgid "This button will Resend the Last SMS in the conversation"
 msgstr "Este botão irá Reenviar o último SMS na conversa"
+
+#. module: totalvoice_odoo
+#: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
+msgid "This button will Resend the main conversation message"
+msgstr "Este botão reenviará a mensagem principal da conversa"
 
 #. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.totalvoice_form
@@ -768,6 +809,11 @@ msgid "TotalVoice_Tree"
 msgstr "TotalVoice_Tree"
 
 #. module: totalvoice_odoo
+#: model:ir.module.category,name:totalvoice_odoo.module_category_totalvoice
+msgid "Totalvoice"
+msgstr "Totalvoice"
+
+#. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_totalvoice_config_settings
 msgid "Totalvoice Test Webhook"
 msgstr "Teste de Webhook Totalvoice"
@@ -778,12 +824,22 @@ msgid "Update Registered Numbers"
 msgstr "Atualizar Números Registrados"
 
 #. module: totalvoice_odoo
+#: model:res.groups,name:totalvoice_odoo.group_totalvoice_user
+msgid "User"
+msgstr "Usuário"
+
+#. module: totalvoice_odoo
+#: model:ir.module.category,description:totalvoice_odoo.module_category_totalvoice
+msgid "User access level for this module"
+msgstr "Nível de Acesso de usuário para este módulo"
+
+#. module: totalvoice_odoo
 #: model:ir.ui.view,arch_db:totalvoice_odoo.view_wizard_register_number_form
 msgid "Validate Activation Code"
 msgstr "Validar Código de Ativação"
 
 #. module: totalvoice_odoo
-#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:99
+#: code:addons/totalvoice_odoo/models/totalvoice_odoo.py:100
 #, python-format
 msgid "Voce nao possui nenhuma mensagem pendente a ser respondida."
 msgstr "Voce nao possui nenhuma mensagem pendente a ser respondida."

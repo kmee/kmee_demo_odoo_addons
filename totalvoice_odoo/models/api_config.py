@@ -102,7 +102,7 @@ class ApiConfig(models.TransientModel):
              
              'Smart-Merge -> Indicates that the message will be cut into one '
              'or more messages, cut (if necessary) at the points in the '
-             'message where the expression \\n is found.'
+             'message where the expression "\n" is found.'
     )
 
     @api.model
