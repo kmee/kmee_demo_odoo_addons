@@ -94,7 +94,7 @@ class ApiConfig(models.TransientModel):
 
     composite_sms_format = fields.Selection(
         selection=SMS_FORMAT_SELECTION,
-        default='smart_multi',
+        default='single',
         help='The format in which the message will be sent. '
              'Single -> Indicates that the message will be sent at one time, '
              'limiting it to 160 characters. Multi -> Indicates that SMS will '
