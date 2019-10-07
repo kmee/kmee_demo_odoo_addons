@@ -9,6 +9,8 @@ import random
 import json
 import re
 
+_logger = logging.getLogger(__name__)
+
 from unicodedata import normalize
 
 date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -40,26 +42,31 @@ class WebHook(models.Model):
         conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
 
         # The conversation the user is trying to answer
-        conversation_id = self.env['totalvoice.base'].search(
-            [('conversation_code', '=',
-              ''.join('%03d' % int(conversation_code))),
-             ('state', 'in', ['waiting'])], limit=1
-        )
+        try:
+            conversation_id = self.env['totalvoice.base'].search(
+                [('conversation_code', '=',
+                  ''.join('%03d' % int(conversation_code))),
+                 ('state', 'in', ['waiting'])], limit=1
+            )
 
-        sms_id = received_message.get('sms_id')
+            sms_id = received_message.get('sms_id')
 
-        # The user who sent the SMS
-        partner_id = partner or self.env['totalvoice.base'].search(
-            [('sms_id', '=', sms_id), ], limit=1
-        ).partner_id
+            # The user who sent the SMS
+            partner_id = partner or self.env['totalvoice.base'].search(
+                [('sms_id', '=', sms_id), ], limit=1
+            ).partner_id
 
-        # The conversation exists and the partner_id trying to answer it is
-        # valid
-        if conversation_id and partner_id == conversation_id.partner_id:
-            return conversation_id.get_sms_status(
-                received_message=received_message, review=True)
+            # The conversation exists and the partner_id trying to answer it is
+            # valid
+            if conversation_id and partner_id == conversation_id.partner_id:
+                return conversation_id.get_sms_status(
+                    received_message=received_message, review=True)
 
-        self.send_message_wrong_code(conversation_code, received_message)
+            self.send_message_wrong_code(conversation_code, received_message)
+
+        except Exception as e:
+            _logger.warning(str(e))
+            self.send_message_wrong_code(conversation_code, received_message)
 
     def send_message_wrong_code(self, conversation_code, json):
         """
