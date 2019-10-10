@@ -43,6 +43,48 @@ class patch_into(object):
 @patch_into(models.BaseModel)
 @contextlib.contextmanager
 def delay_store_compute(self, delay_map):
+    """
+    Example of use:
+
+    STOCK_PICKING_DELAY_MAP = {
+        'stock.picking': [
+            'group_id', 'state', 'max_date', 'priority',
+            'min_date', 'weight', 'weight_net',
+            'invoice_state',
+        ],
+        'account.invoice': [
+            'amount_total_taxes',
+            'ii_value', 'icms_base', 'amount_wh', 'residual',
+            'amount_untaxed', 'issqn_value_wh',
+        ],
+    }
+
+
+    # by LeoRochael - otimizações de performance para stock picking
+    class StockPicking(models.Model):
+        _inherit = 'stock.picking'
+
+        # vide ybp_serialize_barcode_scan
+        @api.multi
+        def do_recompute_remaining_quantities(self):
+            if not self.env.context.get('skip_do_recompute_remaining_quantities'):
+                super(StockPicking, self).do_recompute_remaining_quantities()
+
+        # torna assíncrono cálculo de campos obrigatórios no ato da reserva
+        @api.multi
+        def action_assign(self):
+            with self.delay_store_compute(STOCK_PICKING_DELAY_MAP) as self:
+                return super(StockPicking, self).action_assign()
+
+        # torna assíncrono cálculo de campos obrigatórios também no cancelamento
+        @api.multi
+        def action_cancel(self):
+            with self.delay_store_compute(STOCK_PICKING_DELAY_MAP) as self:
+                return super(StockPicking, self).action_cancel()
+
+    
+
+    """
     old_context = self.env.context
     if MAP_KEY in old_context:
         raise NotImplementedError("Don't know how to stack recompute delays")
