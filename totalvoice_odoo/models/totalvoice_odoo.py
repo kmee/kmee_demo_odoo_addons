@@ -39,7 +39,9 @@ class WebHook(models.Model):
         received_message = json or self.env.request.jsonrequest
         message = received_message.get('resposta')
 
-        conversation_code = re.split(r'[^a-zA-Z\d:]', message)[0]
+        conversation_code_obj = re.search(r'\d+', message)
+        conversation_code = \
+            conversation_code_obj and conversation_code_obj.group() or ''
 
         # The conversation the user is trying to answer
         try:
