@@ -475,7 +475,7 @@ class TotalVoiceBase(models.Model):
                 msg_add = False
                 for f_idx in range(split_messages_len, idx, -1):
                     msg = ''.join(split_messages[idx:f_idx])
-                    if len(msg) <= MAXIMUM_SINGLE_SMS_SIZE:
+                    if len(msg) <= (MAXIMUM_SINGLE_SMS_SIZE-18):
                         send_messages.append(msg)
                         idx = f_idx
                         msg_add = True
