@@ -603,48 +603,60 @@ class TotalVoiceBase(models.Model):
 
             send_messages = record._generate_composite_messages(send_message)
             for message in send_messages:
-                # Sends the SMS
-                response = \
-                    record.env['totalvoice.api.config'].get_client().sms.enviar(
-                        record.number_to_raw,
-                        message,
-                        resposta_usuario=True,
-                        multi_sms=multi_sms,
-                        data_criacao=message_date_utc,
-                    )
+                response = {}
+                server_message = ''
+                try:
+                    # Sends the SMS
+                    response = \
+                        record.env['totalvoice.api.config'].get_client().sms.enviar(
+                            record.number_to_raw,
+                            message,
+                            resposta_usuario=True,
+                            multi_sms=multi_sms,
+                            data_criacao=message_date_utc,
+                        )
 
-                response = json.loads(response)
+                    response = json.loads(response)
 
-                server_message = 'Motivo: ' + str(response.get('motivo')) \
-                                 + ' - ' + response.get('mensagem')
+                    server_message = 'Motivo: ' + str(response.get('motivo')) \
+                                     + ' - ' + response.get('mensagem')
 
-                record.message_date = fields.Datetime.now()
+                    record.message_date = fields.Datetime.now()
 
-                # If the message couldn't be sent
-                if not response.get('sucesso'):
+                except Exception as ex:
+                    print("ERROR: {}".format(ex))
+                    response = {}
 
-                    new_message = {
-                        'message_date': message_date or fields.Datetime.now(),
-                        'message': message,
-                        'coversation_id': record.id,
-                        'message_origin': 'error',
-                        'server_message': server_message,
-                        'resent_message': resend,
-                    }
+                    server_message = 'Motivo: ' + ex.message
 
-                    # 'Motivo=8' means the number isn't registered at
-                    # Totalvoice Configuration. So we need to remove the
-                    # partner from the api_registered_partner_ids
-                    if response.get('motivo') == 8:
-                        record.env['totalvoice.api.config'].\
-                            remove_partner(record.partner_id)
-                        new_message['server_message'] = \
-                            _('Number not registered on TotalVoice')
+                    record.message_date = fields.Datetime.now()
 
-                    record.active_sms_id = \
-                        record.env['totalvoice.message'].create(new_message)
-                    record.state = 'failed'
-                    # return False
+                finally:
+                    # If the message couldn't be sent
+                    if not response.get('sucesso'):
+
+                        new_message = {
+                            'message_date': message_date or fields.Datetime.now(),
+                            'message': message,
+                            'coversation_id': record.id,
+                            'message_origin': 'error',
+                            'server_message': server_message,
+                            'resent_message': resend,
+                        }
+
+                        # 'Motivo=8' means the number isn't registered at
+                        # Totalvoice Configuration. So we need to remove the
+                        # partner from the api_registered_partner_ids
+                        if response.get('motivo') == 8:
+                            record.env['totalvoice.api.config']. \
+                                remove_partner(record.partner_id)
+                            new_message['server_message'] = \
+                                _('Number not registered on TotalVoice')
+
+                        record.active_sms_id = \
+                            record.env['totalvoice.message'].create(
+                                new_message)
+                        record.state = 'failed'
 
                 data = response.get('dados')
                 if not data:
