@@ -1,5 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 totalvoice_base_user,totalvoice.base.user,model_totalvoice_base,base.group_user,1,1,1,0
 totalvoice_message_user,totalvoice.message.user,model_totalvoice_message,base.group_user,1,1,1,0
-
-totalvoice_wizard_base_user,totalvoice.wizard.base.user,model_wizard_register_number,base.group_user,1,1,1,0
