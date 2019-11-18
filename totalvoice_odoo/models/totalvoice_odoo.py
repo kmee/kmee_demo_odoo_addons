@@ -461,6 +461,8 @@ class TotalVoiceBase(models.Model):
         sms_format = \
             self.env['totalvoice.api.config'].get_sms_composite_sms_format()
         split_messages = message.split('\\n')
+        if len(split_messages) == 1:
+            split_messages = message.split('\n')
 
         if sms_format == 'single':
             send_messages.append(
