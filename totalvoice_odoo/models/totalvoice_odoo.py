@@ -761,10 +761,11 @@ class TotalVoiceBase(models.Model):
         try:
             eval("self.%s(%s)" %
                  (func, "'" + parameters + "'" if parameters else ''))
-        except Exception:
+        except Exception as e:
             log_message = _("An error was triggered processing the message. "
-                            "Please try again. ") + self.message
-            log.debug(log_message)
+                            "Please try again. %s  - %s") % \
+                          (self.message, e.message)
+            log.warning(log_message)
 
         finally:
             return
