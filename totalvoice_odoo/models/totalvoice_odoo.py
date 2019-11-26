@@ -425,7 +425,7 @@ class TotalVoiceBase(models.Model):
             else:
                 self.conversation_done_date = fields.Datetime.now()
 
-    def get_conversation_code(self):
+    def get_conversation_code(self, code=False):
         """
         Get a random conversation code available based on the existing
         active conversations.
@@ -433,7 +433,7 @@ class TotalVoiceBase(models.Model):
         :return: the smallest available conversation code
         """
 
-        random_code = False
+        random_code = code or self.conversation_code
 
         active_codes = self.search([('state', 'in', ['draft', 'waiting'])]
                                    ).mapped('conversation_code')
@@ -441,7 +441,7 @@ class TotalVoiceBase(models.Model):
         available_codes = list(set(range(1, MAXIMUM_CONVERSATION_CODES)) -
                                set(map(int, active_codes)))
 
-        if len(available_codes) > 0:
+        if int(random_code) not in available_codes and len(available_codes) > 0:
             random_code = self.conversation_code \
                 if self.conversation_code in available_codes \
                 else ''.join('%03d' % random.choice(available_codes))
