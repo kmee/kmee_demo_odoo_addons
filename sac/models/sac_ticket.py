@@ -10,6 +10,9 @@ class SacTicket(models.Model):
     _description = 'Sac Ticket'
 
     name = fields.Char()
+    assunto_id = fields.Many2one(
+        'sac.assunto',
+    )
 
     partner_name = fields.Char()
     partner_gender = fields.Selection(
