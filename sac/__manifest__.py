@@ -10,6 +10,7 @@
     'author': 'KMEE,Odoo Community Association (OCA)',
     'website': 'www.kmee.com.br',
     'depends': [
+        'mail',
     ],
     'data': [
         'security/sac_assunto.xml',

@@ -8,6 +8,7 @@ class SacTicket(models.Model):
 
     _name = 'sac.ticket'
     _description = 'Sac Ticket'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(
         default=lambda self: _('New'),
