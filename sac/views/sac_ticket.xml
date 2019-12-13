@@ -17,6 +17,23 @@
                     <group>
                         <field name="name"/>
                     </group>
+                    <group>
+                        <group>
+                            <field name="partner_name"/>
+                            <field name="partner_gender"/>
+                            <field name="partner_birthday"/>
+                            <field name="partner_profession"/>
+                            <field name="partner_phone"/>
+                        </group>
+                        <group>
+                            <field name="partner_zip"/>
+                            <field name="partner_street"/>
+                            <field name="partner_street2"/>
+                            <field name="partner_district"/>
+                            <field name="partner_state_id"/>
+                            <field name="partner_city_id"/>
+                        </group>
+                    </group>
                 </sheet>
                 <div class="oe_chatter"></div>
             </form>

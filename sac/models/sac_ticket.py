@@ -10,3 +10,24 @@ class SacTicket(models.Model):
     _description = 'Sac Ticket'  # TODO
 
     name = fields.Char()
+
+    partner_name = fields.Char()
+    partner_gender = fields.Selection(
+        selection=[
+            ('m', 'Masculino'),
+            ('f', 'Feminino'),
+        ]
+    )
+    partner_birthday = fields.Date()
+    partner_profession = fields.Char()
+    partner_phone = fields.Char()
+    partner_zip = fields.Char()
+    partner_street = fields.Char()
+    partner_street2 = fields.Char()
+    partner_district = fields.Char()
+    partner_state_id = fields.Many2one(
+        comodel_name='res.country',
+    )
+    partner_city_id = fields.Many2one(
+        comodel_name='res.city',
+    )
