@@ -11,6 +11,7 @@
     'website': 'www.kmee.com.br',
     'depends': [
         'mail',
+        'base_kanban_stage',
     ],
     'data': [
         'security/sac_assunto.xml',

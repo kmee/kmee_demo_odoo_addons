@@ -8,7 +8,7 @@ class SacTicket(models.Model):
 
     _name = 'sac.ticket'
     _description = 'Sac Ticket'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'base.kanban.abstract']
 
     name = fields.Char(
         default=lambda self: _('New'),
@@ -57,3 +57,4 @@ class SacTicket(models.Model):
         vals['name'] = self.env['ir.sequence'].next_by_code('sac') or _('New')
         result = super(SacTicket, self).create(vals)
         return result
+

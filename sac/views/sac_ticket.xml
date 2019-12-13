@@ -10,7 +10,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <!-- TODO -->
+                    <field name="stage_id" widget="statusbar"/>
                 </header>
                 <sheet>
                     <h1>
@@ -21,7 +21,9 @@
                             <field name="assunto_id"/>
                         </group>
                         <group>
-
+                            <field name="kanban_status" widget="state_selection"/>
+                            <field name="kanban_priority" widget="priority"/>
+                            <field name="user_id"/>
                         </group>
                     </group>
                     <group>
@@ -83,10 +85,26 @@
         </field>
     </record>
 
+    <record id="my_model_view_kanban" model="ir.ui.view">
+        <field name="name">My Model - Kanban View</field>
+        <field name="model">sac.ticket</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="base_kanban_stage.base_kanban_abstract_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='card_header']">
+                <field name="name"/>
+            </xpath>
+            <xpath expr="//div[@name='card_body']">
+                <field name="assunto_id"/>
+                <field name="partner_name"/>
+            </xpath>
+        </field>
+    </record>
+
     <record model="ir.actions.act_window" id="sac_ticket_act_window">
         <field name="name">Sac Ticket</field> <!-- TODO -->
         <field name="res_model">sac.ticket</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
