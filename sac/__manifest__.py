@@ -15,6 +15,8 @@
         'security/sac_assunto.xml',
         'security/sac_ticket.xml',
 
+        'data/sac_sequence.xml',
+
         'views/sac_menu.xml',
 
         'views/sac_assunto.xml',

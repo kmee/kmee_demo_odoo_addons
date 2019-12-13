@@ -9,7 +9,9 @@ class SacTicket(models.Model):
     _name = 'sac.ticket'
     _description = 'Sac Ticket'
 
-    name = fields.Char()
+    name = fields.Char(
+        default=lambda self: _('New'),
+    )
     assunto_id = fields.Many2one(
         'sac.assunto',
     )
@@ -49,3 +51,8 @@ class SacTicket(models.Model):
             self.partner_state_id = self.partner_id.state_id
             self.partner_city = self.partner_id.city
 
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env['ir.sequence'].next_by_code('sac') or _('New')
+        result = super(SacTicket, self).create(vals)
+        return result
