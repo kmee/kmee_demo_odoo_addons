@@ -30,3 +30,4 @@ class SacTicket(models.Model):
         domain=[('country_id.code', '=', 'BR')]
     )
     partner_city = fields.Char()
+    mensagem = fields.Text()
