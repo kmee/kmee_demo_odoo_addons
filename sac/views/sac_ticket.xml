@@ -31,7 +31,7 @@
                             <field name="partner_street2"/>
                             <field name="partner_district"/>
                             <field name="partner_state_id"/>
-                            <field name="partner_city_id"/>
+                            <field name="partner_city"/>
                         </group>
                     </group>
                 </sheet>

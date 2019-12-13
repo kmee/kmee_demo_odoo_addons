@@ -26,8 +26,7 @@ class SacTicket(models.Model):
     partner_street2 = fields.Char()
     partner_district = fields.Char()
     partner_state_id = fields.Many2one(
-        comodel_name='res.country',
+        comodel_name='res.country.state',
+        domain=[('country_id.code', '=', 'BR')]
     )
-    partner_city_id = fields.Many2one(
-        comodel_name='res.city',
-    )
+    partner_city = fields.Char()
