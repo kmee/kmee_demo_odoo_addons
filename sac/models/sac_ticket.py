@@ -14,6 +14,7 @@ class SacTicket(models.Model):
         'sac.assunto',
     )
 
+    partner_id = fields.Many2one('res.partner')
     partner_name = fields.Char()
     partner_gender = fields.Selection(
         selection=[
@@ -35,3 +36,16 @@ class SacTicket(models.Model):
     )
     partner_city = fields.Char()
     mensagem = fields.Text()
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if self.partner_id:
+            self.partner_name = self.partner_id.name
+            self.partner_phone = self.partner_id.phone
+            self.partner_email = self.partner_id.email
+            self.partner_street = self.partner_id.street
+            self.partner_street2 = self.partner_id.street2
+            self.partner_zip = self.partner_id.zip
+            self.partner_state_id = self.partner_id.state_id
+            self.partner_city = self.partner_id.city
+

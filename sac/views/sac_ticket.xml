@@ -26,6 +26,7 @@
                     </group>
                     <group>
                         <group>
+                            <field name="partner_id"/>
                             <field name="partner_name"/>
                             <field name="partner_gender"/>
                             <field name="partner_birthday"/>
