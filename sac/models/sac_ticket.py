@@ -77,3 +77,11 @@ class SacTicket(models.Model):
         except AccessError:
             pass
         return recipients
+
+    def enviar_sms(self):
+        for record in self:
+            if record.partner_phone:
+                record.message_post_send_sms(
+                    sms_message='Nº do Chamado {}'.format(record.name),
+                    numbers=[record.partner_phone],
+                )

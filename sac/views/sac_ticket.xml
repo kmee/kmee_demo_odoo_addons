@@ -10,6 +10,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="enviar_sms" string="Enviar SMS" type="object"/>
                     <field name="stage_id" widget="statusbar"/>
                 </header>
                 <sheet>

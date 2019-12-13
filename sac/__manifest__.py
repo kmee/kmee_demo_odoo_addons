@@ -12,6 +12,7 @@
     'depends': [
         'mail',
         'base_kanban_stage',
+        'sms',
     ],
     'data': [
         'security/sac_assunto.xml',
