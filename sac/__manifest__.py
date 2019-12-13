@@ -12,12 +12,16 @@
     'depends': [
     ],
     'data': [
+        'security/sac_assunto.xml',
         'security/sac_ticket.xml',
 
         'views/sac_menu.xml',
+
+        'views/sac_assunto.xml',
         'views/sac_ticket.xml',
     ],
     'demo': [
+        'demo/sac_assunto.xml',
         'demo/sac_ticket.xml',
     ],
 }

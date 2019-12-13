@@ -46,7 +46,11 @@
         <field name="model">sac.ticket</field>
         <field name="arch" type="xml">
             <search>
-                <!-- TODO -->
+                <field name="name"/>
+                <field name="partner_name"/>
+                <field name="partner_phone"/>
+                <field name="partner_email"/>
+                <field name="partner_state_id"/>
             </search>
         </field>
     </record>
@@ -56,8 +60,11 @@
         <field name="model">sac.ticket</field>
         <field name="arch" type="xml">
             <tree>
-                <!-- TODO -->
                 <field name="name"/>
+                <field name="partner_name"/>
+                <field name="partner_phone"/>
+                <field name="partner_email"/>
+                <field name="partner_state_id"/>
             </tree>
         </field>
     </record>

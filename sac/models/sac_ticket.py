@@ -7,7 +7,7 @@ from odoo import api, fields, models, _
 class SacTicket(models.Model):
 
     _name = 'sac.ticket'
-    _description = 'Sac Ticket'  # TODO
+    _description = 'Sac Ticket'
 
     name = fields.Char()
 
@@ -21,6 +21,7 @@ class SacTicket(models.Model):
     partner_birthday = fields.Date()
     partner_profession = fields.Char()
     partner_phone = fields.Char()
+    partner_email = fields.Char()
     partner_zip = fields.Char()
     partner_street = fields.Char()
     partner_street2 = fields.Char()

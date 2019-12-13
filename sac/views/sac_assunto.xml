@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 KMEE
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="sac_assunto_form_view">
+        <field name="name">sac.assunto.form (in sac)</field>
+        <field name="model">sac.assunto</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- TODO -->
+                </header>
+                <sheet>
+                    <!-- TODO -->
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sac_assunto_search_view">
+        <field name="name">sac.assunto.search (in sac)</field>
+        <field name="model">sac.assunto</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- TODO -->
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sac_assunto_tree_view">
+        <field name="name">sac.assunto.tree (in sac)</field>
+        <field name="model">sac.assunto</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- TODO -->
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="sac_assunto_act_window">
+        <field name="name">Sac Assunto</field> <!-- TODO -->
+        <field name="res_model">sac.assunto</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="sac_assunto_menu">
+        <field name="name">Sac Assunto</field>
+        <field name="parent_id" ref="sac_main_menu_config"/>
+        <field name="action" ref="sac_assunto_act_window"/>
+        <field name="sequence" eval="99"/> <!-- TODO -->
+    </record>
+
+</odoo>
