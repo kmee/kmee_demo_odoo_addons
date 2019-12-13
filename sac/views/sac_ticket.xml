@@ -34,6 +34,7 @@
                             <field name="partner_birthday"/>
                             <field name="partner_profession"/>
                             <field name="partner_phone"/>
+                            <field name="partner_email"/>
                         </group>
                         <group>
                             <field name="partner_zip"/>

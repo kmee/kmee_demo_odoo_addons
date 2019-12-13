@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models, _
+from odoo.exceptions import AccessError
 
 
 class SacTicket(models.Model):
@@ -58,3 +59,21 @@ class SacTicket(models.Model):
         result = super(SacTicket, self).create(vals)
         return result
 
+    @api.multi
+    def message_get_suggested_recipients(self):
+        recipients = super(SacTicket, self).message_get_suggested_recipients()
+        try:
+            for record in self:
+                if record.partner_id:
+                    record._message_add_suggested_recipient(
+                        recipients,
+                        partner=record.partner_id,
+                        reason=_('Customer'))
+                elif record.partner_email:
+                    record._message_add_suggested_recipient(
+                        recipients,
+                        email=record.partner_email,
+                        reason=_('Customer Email'))
+        except AccessError:
+            pass
+        return recipients
