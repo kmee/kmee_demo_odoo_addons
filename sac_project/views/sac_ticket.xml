@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 KMEE
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="sac_ticket_form_view">
+        <field name="name">sac.ticket.form (in sac_project)</field>
+        <field name="model">sac.ticket</field>
+        <field name="inherit_id" ref="sac.sac_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <button name="button_send_sms" position="after">
+                <button name="%(sac_ticket_wizard_act_window)d" string="Task" type="action"/>
+            </button>
+            <field name="motivo_id" position="after">
+                <field name="task_id"/>
+                <field name="project_id" readonly="1"/>
+            </field>
+
+        </field>
+    </record>
+
+
+
+</odoo>
