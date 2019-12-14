@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.menu" id="sac_main_menu">
+            <field name="name">Sac</field>
+            <field name="sequence" eval="50"/>
+        </record>
+        <record model="ir.ui.menu" id="sac_main_menu_config">
+            <field name="name">Configurações</field>
+            <field name="parent_id" ref="sac_main_menu"/>
+            <field name="sequence" eval="50"/>
+        </record>
+    </data>
+</odoo>

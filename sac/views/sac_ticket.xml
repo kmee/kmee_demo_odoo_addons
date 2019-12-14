@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 KMEE
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="sac_ticket_form_view">
+        <field name="name">sac.ticket.form (in sac)</field>
+        <field name="model">sac.ticket</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="enviar_sms" string="Enviar SMS" type="object"/>
+                    <field name="stage_id" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="assunto_id"/>
+                        </group>
+                        <group>
+                            <field name="kanban_status" widget="state_selection"/>
+                            <field name="kanban_priority" widget="priority"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="partner_name"/>
+                            <field name="partner_gender"/>
+                            <field name="partner_birthday"/>
+                            <field name="partner_profession"/>
+                            <field name="partner_phone"/>
+                            <field name="partner_email"/>
+                        </group>
+                        <group>
+                            <field name="partner_zip"/>
+                            <field name="partner_street"/>
+                            <field name="partner_street2"/>
+                            <field name="partner_district"/>
+                            <field name="partner_state_id"/>
+                            <field name="partner_city"/>
+                        </group>
+                    </group>
+                    <field name="mensagem"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sac_ticket_search_view">
+        <field name="name">sac.ticket.search (in sac)</field>
+        <field name="model">sac.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="assunto_id"/>
+                <field name="partner_name"/>
+                <field name="partner_phone"/>
+                <field name="partner_email"/>
+                <field name="partner_state_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sac_ticket_tree_view">
+        <field name="name">sac.ticket.tree (in sac)</field>
+        <field name="model">sac.ticket</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="assunto_id"/>
+                <field name="partner_name"/>
+                <field name="partner_phone"/>
+                <field name="partner_email"/>
+                <field name="partner_state_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="my_model_view_kanban" model="ir.ui.view">
+        <field name="name">My Model - Kanban View</field>
+        <field name="model">sac.ticket</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="base_kanban_stage.base_kanban_abstract_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='card_header']">
+                <field name="name"/>
+            </xpath>
+            <xpath expr="//div[@name='card_body']">
+                <field name="assunto_id"/>
+                <field name="partner_name"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="sac_ticket_act_window">
+        <field name="name">Sac Ticket</field> <!-- TODO -->
+        <field name="res_model">sac.ticket</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="sac_ticket_menu">
+        <field name="name">Sac Ticket</field>
+        <field name="parent_id" ref="sac_main_menu"/>
+        <field name="action" ref="sac_ticket_act_window"/>
+        <field name="sequence" eval="16"/> <!-- TODO -->
+    </record>
+
+</odoo>
