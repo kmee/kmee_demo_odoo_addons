@@ -8,7 +8,12 @@
     'license': 'AGPL-3',
     'installable': True,
     'application': False,
-    'depends': ['base', 'webhook'],
+    'depends': [
+        'base',
+        'mail',
+        'webhook',
+        'link_tracker',
+    ],
     'data': [
         'security/totalvoice_security.xml',
         'security/ir.model.access.csv',
@@ -20,5 +25,7 @@
          'views/totalvoice_config_view.xml',
          'views/totalvoice_cron.xml',
          'views/totalvoice_addnumber_view.xml',
+         'views/res_users_views.xml',
+         'views/res_partner_views.xml',
     ],
 }
